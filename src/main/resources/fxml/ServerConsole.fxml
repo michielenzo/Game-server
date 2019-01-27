@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<VBox id="ServerConsole" prefHeight="700" prefWidth="1000">
+
+    <HBox>
+        <VBox>
+            <TextArea prefWidth="1000" prefHeight="700" editable="false"></TextArea>
+            <HBox prefWidth="1000" prefHeight="100">
+                <TextField></TextField>
+                <Button text="Send"></Button>
+            </HBox>
+        </VBox>
+    </HBox>
+
+</VBox>
