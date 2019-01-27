@@ -1,10 +1,17 @@
+import console.ServerConsoleView
+import javafx.stage.Stage
 import network.PlayerWebsocket
 import tornadofx.*
 
 
-open class Application : App(){
+class Application : App(ServerConsoleView::class){
 
-    private fun setupNetwork(){
+    override fun start(stage: Stage) {
+        stage.isResizable = false
+        super.start(stage)
+    }
+
+    init {
         PlayerWebsocket().also {
             it.initialize()
         }
