@@ -2,8 +2,11 @@ package network
 
 import io.javalin.Javalin
 import io.javalin.websocket.WsSession
+import main.kotlin.network.NetworkNewsPaper
 
 abstract class Websocket(var endPointPath: String, var portNumber: Int) {
+
+    protected val networkNewsPaper = NetworkNewsPaper.getInstance()
 
     fun initialize(){
         Javalin.create().apply {
@@ -20,6 +23,7 @@ abstract class Websocket(var endPointPath: String, var portNumber: Int) {
             }
             start(portNumber)
         }
+
     }
 
     abstract fun onClose(session: WsSession, status: Int, message: String?)
