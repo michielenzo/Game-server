@@ -4,16 +4,17 @@ import javafx.scene.control.Button
 import javafx.scene.control.TextArea
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.VBox
-import main.kotlin.network.INetworkNewsPaperSubscriber
-import main.kotlin.network.NetworkNewsPaper
-import tornadofx.View
+import main.kotlin.network.dto.ConnectionDTO
+import main.kotlin.network.dto.DTO
+import main.kotlin.network.newspaper.INetworkNewsPaperSubscriber
+import main.kotlin.network.newspaper.NetworkNewsPaper
+import tornadofx.*
 
 class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber {
 
     override val root: VBox by fxml("/fxml/ServerConsole.fxml")
 
     private val buttonSend: Button by fxid("sendButton")
-
     private val textAreaStreamIN: TextArea by fxid("textAreaStreamIN")
 
     init {
@@ -26,8 +27,17 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber {
         }
     }
 
-    override fun notifyNetworkNews(message: String) {
-        textAreaStreamIN.text += "$message \n"
+    override fun notifyNetworkNews(dto: DTO) {
+        when(dto){
+            is ConnectionDTO -> handleConnectToServerMessage(dto)
+        }
+    }
+
+    private fun handleConnectToServerMessage(dto: ConnectionDTO) {
+        textAreaStreamIN.text += "${dto.id} is now connected."
     }
 
 }
+
+
+

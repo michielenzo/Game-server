@@ -58,7 +58,7 @@
                      <VBox.margin>
                         <Insets bottom="5.0" top="5.0" />
                      </VBox.margin></Text>
-                  <TableView prefHeight="700.0" prefWidth="200.0">
+                  <TableView fx:id="connectionTable" prefHeight="700.0" prefWidth="200.0">
                     <columns>
                       <TableColumn prefWidth="78.0" text="IP address" />
                       <TableColumn prefWidth="77.0" text="name" />

@@ -1,19 +1,22 @@
-package main.kotlin.network
+package main.kotlin.network.newspaper
+
+import com.google.gson.JsonObject
+import main.kotlin.network.dto.DTO
 
 
 interface INetworkNewsPaper{
-    fun broadcast(message: String)
+    fun broadcast(dto: DTO)
     fun subscribe(newSubscriber: INetworkNewsPaperSubscriber)
 }
 
-class NetworkNewsPaper: INetworkNewsPaper{
+class NetworkNewsPaper: INetworkNewsPaper {
 
     private val subscribers: MutableList<INetworkNewsPaperSubscriber> = mutableListOf()
 
     companion object {
         private val networkNewsPaper = NetworkNewsPaper()
 
-        fun getInstance(): NetworkNewsPaper{
+        fun getInstance(): NetworkNewsPaper {
             return networkNewsPaper
         }
     }
@@ -22,9 +25,9 @@ class NetworkNewsPaper: INetworkNewsPaper{
         subscribers.add(newSubscriber)
     }
 
-    override fun broadcast(message: String) {
+    override fun broadcast(dto: DTO) {
         subscribers.forEach { subscriber ->
-            subscriber.notifyNetworkNews(message)
+            subscriber.notifyNetworkNews(dto)
         }
     }
 

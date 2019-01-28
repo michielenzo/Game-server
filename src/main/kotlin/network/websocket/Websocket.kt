@@ -2,7 +2,8 @@ package network
 
 import io.javalin.Javalin
 import io.javalin.websocket.WsSession
-import main.kotlin.network.NetworkNewsPaper
+import main.kotlin.network.newspaper.NetworkNewsPaper
+import java.time.LocalDateTime
 
 abstract class Websocket(var endPointPath: String, var portNumber: Int) {
 
