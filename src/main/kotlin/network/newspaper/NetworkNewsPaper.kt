@@ -1,8 +1,6 @@
 package main.kotlin.network.newspaper
 
-import com.google.gson.JsonObject
 import main.kotlin.network.dto.DTO
-
 
 interface INetworkNewsPaper{
     fun broadcast(dto: DTO)

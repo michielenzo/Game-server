@@ -1,12 +1,8 @@
 package network
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
 import io.javalin.websocket.WsSession
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DTO
-import main.kotlin.network.newspaper.MessageType
 import java.time.LocalDateTime
 
 
