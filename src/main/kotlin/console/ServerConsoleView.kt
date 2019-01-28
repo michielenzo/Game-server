@@ -3,14 +3,14 @@ package console
 import javafx.scene.control.Button
 import javafx.scene.control.TextArea
 import javafx.scene.input.MouseButton
-import javafx.scene.layout.HBox
+import javafx.scene.layout.VBox
 import main.kotlin.network.INetworkNewsPaperSubscriber
 import main.kotlin.network.NetworkNewsPaper
 import tornadofx.View
 
 class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber {
 
-    override val root: HBox by fxml("/fxml/ServerConsole.fxml")
+    override val root: VBox by fxml("/fxml/ServerConsole.fxml")
 
     private val buttonSend: Button by fxid("sendButton")
 
