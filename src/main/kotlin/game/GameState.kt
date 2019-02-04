@@ -1,6 +1,8 @@
 package main.kotlin.game
 
-import main.kotlin.game.dto.NewPlayerDTO
+import main.kotlin.game.dto.GameStateDTO
+import main.kotlin.game.dto.PlayerDTO
+import main.kotlin.game.dto.SendGameStateDTO
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
@@ -9,7 +11,7 @@ import main.kotlin.utilities.DTO
 
 class GameState : INetworkNewsPaperSubscriber {
 
-    private var players = mutableListOf<Player>()
+    private val players = mutableListOf<Player>()
 
     private val gameStateNewsPaper = GameStateNewsPaper.getInstance()
 
@@ -20,23 +22,30 @@ class GameState : INetworkNewsPaperSubscriber {
     }
 
     override fun notifyNetworkNews(dto: DTO) {
-        println("hello")
         when(dto){
             is ConnectionDTO -> handleConnectToServerMessage(dto)
         }
     }
 
     private fun handleConnectToServerMessage(connectionDTO: ConnectionDTO) {
-        println("hello2")
         Player(connectionDTO.id, 0, 0).also {player ->
             synchronized(connectToServerMessageLock){
                 players.add(player)
-                NewPlayerDTO(player.sessionId, player.xPosition, player.yPosition).also {dto ->
-                    println("hello3")
-                    gameStateNewsPaper.broadcast(dto)
-                }
+                buildSendGameStateDTO().also { gameStateNewsPaper.broadcast(it) }
             }
         }
     }
 
+    private fun buildSendGameStateDTO(): SendGameStateDTO{
+        return SendGameStateDTO(GameStateDTO().also {gameStateDTO ->
+            players.forEach{player ->
+                PlayerDTO(player.sessionId, player.xPosition, player.yPosition).also { playerDTO ->
+                    gameStateDTO.players.add(playerDTO)
+                }
+            }
+        })
+    }
+
 }
+
+

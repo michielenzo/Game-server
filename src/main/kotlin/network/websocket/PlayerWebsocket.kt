@@ -2,7 +2,7 @@ package network
 
 import com.google.gson.Gson
 import io.javalin.websocket.WsSession
-import main.kotlin.game.dto.NewPlayerDTO
+import main.kotlin.game.dto.SendGameStateDTO
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
@@ -18,7 +18,6 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
 
     override fun onConnect(session: WsSession) {
         sessions.add(session)
-        session.send("Connected to the server")
         networkNewsPaper.broadcast(buildConnectToServerDTO(session))
     }
 
@@ -32,12 +31,12 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
 
     override fun notifyGameStateNews(dto: DTO) {
         when(dto){
-            is NewPlayerDTO -> handleNewPlayerMessage(dto)
+            is SendGameStateDTO -> sendGameState(dto)
         }
     }
 
-    private fun handleNewPlayerMessage(newPlayerDTO: NewPlayerDTO) {
-        Gson().toJson(newPlayerDTO).also {
+    private fun sendGameState(sendGameStateDTO: SendGameStateDTO) {
+        Gson().toJson(sendGameStateDTO).also {
             sendToAllSessions(it)
         }
     }
