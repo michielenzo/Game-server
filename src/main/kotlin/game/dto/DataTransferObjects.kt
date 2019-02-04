@@ -1,6 +1,5 @@
 package main.kotlin.game.dto
 
-import main.kotlin.game.GameState
 import main.kotlin.newspaper.MessageType
 import main.kotlin.utilities.DTO
 
