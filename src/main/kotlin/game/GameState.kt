@@ -28,15 +28,15 @@ class GameState : INetworkNewsPaperSubscriber {
     }
 
     private fun handleConnectToServerMessage(connectionDTO: ConnectionDTO) {
-        Player(connectionDTO.id, 0, 0).also {player ->
-            synchronized(connectToServerMessageLock){
+        synchronized(connectToServerMessageLock){
+            Player(connectionDTO.id, 10 + players.size * 75, 10).also {player ->
                 players.add(player)
                 buildSendGameStateDTO().also { gameStateNewsPaper.broadcast(it) }
             }
         }
     }
 
-    private fun buildSendGameStateDTO(): SendGameStateDTO{
+    private fun buildSendGameStateDTO(): SendGameStateDTO {
         return SendGameStateDTO(GameStateDTO().also {gameStateDTO ->
             players.forEach{player ->
                 PlayerDTO(player.sessionId, player.xPosition, player.yPosition).also { playerDTO ->
