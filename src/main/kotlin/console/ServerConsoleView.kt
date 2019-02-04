@@ -4,10 +4,11 @@ import javafx.scene.control.Button
 import javafx.scene.control.TextArea
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.VBox
+import main.kotlin.game.GameState
 import main.kotlin.network.dto.ConnectionDTO
-import main.kotlin.network.dto.DTO
-import main.kotlin.network.newspaper.INetworkNewsPaperSubscriber
-import main.kotlin.network.newspaper.NetworkNewsPaper
+import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
+import main.kotlin.newspaper.network.NetworkNewsPaper
+import main.kotlin.utilities.DTO
 import tornadofx.*
 
 class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber {
@@ -16,6 +17,8 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber {
 
     private val buttonSend: Button by fxid("sendButton")
     private val textAreaStreamIN: TextArea by fxid("textAreaStreamIN")
+
+    private val  gameState = GameState()
 
     init {
         NetworkNewsPaper.getInstance().subscribe(this)

@@ -2,11 +2,12 @@ package network
 
 import io.javalin.Javalin
 import io.javalin.websocket.WsSession
-import main.kotlin.network.newspaper.NetworkNewsPaper
+import main.kotlin.newspaper.network.NetworkNewsPaper
 
 abstract class Websocket(var endPointPath: String, var portNumber: Int) {
 
     protected val networkNewsPaper = NetworkNewsPaper.getInstance()
+    protected val sessions = mutableListOf<WsSession>()
 
     fun initialize(){
         Javalin.create().apply {
@@ -23,7 +24,12 @@ abstract class Websocket(var endPointPath: String, var portNumber: Int) {
             }
             start(portNumber)
         }
+    }
 
+    fun sendToAllSessions(message: String){
+        sessions.forEach {
+            it.send(message)
+        }
     }
 
     abstract fun onClose(session: WsSession, status: Int, message: String?)

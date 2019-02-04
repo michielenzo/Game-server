@@ -1,29 +1,44 @@
 package network
 
+import com.google.gson.Gson
 import io.javalin.websocket.WsSession
+import main.kotlin.game.dto.NewPlayerDTO
+import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
 import main.kotlin.network.dto.ConnectionDTO
-import main.kotlin.network.dto.DTO
+import main.kotlin.newspaper.gamestate.GameStateNewsPaper
+import main.kotlin.utilities.DTO
 import java.time.LocalDateTime
 
 
-class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080) {
+class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), IGameStateNewsPaperSubscriber {
+
+    init {
+        GameStateNewsPaper.getInstance().subscribe(this)
+    }
 
     override fun onConnect(session: WsSession) {
-        synchronized(PlayerWebsocket::class){
-            session.send("Connected to the server")
-            networkNewsPaper.broadcast(buildConnectToServerDTO(session))
-        }
+        sessions.add(session)
+        session.send("Connected to the server")
+        networkNewsPaper.broadcast(buildConnectToServerDTO(session))
     }
 
     override fun onMessage(session: WsSession, message: String) {
-        synchronized(PlayerWebsocket::class){
-            session.send("message recieved")
-        }
+        session.send("message recieved")
     }
 
     override fun onClose(session: WsSession, status: Int, message: String?) {
-        synchronized(PlayerWebsocket::class){
-            session.send("Disconnected from the server")
+        session.send("Disconnected from the server")
+    }
+
+    override fun notifyGameStateNews(dto: DTO) {
+        when(dto){
+            is NewPlayerDTO -> handleNewPlayerMessage(dto)
+        }
+    }
+
+    private fun handleNewPlayerMessage(newPlayerDTO: NewPlayerDTO) {
+        Gson().toJson(newPlayerDTO).also {
+            sendToAllSessions(it)
         }
     }
 

@@ -1,13 +1,9 @@
-package main.kotlin.network.newspaper
+package main.kotlin.newspaper.network
 
-import main.kotlin.network.dto.DTO
+import main.kotlin.newspaper.INewsPaper
+import main.kotlin.utilities.DTO
 
-interface INetworkNewsPaper{
-    fun broadcast(dto: DTO)
-    fun subscribe(newSubscriber: INetworkNewsPaperSubscriber)
-}
-
-class NetworkNewsPaper: INetworkNewsPaper {
+class NetworkNewsPaper: INewsPaper<INetworkNewsPaperSubscriber> {
 
     private val subscribers: MutableList<INetworkNewsPaperSubscriber> = mutableListOf()
 
