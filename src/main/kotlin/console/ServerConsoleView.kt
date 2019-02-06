@@ -24,7 +24,7 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
 
     init {
         NetworkNewsPaper.subscribe(this)
-        GameStateNewsPaper.getInstance().subscribe(this)
+        GameStateNewsPaper.subscribe(this)
 
         buttonSend.setOnMouseClicked { mouseEvent ->
             if(mouseEvent.button == MouseButton.PRIMARY){

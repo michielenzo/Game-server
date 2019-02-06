@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), IGameStateNewsPaperSubscriber {
 
     init {
-        GameStateNewsPaper.getInstance().subscribe(this)
+        GameStateNewsPaper.subscribe(this)
     }
 
     override fun onConnect(session: WsSession) {

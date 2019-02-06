@@ -2,7 +2,14 @@ package main.kotlin.newspaper
 
 import main.kotlin.utilities.DTO
 
-interface INewsPaper<ISubscriber> {
-    fun broadcast(dto: DTO)
-    fun subscribe(newSubscriber: ISubscriber)
+abstract class INewsPaper<ISubscriber> {
+
+    protected val subscribers: MutableList<ISubscriber> = mutableListOf()
+
+    abstract fun broadcast(dto: DTO)
+
+    fun subscribe(newSubscriber: ISubscriber) {
+        subscribers.add(newSubscriber)
+    }
+
 }

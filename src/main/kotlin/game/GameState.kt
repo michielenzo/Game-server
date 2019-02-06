@@ -13,8 +13,6 @@ class GameState : INetworkNewsPaperSubscriber {
 
     private val players = mutableListOf<Player>()
 
-    private val gameStateNewsPaper = GameStateNewsPaper.getInstance()
-
     private val connectToServerMessageLock = Object()
 
     init {
@@ -33,7 +31,7 @@ class GameState : INetworkNewsPaperSubscriber {
             Player(connectionDTO.id, 10 + players.size * 75, 10).also {player ->
                 players.add(player)
                 println("2")
-                buildSendGameStateDTO().also { gameStateNewsPaper.broadcast(it) }
+                buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
             }
         }
     }
