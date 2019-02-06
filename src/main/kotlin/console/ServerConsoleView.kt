@@ -6,17 +6,20 @@ import javafx.scene.control.TextArea
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.VBox
 import main.kotlin.game.dto.SendGameStateDTO
+import main.kotlin.lobby.dto.SendLobbyStateDTO
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
+import main.kotlin.newspaper.lobby.ILobbyNewsPaperSubscriber
+import main.kotlin.newspaper.lobby.LobbyNewsPaper
 import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
 import main.kotlin.newspaper.network.NetworkNewsPaper
 import main.kotlin.utilities.DTO
 import tornadofx.*
 import java.time.LocalDateTime
 
-class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IGameStateNewsPaperSubscriber {
+class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IGameStateNewsPaperSubscriber, ILobbyNewsPaperSubscriber {
 
     override val root: VBox by fxml("/fxml/ServerConsole.fxml")
 
@@ -26,6 +29,7 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
     init {
         NetworkNewsPaper.subscribe(this)
         GameStateNewsPaper.subscribe(this)
+        LobbyNewsPaper.subscribe(this)
 
         buttonSend.setOnMouseClicked { mouseEvent ->
             if(mouseEvent.button == MouseButton.PRIMARY){
@@ -45,6 +49,19 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
         when(dto){
             is SendGameStateDTO -> handleSendGameStateMessage(dto)
         }
+    }
+
+    override fun notifyLobbyNews(dto: DTO) {
+        when(dto){
+            is SendLobbyStateDTO -> handleSendLobbyStateMessage(dto)
+        }
+    }
+
+    private fun handleSendLobbyStateMessage(dto: SendLobbyStateDTO) {
+        textAreaStreamIN.text += String()
+                .plus(preFixOUT())
+                .plus(Gson().toJson(dto))
+                .plus("\n")
     }
 
     private fun handleSendGameStateMessage(dto: SendGameStateDTO) {

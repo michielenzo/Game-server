@@ -3,19 +3,23 @@ package network
 import com.google.gson.Gson
 import io.javalin.websocket.WsSession
 import main.kotlin.game.dto.SendGameStateDTO
+import main.kotlin.lobby.dto.SendLobbyStateDTO
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
+import main.kotlin.newspaper.lobby.ILobbyNewsPaperSubscriber
+import main.kotlin.newspaper.lobby.LobbyNewsPaper
 import main.kotlin.newspaper.network.NetworkNewsPaper
 import main.kotlin.utilities.DTO
 import java.time.LocalDateTime
 
 
-class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), IGameStateNewsPaperSubscriber {
+class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), IGameStateNewsPaperSubscriber, ILobbyNewsPaperSubscriber {
 
     init {
         GameStateNewsPaper.subscribe(this)
+        LobbyNewsPaper.subscribe(this)
     }
 
     override fun onConnect(session: WsSession) {
@@ -34,14 +38,18 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
 
     override fun notifyGameStateNews(dto: DTO) {
         when(dto){
-            is SendGameStateDTO -> sendGameState(dto)
+            is SendGameStateDTO -> sendToAllSessions(convertDTOtoJSON(dto))
         }
     }
 
-    private fun sendGameState(sendGameStateDTO: SendGameStateDTO) {
-        Gson().toJson(sendGameStateDTO).also {
-            sendToAllSessions(it)
+    override fun notifyLobbyNews(dto: DTO) {
+        when(dto){
+            is SendLobbyStateDTO -> sendToAllSessions(convertDTOtoJSON(dto))
         }
+    }
+
+    private fun convertDTOtoJSON(dto: DTO): String{
+        return Gson().toJson(dto)
     }
 
     private fun buildConnectToServerDTO(session: WsSession): DTO {

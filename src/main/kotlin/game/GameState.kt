@@ -47,7 +47,7 @@ class GameState : INetworkNewsPaperSubscriber {
     private fun buildSendGameStateDTO(): SendGameStateDTO {
         return SendGameStateDTO(GameStateDTO().also {gameStateDTO ->
             players.forEach{player ->
-                PlayerDTO(player.sessionId, player.xPosition, player.yPosition).also { playerDTO ->
+                PlayerDTO(player.sessionId, player.xPosition, player.yPosition).also {playerDTO ->
                     gameStateDTO.players.add(playerDTO)
                 }
             }
