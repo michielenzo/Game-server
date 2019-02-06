@@ -4,6 +4,7 @@ import main.kotlin.lobby.dto.LobbyStateDTO
 import main.kotlin.lobby.dto.PlayerDTO
 import main.kotlin.lobby.dto.SendLobbyStateDTO
 import main.kotlin.network.dto.ConnectionDTO
+import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.lobby.LobbyNewsPaper
 import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
 import main.kotlin.newspaper.network.NetworkNewsPaper
@@ -13,7 +14,7 @@ class Lobby: INetworkNewsPaperSubscriber {
 
     private val players = mutableListOf<Player>()
 
-    private val connectToServerMessageLock = Object()
+    private val lobbyStateLock = Object()
 
     init {
         NetworkNewsPaper.subscribe(this)
@@ -22,11 +23,19 @@ class Lobby: INetworkNewsPaperSubscriber {
     override fun notifyNetworkNews(dto: DTO) {
         when(dto){
             is ConnectionDTO -> handleConnectToServerMessage(dto)
+            is DisconnectDTO -> handleDisconnectToServerMessage(dto)
+        }
+    }
+
+    private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
+        synchronized(lobbyStateLock){
+            players.removeAll { it.id == dto.id }
+            buildSendLobbyStateDTO().also { LobbyNewsPaper.broadcast(it) }
         }
     }
 
     private fun handleConnectToServerMessage(dto: ConnectionDTO) {
-        synchronized(connectToServerMessageLock){
+        synchronized(lobbyStateLock){
             Player(dto.id).also {
                 players.add(it)
                 LobbyNewsPaper.broadcast(buildSendLobbyStateDTO())

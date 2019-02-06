@@ -14,8 +14,7 @@ class GameState : INetworkNewsPaperSubscriber {
 
     private val players = mutableListOf<Player>()
 
-    private val connectToServerMessageLock = Object()
-    private val disconnectFromServerLock = Object()
+    private val gameStateLock = Object()
 
     init {
         NetworkNewsPaper.subscribe(this)
@@ -29,7 +28,7 @@ class GameState : INetworkNewsPaperSubscriber {
     }
 
     private fun handleConnectToServerMessage(connectionDTO: ConnectionDTO) {
-        synchronized(connectToServerMessageLock){
+        synchronized(gameStateLock){
             Player(connectionDTO.id, 10 + players.size * 75, 10).also {player ->
                 players.add(player)
                 buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
@@ -38,7 +37,7 @@ class GameState : INetworkNewsPaperSubscriber {
     }
 
     private fun handleDisconnectFromServerMessage(dto: DisconnectDTO) {
-        synchronized(disconnectFromServerLock){
+        synchronized(gameStateLock){
             players.removeAll { it.sessionId == dto.id }
             buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
         }
