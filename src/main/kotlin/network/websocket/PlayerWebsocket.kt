@@ -6,6 +6,7 @@ import main.kotlin.game.dto.SendGameStateDTO
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
+import main.kotlin.newspaper.network.NetworkNewsPaper
 import main.kotlin.utilities.DTO
 import java.time.LocalDateTime
 
@@ -18,7 +19,7 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
 
     override fun onConnect(session: WsSession) {
         sessions.add(session)
-        networkNewsPaper.broadcast(buildConnectToServerDTO(session))
+        NetworkNewsPaper.broadcast(buildConnectToServerDTO(session))
     }
 
     override fun onMessage(session: WsSession, message: String) {

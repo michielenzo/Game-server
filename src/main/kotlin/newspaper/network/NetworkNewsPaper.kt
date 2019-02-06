@@ -3,17 +3,9 @@ package main.kotlin.newspaper.network
 import main.kotlin.newspaper.INewsPaper
 import main.kotlin.utilities.DTO
 
-class NetworkNewsPaper: INewsPaper<INetworkNewsPaperSubscriber> {
+object NetworkNewsPaper: INewsPaper<INetworkNewsPaperSubscriber> {
 
     private val subscribers: MutableList<INetworkNewsPaperSubscriber> = mutableListOf()
-
-    companion object {
-        private val networkNewsPaper = NetworkNewsPaper()
-
-        fun getInstance(): NetworkNewsPaper {
-            return networkNewsPaper
-        }
-    }
 
     override fun subscribe(newSubscriber: INetworkNewsPaperSubscriber) {
         subscribers.add(newSubscriber)
@@ -21,6 +13,7 @@ class NetworkNewsPaper: INewsPaper<INetworkNewsPaperSubscriber> {
 
     override fun broadcast(dto: DTO) {
         subscribers.forEach { subscriber ->
+            println("hello")
             subscriber.notifyNetworkNews(dto)
         }
     }

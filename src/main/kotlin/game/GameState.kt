@@ -18,7 +18,7 @@ class GameState : INetworkNewsPaperSubscriber {
     private val connectToServerMessageLock = Object()
 
     init {
-        NetworkNewsPaper.getInstance().subscribe(this)
+        NetworkNewsPaper.subscribe(this)
     }
 
     override fun notifyNetworkNews(dto: DTO) {
@@ -28,9 +28,11 @@ class GameState : INetworkNewsPaperSubscriber {
     }
 
     private fun handleConnectToServerMessage(connectionDTO: ConnectionDTO) {
+        println("1")
         synchronized(connectToServerMessageLock){
             Player(connectionDTO.id, 10 + players.size * 75, 10).also {player ->
                 players.add(player)
+                println("2")
                 buildSendGameStateDTO().also { gameStateNewsPaper.broadcast(it) }
             }
         }
@@ -38,8 +40,10 @@ class GameState : INetworkNewsPaperSubscriber {
 
     private fun buildSendGameStateDTO(): SendGameStateDTO {
         return SendGameStateDTO(GameStateDTO().also {gameStateDTO ->
+            println("3")
             players.forEach{player ->
                 PlayerDTO(player.sessionId, player.xPosition, player.yPosition).also { playerDTO ->
+                    println("4")
                     gameStateDTO.players.add(playerDTO)
                 }
             }

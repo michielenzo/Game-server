@@ -2,11 +2,9 @@ package network
 
 import io.javalin.Javalin
 import io.javalin.websocket.WsSession
-import main.kotlin.newspaper.network.NetworkNewsPaper
 
 abstract class Websocket(var endPointPath: String, var portNumber: Int) {
 
-    protected val networkNewsPaper = NetworkNewsPaper.getInstance()
     protected val sessions = mutableListOf<WsSession>()
 
     fun initialize(){
