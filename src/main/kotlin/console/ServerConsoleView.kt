@@ -7,6 +7,7 @@ import javafx.scene.input.MouseButton
 import javafx.scene.layout.VBox
 import main.kotlin.game.dto.SendGameStateDTO
 import main.kotlin.network.dto.ConnectionDTO
+import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
 import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
@@ -36,6 +37,7 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
     override fun notifyNetworkNews(dto: DTO) {
         when(dto){
             is ConnectionDTO -> handleConnectToServerMessage(dto)
+            is DisconnectDTO -> handleDisconnectToServerMessage(dto)
         }
     }
 
@@ -57,6 +59,14 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
                 .plus(preFixIN())
                 .plus(dto.id)
                 .plus(" is now connected.")
+                .plus("\n")
+    }
+
+    private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
+        textAreaStreamIN.text += String()
+                .plus(preFixIN())
+                .plus(dto.id)
+                .plus(" has disconnected.")
                 .plus("\n")
     }
 

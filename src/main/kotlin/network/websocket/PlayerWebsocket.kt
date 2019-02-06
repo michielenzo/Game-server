@@ -5,6 +5,7 @@ import io.javalin.websocket.WsSession
 import main.kotlin.game.dto.SendGameStateDTO
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
 import main.kotlin.network.dto.ConnectionDTO
+import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 import main.kotlin.newspaper.network.NetworkNewsPaper
 import main.kotlin.utilities.DTO
@@ -27,7 +28,8 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
     }
 
     override fun onClose(session: WsSession, status: Int, message: String?) {
-        session.send("Disconnected from the server")
+        sessions.remove(session)
+        NetworkNewsPaper.broadcast(buildDisconnectFromServerDTO(session))
     }
 
     override fun notifyGameStateNews(dto: DTO) {
@@ -44,6 +46,10 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
 
     private fun buildConnectToServerDTO(session: WsSession): DTO {
         return ConnectionDTO(session.id, LocalDateTime.now())
+    }
+
+    private fun buildDisconnectFromServerDTO(session: WsSession): DTO {
+        return DisconnectDTO(session.id, LocalDateTime.now())
     }
 
 }
