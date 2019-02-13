@@ -9,6 +9,6 @@ object LobbyNewsPaper: INewsPaper<ILobbyNewsPaperSubscriber>() {
         subscribers.forEach {
             it.notifyLobbyNews(dto)
         }
-    }//hier was ik
+    }
 
 }
