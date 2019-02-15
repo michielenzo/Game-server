@@ -2,8 +2,8 @@ package network
 
 import com.google.gson.Gson
 import io.javalin.websocket.WsSession
-import main.kotlin.game.dto.SendGameStateDTO
-import main.kotlin.lobby.dto.SendLobbyStateDTO
+import main.kotlin.game.dto.SendGameStateToClientsDTO
+import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
@@ -38,13 +38,13 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
 
     override fun notifyGameStateNews(dto: DTO) {
         when(dto){
-            is SendGameStateDTO -> sendToAllSessions(convertDTOtoJSON(dto))
+            is SendGameStateToClientsDTO -> sendToAllSessions(convertDTOtoJSON(dto))
         }
     }
 
     override fun notifyLobbyNews(dto: DTO) {
         when(dto){
-            is SendLobbyStateDTO -> sendToAllSessions(convertDTOtoJSON(dto))
+            is SendLobbyStateToClientsDTO -> sendToAllSessions(convertDTOtoJSON(dto))
         }
     }
 

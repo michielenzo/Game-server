@@ -9,7 +9,6 @@ import tornadofx.*
 class Application : App(ServerConsoleView::class){
 
     private val lobby = Lobby()
-    private val gameState = GameState()
 
     override fun start(stage: Stage) {
         stage.isResizable = false

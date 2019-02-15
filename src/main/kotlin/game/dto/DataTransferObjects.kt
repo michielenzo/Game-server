@@ -3,8 +3,8 @@ package main.kotlin.game.dto
 import main.kotlin.newspaper.MessageType
 import main.kotlin.utilities.DTO
 
-data class SendGameStateDTO(val gameState: GameStateDTO,
-                            val messageType: String = MessageType.SEND_GAME_STATE.value): DTO()
+data class SendGameStateToClientsDTO(val gameState: GameStateDTO,
+                                     val messageType: String = MessageType.SEND_GAME_STATE_TO_ClIENTS.value): DTO()
 
 data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf()): DTO()
 

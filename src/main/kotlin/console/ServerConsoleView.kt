@@ -5,8 +5,8 @@ import javafx.scene.control.Button
 import javafx.scene.control.TextArea
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.VBox
-import main.kotlin.game.dto.SendGameStateDTO
-import main.kotlin.lobby.dto.SendLobbyStateDTO
+import main.kotlin.game.dto.SendGameStateToClientsDTO
+import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
@@ -47,24 +47,24 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
 
     override fun notifyGameStateNews(dto: DTO) {
         when(dto){
-            is SendGameStateDTO -> handleSendGameStateMessage(dto)
+            is SendGameStateToClientsDTO -> handleSendGameStateMessage(dto)
         }
     }
 
     override fun notifyLobbyNews(dto: DTO) {
         when(dto){
-            is SendLobbyStateDTO -> handleSendLobbyStateMessage(dto)
+            is SendLobbyStateToClientsDTO -> handleSendLobbyStateMessage(dto)
         }
     }
 
-    private fun handleSendLobbyStateMessage(dto: SendLobbyStateDTO) {
+    private fun handleSendLobbyStateMessage(dto: SendLobbyStateToClientsDTO) {
         textAreaStreamIN.text += String()
                 .plus(preFixOUT())
                 .plus(Gson().toJson(dto))
                 .plus("\n")
     }
 
-    private fun handleSendGameStateMessage(dto: SendGameStateDTO) {
+    private fun handleSendGameStateMessage(dto: SendGameStateToClientsDTO) {
         textAreaStreamIN.text += String()
                 .plus(preFixOUT())
                 .plus(Gson().toJson(dto))

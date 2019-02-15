@@ -2,7 +2,7 @@ package main.kotlin.game
 
 import main.kotlin.game.dto.GameStateDTO
 import main.kotlin.game.dto.PlayerDTO
-import main.kotlin.game.dto.SendGameStateDTO
+import main.kotlin.game.dto.SendGameStateToClientsDTO
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
@@ -43,8 +43,8 @@ class GameState : INetworkNewsPaperSubscriber {
         }
     }
 
-    private fun buildSendGameStateDTO(): SendGameStateDTO {
-        return SendGameStateDTO(GameStateDTO().also {gameStateDTO ->
+    private fun buildSendGameStateDTO(): SendGameStateToClientsDTO {
+        return SendGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
             players.forEach{player ->
                 PlayerDTO(player.sessionId, player.xPosition, player.yPosition).also {playerDTO ->
                     gameStateDTO.players.add(playerDTO)

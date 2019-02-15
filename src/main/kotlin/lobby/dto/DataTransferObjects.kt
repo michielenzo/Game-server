@@ -3,8 +3,8 @@ package main.kotlin.lobby.dto
 import main.kotlin.newspaper.MessageType
 import main.kotlin.utilities.DTO
 
-data class SendLobbyStateDTO(val lobbyState: LobbyStateDTO,
-                             val messageType: String = MessageType.SEND_LOBBY_STATE.value): DTO()
+data class SendLobbyStateToClientsDTO(val lobbyState: LobbyStateDTO,
+                                      val messageType: String = MessageType.SEND_LOBBY_STATE_TO_CLIENTS.value): DTO()
 
 data class LobbyStateDTO(val players: MutableList<PlayerDTO> = mutableListOf()): DTO()
 
