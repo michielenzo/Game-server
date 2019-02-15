@@ -1,12 +1,15 @@
 package network
 
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import io.javalin.websocket.WsSession
 import main.kotlin.game.dto.SendGameStateToClientsDTO
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
+import main.kotlin.lobby.dto.StartGameToServerDTO
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
+import main.kotlin.newspaper.MessageType
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 import main.kotlin.newspaper.lobby.ILobbyNewsPaperSubscriber
 import main.kotlin.newspaper.lobby.LobbyNewsPaper
@@ -28,7 +31,29 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
     }
 
     override fun onMessage(session: WsSession, message: String) {
-        session.send("message recieved")
+        convertStringToDTObject(message).also {
+            it?: return
+            NetworkNewsPaper.broadcast(it)
+        }
+    }
+
+    private fun convertStringToDTObject(message: String): DTO? {
+        JsonParser()
+                .parse(message)
+                .asJsonObject
+                .get(MessageType.MESSAGE_TYPE.value)
+                .asString.also {messageType ->
+            return when(messageType){
+                MessageType.START_GAME_TO_SERVER.value -> Gson().fromJson(message, StartGameToServerDTO::class.java)
+                else -> {
+                    throw Exception(String()
+                            .plus("Invalid message received: ")
+                            .plus(message)
+                            .plus("\n"))
+                }
+            }
+        }
+       return null
     }
 
     override fun onClose(session: WsSession, status: Int, message: String?) {

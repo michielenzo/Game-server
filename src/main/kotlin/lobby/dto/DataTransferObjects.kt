@@ -9,3 +9,5 @@ data class SendLobbyStateToClientsDTO(val lobbyState: LobbyStateDTO,
 data class LobbyStateDTO(val players: MutableList<PlayerDTO> = mutableListOf()): DTO()
 
 data class PlayerDTO(val id: String, val name: String = id): DTO()
+
+data class StartGameToServerDTO(val messageType: String = MessageType.START_GAME_TO_SERVER.value): DTO()

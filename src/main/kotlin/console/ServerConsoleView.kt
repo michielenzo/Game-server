@@ -7,6 +7,7 @@ import javafx.scene.input.MouseButton
 import javafx.scene.layout.VBox
 import main.kotlin.game.dto.SendGameStateToClientsDTO
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
+import main.kotlin.lobby.dto.StartGameToServerDTO
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
@@ -42,6 +43,7 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
         when(dto){
             is ConnectionDTO -> handleConnectToServerMessage(dto)
             is DisconnectDTO -> handleDisconnectToServerMessage(dto)
+            is StartGameToServerDTO -> handleStartGameToServerDTO(dto)
         }
     }
 
@@ -55,6 +57,13 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
         when(dto){
             is SendLobbyStateToClientsDTO -> handleSendLobbyStateMessage(dto)
         }
+    }
+
+    private fun handleStartGameToServerDTO(dto: StartGameToServerDTO) {
+        textAreaStreamIN.text += String()
+                .plus(preFixIN())
+                .plus(Gson().toJson(dto))
+                .plus("\n")
     }
 
     private fun handleSendLobbyStateMessage(dto: SendLobbyStateToClientsDTO) {

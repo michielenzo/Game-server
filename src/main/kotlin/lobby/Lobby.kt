@@ -3,6 +3,7 @@ package main.kotlin.lobby
 import main.kotlin.lobby.dto.LobbyStateDTO
 import main.kotlin.lobby.dto.PlayerDTO
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
+import main.kotlin.lobby.dto.StartGameToServerDTO
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.lobby.LobbyNewsPaper
@@ -24,7 +25,14 @@ class Lobby: INetworkNewsPaperSubscriber {
         when(dto){
             is ConnectionDTO -> handleConnectToServerMessage(dto)
             is DisconnectDTO -> handleDisconnectToServerMessage(dto)
+            is StartGameToServerDTO -> handleStartGameToServerDTO()
         }
+    }
+
+    private fun handleStartGameToServerDTO() {
+        //TODO implement this function
+        // init gamestate
+        // stuur gamestate naar clients
     }
 
     private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
