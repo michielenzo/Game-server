@@ -3,6 +3,7 @@ package main.kotlin.game
 import main.kotlin.game.dto.GameStateDTO
 import main.kotlin.game.dto.PlayerDTO
 import main.kotlin.game.dto.SendGameStateToClientsDTO
+import main.kotlin.lobby.Lobby
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
@@ -15,10 +16,6 @@ class GameState : INetworkNewsPaperSubscriber {
     private val players = mutableListOf<Player>()
 
     private val gameStateLock = Object()
-
-    init {
-        NetworkNewsPaper.subscribe(this)
-    }
 
     override fun notifyNetworkNews(dto: DTO) {
         when(dto){
@@ -51,6 +48,17 @@ class GameState : INetworkNewsPaperSubscriber {
                 }
             }
         })
+    }
+
+    fun initializeGameState(lobbyPlayers: MutableList<main.kotlin.lobby.Player>){
+        synchronized(gameStateLock){
+            lobbyPlayers.forEach {lobbyPlayer ->
+                main.kotlin.game.Player(lobbyPlayer.id, 10 + players.size * 75, 10).also {player ->
+                    players.add(player)
+                }
+            }
+            buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
+        }
     }
 
 }
