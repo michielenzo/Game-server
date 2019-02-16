@@ -1,5 +1,6 @@
 package main.kotlin.game.dto
 
+import main.kotlin.game.Player
 import main.kotlin.newspaper.MessageType
 import main.kotlin.utilities.DTO
 
@@ -8,4 +9,8 @@ data class SendGameStateToClientsDTO(val gameState: GameStateDTO,
 
 data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf()): DTO()
 
-data class PlayerDTO(val sessionId: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int): DTO()
+data class PlayerDTO(val sessionId: String,
+                     @Volatile var xPosition: Int,
+                     @Volatile var yPosition: Int,
+                     val width: Int = Player.WIDTH,
+                     val height: Int = Player.HEIGHT): DTO()
