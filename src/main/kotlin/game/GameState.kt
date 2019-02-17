@@ -2,12 +2,16 @@ package main.kotlin.game
 
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 
-open class GameState{
+open class GameState: GameLoop(){
 
     private val proxy = GameProxy(this)
 
     val players = mutableListOf<Player>()
     val gameStateLock = Object()
+
+    override fun tick() {
+
+    }
 
     fun initializeGameState(lobbyPlayers: MutableList<main.kotlin.lobby.Player>){
         synchronized(gameStateLock){

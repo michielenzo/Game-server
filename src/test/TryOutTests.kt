@@ -1,6 +1,7 @@
 package test
 
 import com.google.gson.Gson
+import main.kotlin.game.GameLoop
 import java.time.LocalDateTime
 
 class TryOutTests{
@@ -26,7 +27,8 @@ class TryOutTests{
 
     @org.junit.Test
     fun tryOutPlus(){
-        println()
+        GameLoop().start()
+
     }
 
 
