@@ -33,7 +33,6 @@ class Lobby: INetworkNewsPaperSubscriber {
 
     private fun handleStartGameToServerDTO() {
        val game = GameState()
-       NetworkNewsPaper.subscriberQueue.add(game)
        game.initializeGameState(players)
     }
 
