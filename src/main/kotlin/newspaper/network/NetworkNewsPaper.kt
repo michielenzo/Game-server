@@ -11,6 +11,10 @@ object NetworkNewsPaper: INewsPaper<INetworkNewsPaperSubscriber>() {
         subscribers.forEach {
             it.notifyNetworkNews(dto)
         }
+        popSubscriberQueue()
+    }
+
+    private fun popSubscriberQueue() {
         subscriberQueue.forEach {
             subscribers.add(it)
         }
