@@ -14,3 +14,9 @@ data class PlayerDTO(val sessionId: String,
                      @Volatile var yPosition: Int,
                      val width: Int = Player.WIDTH,
                      val height: Int = Player.HEIGHT): DTO()
+
+data class SendInputStateToServerDTO(val wKey: Boolean,
+                                     val aKey: Boolean,
+                                     val sKey: Boolean,
+                                     val dKey: Boolean,
+                                     val messageType: String = MessageType.SEND_INPUT_STATE_TO_SERVER.value): DTO()

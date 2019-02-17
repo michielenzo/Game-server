@@ -1,6 +1,7 @@
 package main.kotlin.lobby
 
 import main.kotlin.game.GameState
+import main.kotlin.game.dto.SendInputStateToServerDTO
 import main.kotlin.lobby.dto.LobbyStateDTO
 import main.kotlin.lobby.dto.PlayerDTO
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
