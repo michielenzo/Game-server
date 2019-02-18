@@ -2,12 +2,13 @@ package main.kotlin.game.gameobject
 
 import main.kotlin.game.GameState
 
-class FireBall(var xPosition: Int, var yPosition: Int, private var direction: MovementDirection): GameObject {
+class FireBall(var xPosition: Int, var yPosition: Int,
+               private var direction: MovementDirection,
+               private val game: GameState)
+: GameObject {
 
     val diameter = 50
     private val speed = 4
-    //private var collisionBreak = false
-
 
     override fun tick() {
         move()
@@ -28,11 +29,17 @@ class FireBall(var xPosition: Int, var yPosition: Int, private var direction: Mo
             wall?: return
             handleWallCollision(wall)
         }
+        checkCollisionWithPlayers()
+    }
+
+    private fun checkCollisionWithPlayers() {
+        game.players.forEach {
+
+        }
     }
 
     private fun checkCollisionWithTheWall(): WallCollision?{
         return when {
-            //collisionBreak -> return null
             xPosition <= 0 + diameter/2 -> WallCollision.LEFT_WALL
             xPosition >= GameState.DIMENSION_WIDTH -> WallCollision.RIGHT_WALL
             yPosition <= 0 + diameter/2 -> WallCollision.ROOF
@@ -64,7 +71,6 @@ class FireBall(var xPosition: Int, var yPosition: Int, private var direction: Mo
                 else                                                      MovementDirection.UP_LEFT
             }
         }
-        //collisionBreak = true
     }
 
     enum class WallCollision{
