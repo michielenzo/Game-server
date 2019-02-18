@@ -3,8 +3,12 @@ package console
 import com.google.gson.Gson
 import javafx.scene.control.Button
 import javafx.scene.control.TextArea
+import javafx.scene.control.TextField
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.VBox
+import main.kotlin.console.dto.ContinueGameLoopDTO
+import main.kotlin.console.dto.PauseGameLoopDTO
+import main.kotlin.console.dto.StopGameLoopDTO
 import main.kotlin.game.dto.SendGameStateToClientsDTO
 import main.kotlin.game.dto.SendInputStateToServerDTO
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
@@ -15,6 +19,7 @@ import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
 import main.kotlin.newspaper.lobby.ILobbyNewsPaperSubscriber
 import main.kotlin.newspaper.lobby.LobbyNewsPaper
+import main.kotlin.newspaper.network.ConsoleNewsPaper
 import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
 import main.kotlin.newspaper.network.NetworkNewsPaper
 import main.kotlin.utilities.DTO
@@ -27,6 +32,7 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
 
     private val buttonSend: Button by fxid("sendButton")
     private val textAreaStreamIN: TextArea by fxid("textAreaStreamIN")
+    private val commandField: TextField by fxid("commandField")
 
     init {
         NetworkNewsPaper.subscribe(this)
@@ -35,7 +41,16 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
 
         buttonSend.setOnMouseClicked { mouseEvent ->
             if(mouseEvent.button == MouseButton.PRIMARY){
-                println("send button clicked")
+                if (commandField.text == "stop"){
+                    ConsoleNewsPaper.broadcast(StopGameLoopDTO())
+                }else if (commandField.text == "pause"){
+                    ConsoleNewsPaper.broadcast(PauseGameLoopDTO())
+                }else if (commandField.text == "continue"){
+                    ConsoleNewsPaper.broadcast(ContinueGameLoopDTO())
+                }else if (commandField.text == "clear"){
+                    textAreaStreamIN.text = ""
+                }
+                commandField.text = ""
             }
         }
     }
@@ -62,52 +77,45 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
     }
 
     private fun handleSendInputStateToServerMessage(dto: SendInputStateToServerDTO) {
-        textAreaStreamIN.text += String()
-                .plus(preFixIN())
+        textAreaStreamIN.text += preFixIN()
                 .plus(Gson().toJson(dto))
                 .plus("\n")
     }
 
     private fun handleStartGameToServerDTO(dto: StartGameToServerDTO) {
-        textAreaStreamIN.text += String()
-                .plus(preFixIN())
+        textAreaStreamIN.text += preFixIN()
                 .plus(Gson().toJson(dto))
                 .plus("\n")
     }
 
     private fun handleSendLobbyStateMessage(dto: SendLobbyStateToClientsDTO) {
-        textAreaStreamIN.text += String()
-                .plus(preFixOUT())
+        textAreaStreamIN.text += preFixOUT()
                 .plus(Gson().toJson(dto))
                 .plus("\n")
     }
 
     private fun handleSendGameStateMessage(dto: SendGameStateToClientsDTO) {
-        textAreaStreamIN.text += String()
-                .plus(preFixOUT())
+        textAreaStreamIN.text += preFixOUT()
                 .plus(Gson().toJson(dto))
                 .plus("\n")
     }
 
     private fun handleConnectToServerMessage(dto: ConnectionDTO) {
-        textAreaStreamIN.text += String()
-                .plus(preFixIN())
+        textAreaStreamIN.text += preFixIN()
                 .plus(dto.id)
                 .plus(" is now connected.")
                 .plus("\n")
     }
 
     private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
-        textAreaStreamIN.text += String()
-                .plus(preFixIN())
+        textAreaStreamIN.text += preFixIN()
                 .plus(dto.id)
                 .plus(" has disconnected.")
                 .plus("\n")
     }
 
     private fun preFixIN(): String{
-        return String()
-                .plus(LocalDateTime.now().hour)
+        return LocalDateTime.now().hour.toString()
                 .plus(":")
                 .plus(LocalDateTime.now().minute)
                 .plus(":")
@@ -116,8 +124,7 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
     }
 
     private fun preFixOUT(): String{
-        return String()
-                .plus(LocalDateTime.now().hour)
+        return LocalDateTime.now().hour.toString()
                 .plus(":")
                 .plus(LocalDateTime.now().minute)
                 .plus(":")

@@ -1,6 +1,6 @@
 package main.kotlin.game.dto
 
-import main.kotlin.game.Player
+import main.kotlin.game.gameobject.Player
 import main.kotlin.newspaper.MessageType
 import main.kotlin.utilities.DTO
 
@@ -15,7 +15,8 @@ data class PlayerDTO(val sessionId: String,
                      val width: Int = Player.WIDTH,
                      val height: Int = Player.HEIGHT): DTO()
 
-data class SendInputStateToServerDTO(val wKey: Boolean,
+data class SendInputStateToServerDTO(var sessionId: String,
+                                     val wKey: Boolean,
                                      val aKey: Boolean,
                                      val sKey: Boolean,
                                      val dKey: Boolean,

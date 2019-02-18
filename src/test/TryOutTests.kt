@@ -27,7 +27,6 @@ class TryOutTests{
 
     @org.junit.Test
     fun tryOutPlus(){
-        GameLoop().start()
 
     }
 

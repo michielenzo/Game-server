@@ -34,6 +34,7 @@ class Lobby: INetworkNewsPaperSubscriber {
     private fun handleStartGameToServerDTO() {
        val game = GameState()
        game.initializeGameState(players)
+       game.start()
     }
 
     private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {

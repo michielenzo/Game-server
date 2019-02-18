@@ -17,7 +17,6 @@ class Application : App(ServerConsoleView::class){
     }
 
     init {
-        GameLoop().apply { start() }
         PlayerWebsocket().also {
             it.initialize()
         }

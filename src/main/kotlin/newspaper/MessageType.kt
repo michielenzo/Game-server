@@ -6,5 +6,8 @@ enum class MessageType(val value: String) {
     SEND_GAME_STATE_TO_ClIENTS("sendGameStateToClients"),
     SEND_LOBBY_STATE_TO_CLIENTS("sendLobbyStateToClients"),
     START_GAME_TO_SERVER("startGameToServer"),
-    SEND_INPUT_STATE_TO_SERVER("sendInputStateToServer")
+    SEND_INPUT_STATE_TO_SERVER("sendInputStateToServer"),
+    STOP_GAME_LOOP("stopGameLoop"),
+    PAUSE_GAME_LOOP("pauseGameLoop"),
+    CONTINUE_GAME_LOOP("continueGameLoop")
 }

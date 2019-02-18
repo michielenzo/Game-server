@@ -32,13 +32,13 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
     }
 
     override fun onMessage(session: WsSession, message: String) {
-        convertStringToDTObject(message).also {
+        convertStringToDTObject(message, session).also {
             it?: return
             NetworkNewsPaper.broadcast(it)
         }
     }
 
-    private fun convertStringToDTObject(message: String): DTO? {
+    private fun convertStringToDTObject(message: String, session: WsSession): DTO? {
         JsonParser()
                 .parse(message)
                 .asJsonObject
@@ -46,7 +46,11 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
                 .asString.also {messageType ->
             return when(messageType){
                 MessageType.START_GAME_TO_SERVER.value -> Gson().fromJson(message, StartGameToServerDTO::class.java)
-                MessageType.SEND_INPUT_STATE_TO_SERVER.value -> Gson().fromJson(message, SendInputStateToServerDTO::class.java)
+                MessageType.SEND_INPUT_STATE_TO_SERVER.value -> {
+                    Gson().fromJson(message, SendInputStateToServerDTO::class.java).also {
+                        it.sessionId = session.id
+                    }
+                }
                 else -> {
                     throw Exception(String()
                             .plus("Invalid message received: ")

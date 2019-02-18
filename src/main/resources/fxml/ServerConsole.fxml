@@ -37,7 +37,7 @@
                   <TextArea fx:id="textAreaStreamIN" editable="false" prefHeight="550.0" prefWidth="600.0" />
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <TextField prefWidth="505.0" />
+                        <TextField fx:id="commandField" prefWidth="505.0" />
                         <Button fx:id="sendButton" mnemonicParsing="false" text="Send">
                            <HBox.margin>
                               <Insets left="5.0" />

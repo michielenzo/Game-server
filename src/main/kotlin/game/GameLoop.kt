@@ -2,10 +2,11 @@ package main.kotlin.game
 
 abstract class GameLoop: Thread(){
 
-    private val frameRate = 60
+    private val frameRate = 1
     private val millisPerTick = 1000/frameRate
 
-    var gameOver = false
+    private var gameOver = false
+    private var isPaused = false
 
     override fun run() {
         val startTime = System.currentTimeMillis()
@@ -13,10 +14,23 @@ abstract class GameLoop: Thread(){
         while (!gameOver){
             val delta = (System.currentTimeMillis() - startTime) - (ticks * millisPerTick)
             if(delta >= millisPerTick){
-                tick()
+                if(!isPaused)
+                    tick()
                 ticks++
             }
         }
+    }
+
+    fun stopLoop(){
+        gameOver = true
+    }
+
+    fun pauseGame(){
+        isPaused = true
+    }
+
+    fun continueGame(){
+        isPaused = false
     }
 
     abstract fun tick()
