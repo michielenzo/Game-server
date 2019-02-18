@@ -9,10 +9,10 @@ import kotlin.math.sqrt
 object Collision {
 
     /*
-    * circle from the center and rectangle from top-left corner
+    * circle seen from its center and rectangle seen from its top-left corner
     * */
 
-    fun rectangleWithCircleCollision(rect: Rectangle, circle: Circle): HitMarker?{
+    fun rectangleWithCircleCollision(rect: Rectangle, circle: Circle): HitMarker{
         val rad = circle.radius
         val distanceTopLeft = distance(Point(rect.x.toInt(), rect.y.toInt()),
                                        Point(circle.centerX.toInt(), circle.centerY.toInt()))
@@ -50,7 +50,7 @@ object Collision {
                 }
             }
         }
-        return null
+        return HitMarker.NONE
     }
 
     private fun distance(a: Point, b: Point): Double{
@@ -70,7 +70,8 @@ object Collision {
         FLOOR,
         LEFT_WALL,
         RIGHT_WALL,
-        INSIDE
+        INSIDE,
+        NONE
     }
 
 }

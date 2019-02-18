@@ -3,8 +3,8 @@ package main.kotlin.game.gameobject
 class Player(val sessionId: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int): GameObject{
 
     companion object {
-        const val WIDTH = 40
-        const val HEIGHT = 40
+        const val WIDTH = 50
+        const val HEIGHT = 50
     }
 
     @Volatile var wKey = false
@@ -12,7 +12,7 @@ class Player(val sessionId: String, @Volatile var xPosition: Int, @Volatile var 
     @Volatile var sKey = false
     @Volatile var dKey = false
 
-    private val speed = 1
+    private val speed = 2
 
     override fun tick() {
         move()

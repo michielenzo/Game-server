@@ -1,6 +1,9 @@
 package main.kotlin.game.gameobject
 
+import javafx.scene.shape.Circle
+import javafx.scene.shape.Rectangle
 import main.kotlin.game.GameState
+import main.kotlin.utilities.Collision
 
 class FireBall(var xPosition: Int, var yPosition: Int,
                private var direction: MovementDirection,
@@ -9,6 +12,7 @@ class FireBall(var xPosition: Int, var yPosition: Int,
 
     val diameter = 50
     private val speed = 4
+    var isColliding = Collision.HitMarker.NONE
 
     override fun tick() {
         move()
@@ -25,16 +29,50 @@ class FireBall(var xPosition: Int, var yPosition: Int,
     }
 
     private fun checkCollision(){
+        checkCollisionWithPlayers()
+        handlePlayerCollision()
         checkCollisionWithTheWall().also { wall ->
             wall?: return
             handleWallCollision(wall)
         }
-        checkCollisionWithPlayers()
+    }
+
+    private fun handlePlayerCollision() {
+        when(isColliding){
+            Collision.HitMarker.ROOF -> {
+                direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.UP_LEFT
+                else MovementDirection.UP_RIGHT
+            }
+            Collision.HitMarker.FLOOR -> {
+                direction = if(direction == MovementDirection.UP_RIGHT) MovementDirection.DOWN_RIGHT
+                else MovementDirection.DOWN_LEFT
+            }
+            Collision.HitMarker.LEFT_WALL -> {
+                direction = if(direction == MovementDirection.UP_RIGHT) MovementDirection.UP_LEFT
+                else MovementDirection.DOWN_LEFT
+            }
+            Collision.HitMarker.RIGHT_WALL -> {
+                direction = if(direction == MovementDirection.UP_LEFT) MovementDirection.UP_RIGHT
+                else MovementDirection.DOWN_RIGHT
+            }
+            Collision.HitMarker.BOTTOM_RIGHT_CORNER -> { direction = MovementDirection.DOWN_RIGHT }
+            Collision.HitMarker.BOTTOM_LEFT_CORNER -> { direction = MovementDirection.DOWN_LEFT }
+            Collision.HitMarker.TOP_RIGHT_CORNER -> { direction = MovementDirection.UP_RIGHT }
+            Collision.HitMarker.TOP_LEFT_CORNER -> { direction = MovementDirection.UP_LEFT }
+            Collision.HitMarker.INSIDE -> {}
+            Collision.HitMarker.NONE -> {}
+        }
     }
 
     private fun checkCollisionWithPlayers() {
-        game.players.forEach {
-
+        game.players.forEach { player ->
+            Rectangle(player.xPosition.toDouble(), player.yPosition.toDouble(), Player.WIDTH.toDouble(), Player.HEIGHT.toDouble()).also { rect ->
+                Circle().apply { this.radius = (diameter/2).toDouble(); centerX = xPosition.toDouble(); centerY = yPosition.toDouble() }.also { circle ->
+                    Collision.rectangleWithCircleCollision(rect, circle).also { hitMarker ->
+                        isColliding = hitMarker
+                    }
+                }
+            }
         }
     }
 
