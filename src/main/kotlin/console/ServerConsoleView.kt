@@ -24,6 +24,7 @@ import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
 import main.kotlin.newspaper.network.NetworkNewsPaper
 import main.kotlin.utilities.DTO
 import tornadofx.*
+import java.lang.Exception
 import java.time.LocalDateTime
 
 class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IGameStateNewsPaperSubscriber, ILobbyNewsPaperSubscriber {
@@ -76,38 +77,40 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
         }
     }
 
-    private fun handleSendInputStateToServerMessage(dto: SendInputStateToServerDTO) {
+    @Synchronized private fun handleSendInputStateToServerMessage(dto: SendInputStateToServerDTO) {
         textAreaStreamIN.text += preFixIN()
                 .plus(Gson().toJson(dto))
                 .plus("\n")
     }
 
-    private fun handleStartGameToServerDTO(dto: StartGameToServerDTO) {
+    @Synchronized private fun handleStartGameToServerDTO(dto: StartGameToServerDTO) {
         textAreaStreamIN.text += preFixIN()
                 .plus(Gson().toJson(dto))
                 .plus("\n")
     }
 
-    private fun handleSendLobbyStateMessage(dto: SendLobbyStateToClientsDTO) {
+    @Synchronized private fun handleSendLobbyStateMessage(dto: SendLobbyStateToClientsDTO) {
         textAreaStreamIN.text += preFixOUT()
                 .plus(Gson().toJson(dto))
                 .plus("\n")
     }
 
-    private fun handleSendGameStateMessage(dto: SendGameStateToClientsDTO) {
-        textAreaStreamIN.text += preFixOUT()
-                .plus(Gson().toJson(dto))
-                .plus("\n")
+    @Synchronized private fun handleSendGameStateMessage(dto: SendGameStateToClientsDTO) {
+        //this function provides too much spam in the textarea that it will make it crash.
+        //or the string of the textarea sgets way too long so that is crashes.
+//        textAreaStreamIN.text += preFixOUT()
+//                .plus(Gson().toJson(dto))
+//                .plus("\n")
     }
 
-    private fun handleConnectToServerMessage(dto: ConnectionDTO) {
+    @Synchronized private fun handleConnectToServerMessage(dto: ConnectionDTO) {
         textAreaStreamIN.text += preFixIN()
                 .plus(dto.id)
                 .plus(" is now connected.")
                 .plus("\n")
     }
 
-    private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
+    @Synchronized private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
         textAreaStreamIN.text += preFixIN()
                 .plus(dto.id)
                 .plus(" has disconnected.")

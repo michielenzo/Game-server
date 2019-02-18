@@ -7,24 +7,22 @@ class Player(val sessionId: String, @Volatile var xPosition: Int, @Volatile var 
         const val HEIGHT = 40
     }
 
-    object InputState {
-        @Volatile var wKey = false
-        @Volatile var aKey = false
-        @Volatile var sKey = false
-        @Volatile var dKey = false
-    }
+    @Volatile var wKey = false
+    @Volatile var aKey = false
+    @Volatile var sKey = false
+    @Volatile var dKey = false
 
-    private val speed = 5
+    private val speed = 1
 
     override fun tick() {
         move()
     }
 
     private fun move(){
-        if(InputState.wKey) {yPosition -= speed}
-        if(InputState.aKey) {xPosition -= speed}
-        if(InputState.sKey) {yPosition += speed}
-        if(InputState.dKey) {xPosition += speed}
+        if(wKey) {yPosition -= speed}
+        if(aKey) {xPosition -= speed}
+        if(sKey) {yPosition += speed}
+        if(dKey) {xPosition += speed}
     }
 
 }

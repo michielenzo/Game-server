@@ -46,10 +46,11 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
 
     private fun handleSendInputStateToServerMessage(dto: SendInputStateToServerDTO) {
         gameState.players.find { it.sessionId == dto.sessionId }.apply {
-            Player.InputState.wKey = dto.wKey
-            Player.InputState.aKey = dto.aKey
-            Player.InputState.sKey = dto.sKey
-            Player.InputState.dKey = dto.dKey
+            this?: return
+            wKey = dto.wKey
+            aKey = dto.aKey
+            sKey = dto.sKey
+            dKey = dto.dKey
         }
     }
 
