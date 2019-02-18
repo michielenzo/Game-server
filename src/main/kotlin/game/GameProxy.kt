@@ -3,10 +3,7 @@ package main.kotlin.game
 import main.kotlin.console.dto.ContinueGameLoopDTO
 import main.kotlin.console.dto.PauseGameLoopDTO
 import main.kotlin.console.dto.StopGameLoopDTO
-import main.kotlin.game.dto.GameStateDTO
-import main.kotlin.game.dto.PlayerDTO
-import main.kotlin.game.dto.SendGameStateToClientsDTO
-import main.kotlin.game.dto.SendInputStateToServerDTO
+import main.kotlin.game.dto.*
 import main.kotlin.game.gameobject.Player
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
@@ -56,7 +53,7 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
 
     private fun handleConnectToServerMessage(connectionDTO: ConnectionDTO) {
         synchronized(gameState.gameStateLock){
-            Player(connectionDTO.id, 10 + gameState.players.size * 75, 10).also { player ->
+            Player(connectionDTO.id, 100 + gameState.players.size * 75, 100).also { player ->
                 gameState.players.add(player)
                 buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
             }
@@ -75,6 +72,11 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
             gameState.players.forEach{player ->
                 PlayerDTO(player.sessionId, player.xPosition, player.yPosition).also { playerDTO ->
                     gameStateDTO.players.add(playerDTO)
+                }
+            }
+            gameState.fireBalls.forEach { fireBall ->
+                FireBallDTO(fireBall.xPosition, fireBall.yPosition, fireBall.diameter).also { fireBallDTO ->
+                    gameStateDTO.fireBalls.add(fireBallDTO)
                 }
             }
         })
