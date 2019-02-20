@@ -14,9 +14,11 @@ class Player(val sessionId: String, @Volatile var xPosition: Int, @Volatile var 
 
     private val speed = 2
     var health = 3
+    var isAlive = true
 
     override fun tick() {
         move()
+        checkHealth()
     }
 
     private fun move(){
@@ -24,6 +26,13 @@ class Player(val sessionId: String, @Volatile var xPosition: Int, @Volatile var 
         if(aKey) {xPosition -= speed}
         if(sKey) {yPosition += speed}
         if(dKey) {xPosition += speed}
+    }
+
+    private fun checkHealth() {
+        if(health <= 0){
+            health = 0
+            isAlive = false
+        }
     }
 
 }
