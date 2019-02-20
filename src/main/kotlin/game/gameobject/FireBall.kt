@@ -45,34 +45,36 @@ class FireBall(var xPosition: Int, var yPosition: Int,
 
     private fun handlePlayerCollision() {
         playerCollision.forEach {
-            when(it.hitMarker){
-                Collision.HitMarker.ROOF -> {
-                    direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.UP_LEFT
-                    else MovementDirection.UP_RIGHT
+            if(it.player.isAlive){
+                when(it.hitMarker){
+                    Collision.HitMarker.ROOF -> {
+                        direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.UP_LEFT
+                        else MovementDirection.UP_RIGHT
+                    }
+                    Collision.HitMarker.FLOOR -> {
+                        direction = if(direction == MovementDirection.UP_RIGHT) MovementDirection.DOWN_RIGHT
+                        else MovementDirection.DOWN_LEFT
+                    }
+                    Collision.HitMarker.LEFT_WALL -> {
+                        direction = if(direction == MovementDirection.UP_RIGHT) MovementDirection.UP_LEFT
+                        else MovementDirection.DOWN_LEFT
+                    }
+                    Collision.HitMarker.RIGHT_WALL -> {
+                        direction = if(direction == MovementDirection.UP_LEFT) MovementDirection.UP_RIGHT
+                        else MovementDirection.DOWN_RIGHT
+                    }
+                    Collision.HitMarker.BOTTOM_RIGHT_CORNER -> { direction = MovementDirection.DOWN_RIGHT }
+                    Collision.HitMarker.BOTTOM_LEFT_CORNER -> { direction = MovementDirection.DOWN_LEFT }
+                    Collision.HitMarker.TOP_RIGHT_CORNER -> { direction = MovementDirection.UP_RIGHT }
+                    Collision.HitMarker.TOP_LEFT_CORNER -> { direction = MovementDirection.UP_LEFT }
+                    Collision.HitMarker.INSIDE -> {}
+                    Collision.HitMarker.NONE -> {}
                 }
-                Collision.HitMarker.FLOOR -> {
-                    direction = if(direction == MovementDirection.UP_RIGHT) MovementDirection.DOWN_RIGHT
-                    else MovementDirection.DOWN_LEFT
-                }
-                Collision.HitMarker.LEFT_WALL -> {
-                    direction = if(direction == MovementDirection.UP_RIGHT) MovementDirection.UP_LEFT
-                    else MovementDirection.DOWN_LEFT
-                }
-                Collision.HitMarker.RIGHT_WALL -> {
-                    direction = if(direction == MovementDirection.UP_LEFT) MovementDirection.UP_RIGHT
-                    else MovementDirection.DOWN_RIGHT
-                }
-                Collision.HitMarker.BOTTOM_RIGHT_CORNER -> { direction = MovementDirection.DOWN_RIGHT }
-                Collision.HitMarker.BOTTOM_LEFT_CORNER -> { direction = MovementDirection.DOWN_LEFT }
-                Collision.HitMarker.TOP_RIGHT_CORNER -> { direction = MovementDirection.UP_RIGHT }
-                Collision.HitMarker.TOP_LEFT_CORNER -> { direction = MovementDirection.UP_LEFT }
-                Collision.HitMarker.INSIDE -> {}
-                Collision.HitMarker.NONE -> {}
-            }
-            if(it.hitMarker != Collision.HitMarker.NONE){
-                game.players.find { pl -> pl.sessionId == it.player.sessionId }.also { player ->
-                    player?: return
-                    player.health--
+                if(it.hitMarker != Collision.HitMarker.NONE){
+                    game.players.find { pl -> pl.sessionId == it.player.sessionId }.also { player ->
+                        player?: return
+                        player.health--
+                    }
                 }
             }
         }
