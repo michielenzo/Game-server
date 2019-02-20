@@ -12,7 +12,13 @@ class FireBall(var xPosition: Int, var yPosition: Int,
 
     val diameter = 50
     private val speed = 4
-    var isColliding = Collision.HitMarker.NONE
+    val playerCollision = mutableListOf<PlayerCollision>()
+
+    init {
+        game.players.forEach {
+            playerCollision.add(PlayerCollision(it, Collision.HitMarker.NONE))
+        }
+    }
 
     override fun tick() {
         move()
@@ -38,29 +44,31 @@ class FireBall(var xPosition: Int, var yPosition: Int,
     }
 
     private fun handlePlayerCollision() {
-        when(isColliding){
-            Collision.HitMarker.ROOF -> {
-                direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.UP_LEFT
-                else MovementDirection.UP_RIGHT
+        playerCollision.forEach {
+            when(it.hitMarker){
+                Collision.HitMarker.ROOF -> {
+                    direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.UP_LEFT
+                    else MovementDirection.UP_RIGHT
+                }
+                Collision.HitMarker.FLOOR -> {
+                    direction = if(direction == MovementDirection.UP_RIGHT) MovementDirection.DOWN_RIGHT
+                    else MovementDirection.DOWN_LEFT
+                }
+                Collision.HitMarker.LEFT_WALL -> {
+                    direction = if(direction == MovementDirection.UP_RIGHT) MovementDirection.UP_LEFT
+                    else MovementDirection.DOWN_LEFT
+                }
+                Collision.HitMarker.RIGHT_WALL -> {
+                    direction = if(direction == MovementDirection.UP_LEFT) MovementDirection.UP_RIGHT
+                    else MovementDirection.DOWN_RIGHT
+                }
+                Collision.HitMarker.BOTTOM_RIGHT_CORNER -> { direction = MovementDirection.DOWN_RIGHT }
+                Collision.HitMarker.BOTTOM_LEFT_CORNER -> { direction = MovementDirection.DOWN_LEFT }
+                Collision.HitMarker.TOP_RIGHT_CORNER -> { direction = MovementDirection.UP_RIGHT }
+                Collision.HitMarker.TOP_LEFT_CORNER -> { direction = MovementDirection.UP_LEFT }
+                Collision.HitMarker.INSIDE -> {}
+                Collision.HitMarker.NONE -> {}
             }
-            Collision.HitMarker.FLOOR -> {
-                direction = if(direction == MovementDirection.UP_RIGHT) MovementDirection.DOWN_RIGHT
-                else MovementDirection.DOWN_LEFT
-            }
-            Collision.HitMarker.LEFT_WALL -> {
-                direction = if(direction == MovementDirection.UP_RIGHT) MovementDirection.UP_LEFT
-                else MovementDirection.DOWN_LEFT
-            }
-            Collision.HitMarker.RIGHT_WALL -> {
-                direction = if(direction == MovementDirection.UP_LEFT) MovementDirection.UP_RIGHT
-                else MovementDirection.DOWN_RIGHT
-            }
-            Collision.HitMarker.BOTTOM_RIGHT_CORNER -> { direction = MovementDirection.DOWN_RIGHT }
-            Collision.HitMarker.BOTTOM_LEFT_CORNER -> { direction = MovementDirection.DOWN_LEFT }
-            Collision.HitMarker.TOP_RIGHT_CORNER -> { direction = MovementDirection.UP_RIGHT }
-            Collision.HitMarker.TOP_LEFT_CORNER -> { direction = MovementDirection.UP_LEFT }
-            Collision.HitMarker.INSIDE -> {}
-            Collision.HitMarker.NONE -> {}
         }
     }
 
@@ -69,7 +77,10 @@ class FireBall(var xPosition: Int, var yPosition: Int,
             Rectangle(player.xPosition.toDouble(), player.yPosition.toDouble(), Player.WIDTH.toDouble(), Player.HEIGHT.toDouble()).also { rect ->
                 Circle().apply { this.radius = (diameter/2).toDouble(); centerX = xPosition.toDouble(); centerY = yPosition.toDouble() }.also { circle ->
                     Collision.rectangleWithCircleCollision(rect, circle).also { hitMarker ->
-                        isColliding = hitMarker
+                        playerCollision.find { pl -> pl.player.sessionId == player.sessionId }.also { collision ->
+                            collision?: return
+                            collision.hitMarker = hitMarker
+                        }
                     }
                 }
             }
@@ -119,5 +130,7 @@ class FireBall(var xPosition: Int, var yPosition: Int,
         UP_LEFT, UP_RIGHT,
         DOWN_LEFT, DOWN_RIGHT
     }
+
+    data class PlayerCollision(val player: Player, var hitMarker: Collision.HitMarker)
 
 }

@@ -13,6 +13,7 @@ class Player(val sessionId: String, @Volatile var xPosition: Int, @Volatile var 
     @Volatile var dKey = false
 
     private val speed = 2
+    var health = 3
 
     override fun tick() {
         move()
