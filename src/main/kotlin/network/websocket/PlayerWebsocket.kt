@@ -5,6 +5,7 @@ import com.google.gson.JsonParser
 import io.javalin.websocket.WsSession
 import main.kotlin.game.dto.SendGameStateToClientsDTO
 import main.kotlin.game.dto.SendInputStateToServerDTO
+import main.kotlin.lobby.dto.ChooseNameToServerDTO
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
 import main.kotlin.lobby.dto.StartGameToServerDTO
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
@@ -49,6 +50,11 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
                 MessageType.SEND_INPUT_STATE_TO_SERVER.value -> {
                     Gson().fromJson(message, SendInputStateToServerDTO::class.java).also {
                         it.sessionId = session.id
+                    }
+                }
+                MessageType.CHOOSE_NAME_TO_SERVER.value -> {
+                    Gson().fromJson(message, ChooseNameToServerDTO::class.java).also {
+                        it.playerId = session.id
                     }
                 }
                 else -> {

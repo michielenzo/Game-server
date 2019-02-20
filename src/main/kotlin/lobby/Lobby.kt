@@ -2,10 +2,7 @@ package main.kotlin.lobby
 
 import main.kotlin.game.GameState
 import main.kotlin.game.dto.SendInputStateToServerDTO
-import main.kotlin.lobby.dto.LobbyStateDTO
-import main.kotlin.lobby.dto.PlayerDTO
-import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
-import main.kotlin.lobby.dto.StartGameToServerDTO
+import main.kotlin.lobby.dto.*
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.lobby.LobbyNewsPaper
@@ -28,6 +25,17 @@ class Lobby: INetworkNewsPaperSubscriber {
             is ConnectionDTO -> handleConnectToServerMessage(dto)
             is DisconnectDTO -> handleDisconnectToServerMessage(dto)
             is StartGameToServerDTO -> handleStartGameToServerDTO()
+            is ChooseNameToServerDTO -> handleChooseNameToServerMessage(dto)
+        }
+    }
+
+    private fun handleChooseNameToServerMessage(dto: ChooseNameToServerDTO) {
+        synchronized(lobbyStateLock){
+            players.find { pl -> pl.id == dto.playerId }.also { player ->
+                player?: return
+                player.name = dto.chosenName
+            }
+            buildSendLobbyStateDTO().also { LobbyNewsPaper.broadcast(it) }
         }
     }
 
@@ -46,7 +54,7 @@ class Lobby: INetworkNewsPaperSubscriber {
 
     private fun handleConnectToServerMessage(dto: ConnectionDTO) {
         synchronized(lobbyStateLock){
-            Player(dto.id).also {
+            Player(dto.id, dto.id).also {
                 players.add(it)
                 LobbyNewsPaper.broadcast(buildSendLobbyStateDTO())
             }
@@ -56,7 +64,7 @@ class Lobby: INetworkNewsPaperSubscriber {
     private fun buildSendLobbyStateDTO(): DTO {
         return SendLobbyStateToClientsDTO(LobbyStateDTO().also { lobbyStateDTO ->
             players.forEach { player ->
-                PlayerDTO(player.id).also { playerDTO ->
+                PlayerDTO(player.id, player.name).also { playerDTO ->
                     lobbyStateDTO.players.add(playerDTO)
                 }
             }

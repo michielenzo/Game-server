@@ -53,7 +53,7 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
 
     private fun handleConnectToServerMessage(connectionDTO: ConnectionDTO) {
         synchronized(gameState.gameStateLock){
-            Player(connectionDTO.id, 100 + gameState.players.size * 75, 100).also { player ->
+            Player(connectionDTO.id, connectionDTO.id,100 + gameState.players.size * 75, 100).also { player ->
                 gameState.players.add(player)
                 buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
             }
@@ -70,7 +70,7 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
     fun buildSendGameStateDTO(): SendGameStateToClientsDTO {
         return SendGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
             gameState.players.forEach{ player ->
-                PlayerDTO(player.sessionId, player.xPosition, player.yPosition, player.health).also { playerDTO ->
+                PlayerDTO(player.sessionId, player.name, player.xPosition, player.yPosition, player.health).also { playerDTO ->
                     gameStateDTO.players.add(playerDTO)
                 }
             }

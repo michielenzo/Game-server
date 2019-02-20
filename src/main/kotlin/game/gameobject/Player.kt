@@ -1,6 +1,6 @@
 package main.kotlin.game.gameobject
 
-class Player(val sessionId: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int): GameObject{
+class Player(val sessionId: String, val name: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int): GameObject{
 
     companion object {
         const val WIDTH = 50

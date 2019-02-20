@@ -11,6 +11,7 @@ data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf(),
                         val fireBalls: MutableList<FireBallDTO> = mutableListOf()): DTO()
 
 data class PlayerDTO(val sessionId: String,
+                     val name: String,
                      @Volatile var xPosition: Int,
                      @Volatile var yPosition: Int,
                      val health: Int,

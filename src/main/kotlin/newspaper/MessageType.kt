@@ -9,5 +9,6 @@ enum class MessageType(val value: String) {
     SEND_INPUT_STATE_TO_SERVER("sendInputStateToServer"),
     STOP_GAME_LOOP("stopGameLoop"),
     PAUSE_GAME_LOOP("pauseGameLoop"),
-    CONTINUE_GAME_LOOP("continueGameLoop")
+    CONTINUE_GAME_LOOP("continueGameLoop"),
+    CHOOSE_NAME_TO_SERVER("chooseNameToServer")
 }
