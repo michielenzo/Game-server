@@ -44,9 +44,9 @@ class FireBall(var xPosition: Int, var yPosition: Int,
     }
 
     private fun handlePlayerCollision() {
-        playerCollision.forEach {
-            if(it.player.isAlive){
-                when(it.hitMarker){
+        playerCollision.forEach {coll ->
+            if(coll.player.isAlive){
+                when(coll.hitMarker){
                     Collision.HitMarker.ROOF -> {
                         direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.UP_LEFT
                         else MovementDirection.UP_RIGHT
@@ -70,12 +70,13 @@ class FireBall(var xPosition: Int, var yPosition: Int,
                     Collision.HitMarker.INSIDE -> {}
                     Collision.HitMarker.NONE -> {}
                 }
-                if(it.hitMarker != Collision.HitMarker.NONE){
-                    game.players.find { pl -> pl.sessionId == it.player.sessionId }.also { player ->
+                if(coll.hitMarker != Collision.HitMarker.NONE && coll.timeOutTicks <= 0){
+                    game.players.find { pl -> pl.sessionId == coll.player.sessionId }.also { player ->
                         player?: return
                         player.health--
+                        coll.timeOutTicks = PlayerCollision.MAX_TIMEOUT_TICKS
                     }
-                }
+                }else coll.timeOutTicks--
             }
         }
     }
@@ -139,6 +140,11 @@ class FireBall(var xPosition: Int, var yPosition: Int,
         DOWN_LEFT, DOWN_RIGHT
     }
 
-    data class PlayerCollision(val player: Player, var hitMarker: Collision.HitMarker)
+    data class PlayerCollision(val player: Player, var hitMarker: Collision.HitMarker, var timeOutTicks: Int = 0){
+        companion object {
+            const val MAX_TIMEOUT_TICKS = 20
+        }
+    }
+
 
 }

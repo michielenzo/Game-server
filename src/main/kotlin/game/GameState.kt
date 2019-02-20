@@ -34,6 +34,8 @@ open class GameState: GameLoop(){
         }
         fireBalls.add(FireBall(200, 300, FireBall.MovementDirection.DOWN_RIGHT, this))
         fireBalls.add(FireBall(400, 200, FireBall.MovementDirection.UP_RIGHT, this))
+        fireBalls.add(FireBall(700, 400, FireBall.MovementDirection.UP_LEFT, this))
+        fireBalls.add(FireBall(800, 100, FireBall.MovementDirection.UP_LEFT, this))
     }
 
 }

@@ -1,5 +1,7 @@
 package main.kotlin.game.gameobject
 
+import main.kotlin.game.GameState
+
 class Player(val sessionId: String, val name: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int): GameObject{
 
     companion object {
@@ -12,13 +14,23 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     @Volatile var sKey = false
     @Volatile var dKey = false
 
-    private val speed = 2
+    private val speed = 3
     var health = 3
     var isAlive = true
 
     override fun tick() {
         move()
+        checkWallCollision()
         checkHealth()
+    }
+
+    private fun checkWallCollision() {
+        if(xPosition < 0) xPosition = 0
+        if(xPosition > GameState.DIMENSION_WIDTH - WIDTH)
+            xPosition = GameState.DIMENSION_WIDTH - WIDTH
+        if(yPosition < 0) yPosition = 0
+        if(yPosition > GameState.DIMENSION_HEIGHT - HEIGHT)
+            yPosition = GameState.DIMENSION_HEIGHT - HEIGHT
     }
 
     private fun move(){
