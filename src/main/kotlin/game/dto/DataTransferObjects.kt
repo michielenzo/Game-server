@@ -1,6 +1,5 @@
 package main.kotlin.game.dto
 
-import main.kotlin.game.gameobject.FireBall
 import main.kotlin.game.gameobject.Player
 import main.kotlin.newspaper.MessageType
 import main.kotlin.utilities.DTO
@@ -14,6 +13,7 @@ data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf(),
 data class PlayerDTO(val sessionId: String,
                      @Volatile var xPosition: Int,
                      @Volatile var yPosition: Int,
+                     val health: Int,
                      val width: Int = Player.WIDTH,
                      val height: Int = Player.HEIGHT): DTO()
 

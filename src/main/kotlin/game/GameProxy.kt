@@ -69,8 +69,8 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
 
     fun buildSendGameStateDTO(): SendGameStateToClientsDTO {
         return SendGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
-            gameState.players.forEach{player ->
-                PlayerDTO(player.sessionId, player.xPosition, player.yPosition).also { playerDTO ->
+            gameState.players.forEach{ player ->
+                PlayerDTO(player.sessionId, player.xPosition, player.yPosition, player.health).also { playerDTO ->
                     gameStateDTO.players.add(playerDTO)
                 }
             }

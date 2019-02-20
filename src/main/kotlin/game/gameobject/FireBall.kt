@@ -69,6 +69,12 @@ class FireBall(var xPosition: Int, var yPosition: Int,
                 Collision.HitMarker.INSIDE -> {}
                 Collision.HitMarker.NONE -> {}
             }
+            if(it.hitMarker != Collision.HitMarker.NONE){
+                game.players.find { pl -> pl.sessionId == it.player.sessionId }.also { player ->
+                    player?: return
+                    player.health--
+                }
+            }
         }
     }
 
