@@ -15,7 +15,7 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     @Volatile var dKey = false
 
     private val speed = 3
-    var health = 3
+    var health = 8
     var isAlive = true
 
     override fun tick() {
