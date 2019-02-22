@@ -4,8 +4,8 @@ import main.kotlin.console.dto.ContinueGameLoopDTO
 import main.kotlin.console.dto.PauseGameLoopDTO
 import main.kotlin.console.dto.StopGameLoopDTO
 import main.kotlin.game.dto.*
-import main.kotlin.game.gameobject.Player
-import main.kotlin.network.dto.ConnectionDTO
+import main.kotlin.game.gameobject.MedKit
+import main.kotlin.game.gameobject.PowerUpType
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.console.IConsoleNewsPaperSubscriber
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
@@ -81,6 +81,16 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
             gameState.fireBalls.forEach { fireBall ->
                 FireBallDTO(fireBall.xPosition, fireBall.yPosition, fireBall.diameter).also { fireBallDTO ->
                     gameStateDTO.fireBalls.add(fireBallDTO)
+                }
+            }
+            gameState.powerUps.forEach { powerUp ->
+                if (powerUp is MedKit){
+                    PowerUpDTO(PowerUpType.MED_KIT.text,
+                               powerUp.xPosition, powerUp.yPosition,
+                               MedKit.WIDTH, MedKit.HEIGHT
+                    ).also { medKitDTO ->
+                        gameStateDTO.powerUps.add(medKitDTO)
+                    }
                 }
             }
         })

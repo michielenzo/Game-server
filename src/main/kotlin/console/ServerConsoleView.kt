@@ -78,9 +78,9 @@ class ServerConsoleView : View("ServerConsole"), INetworkNewsPaperSubscriber, IG
     }
 
     @Synchronized private fun handleSendInputStateToServerMessage(dto: SendInputStateToServerDTO) {
-        textAreaStreamIN.text += preFixIN()
-                .plus(Gson().toJson(dto))
-                .plus("\n")
+        //textAreaStreamIN.text += preFixIN()
+        //        .plus(Gson().toJson(dto))
+        //        .plus("\n")
     }
 
     @Synchronized private fun handleStartGameToServerDTO(dto: StartGameToServerDTO) {

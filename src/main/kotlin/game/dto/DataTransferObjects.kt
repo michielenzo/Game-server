@@ -8,7 +8,8 @@ data class SendGameStateToClientsDTO(val gameState: GameStateDTO,
                                      val messageType: String = MessageType.SEND_GAME_STATE_TO_ClIENTS.value): DTO()
 
 data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf(),
-                        val fireBalls: MutableList<FireBallDTO> = mutableListOf()): DTO()
+                        val fireBalls: MutableList<FireBallDTO> = mutableListOf(),
+                        val powerUps: MutableList<PowerUpDTO> = mutableListOf()): DTO()
 
 data class PlayerDTO(val sessionId: String,
                      val name: String,
@@ -21,6 +22,12 @@ data class PlayerDTO(val sessionId: String,
 data class FireBallDTO(val xPosition: Int,
                        val yPosition: Int,
                        val diameter: Int)
+
+data class PowerUpDTO(val type: String,
+                      val xPosition: Int,
+                      val yPosition: Int,
+                      val width: Int,
+                      val height: Int): DTO()
 
 data class SendInputStateToServerDTO(var sessionId: String,
                                      val wKey: Boolean,
