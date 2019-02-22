@@ -72,7 +72,10 @@ class Lobby: INetworkNewsPaperSubscriber {
 
     private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
         synchronized(lobbyStateLock){
-            players.removeAll { it.id == dto.id }
+            players.find{ pl -> pl.id == dto.id}.also {
+                it?: return
+                players.remove(it)
+            }
             buildSendLobbyStateDTO().also { LobbyNewsPaper.broadcast(it) }
         }
     }

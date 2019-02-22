@@ -76,7 +76,7 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
     }
 
     override fun onClose(session: WsSession, status: Int, message: String?) {
-        sessions.remove(session)
+        println("close")
         NetworkNewsPaper.broadcast(buildDisconnectFromServerDTO(session))
     }
 

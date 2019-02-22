@@ -24,22 +24,22 @@ abstract class Websocket(var endPointPath: String, var portNumber: Int) {
         }
     }
 
-    fun sendToAllSessions(message: String){
-        sessions.forEach {
-            it.send(message)
+    @Synchronized fun sendToAllSessions(message: String){
+        sessions.forEach { sesh ->
+            if(sesh.isOpen) sesh.send(message)
         }
     }
 
-    fun sendToSessionById(sessionId: String?, message: String){
+    @Synchronized fun sendToSessionById(sessionId: String?, message: String){
         sessions.find { sesh -> sesh.id == sessionId }.also { sesh ->
             sesh?: return
-            sesh.send(message)
+            if(sesh.isOpen) sesh.send(message)
         }
     }
 
-    fun sendToSessionSet(sessionSet: Set<WsSession>, message: String){
-        sessionSet.forEach {
-            it.send(message)
+    @Synchronized fun sendToSessionSet(sessionSet: Set<WsSession>, message: String){
+        sessionSet.forEach { sesh ->
+            if(sesh.isOpen) sesh.send(message)
         }
     }
 

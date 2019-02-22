@@ -65,12 +65,13 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
 
     private fun handleDisconnectFromServerMessage(dto: DisconnectDTO) {
         synchronized(gameState.gameStateLock){
-            gameState.players.removeAll { it.sessionId == dto.id }
-            buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
+            gameState.players.find { pl -> pl.sessionId == dto.id }.also {
+                gameState.players.remove(it)
+            }
         }
     }
 
-    fun buildSendGameStateDTO(): SendGameStateToClientsDTO {
+    @Synchronized fun buildSendGameStateDTO(): SendGameStateToClientsDTO {
         return SendGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
             gameState.players.forEach{ player ->
                 PlayerDTO(player.sessionId, player.name, player.xPosition, player.yPosition, player.health).also { playerDTO ->
