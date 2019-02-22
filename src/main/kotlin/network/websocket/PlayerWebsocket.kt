@@ -3,6 +3,8 @@ package network
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import io.javalin.websocket.WsSession
+import main.kotlin.game.dto.BackToLobbyToClientDTO
+import main.kotlin.game.dto.BackToLobbyToServerDTO
 import main.kotlin.game.dto.SendGameStateToClientsDTO
 import main.kotlin.game.dto.SendInputStateToServerDTO
 import main.kotlin.lobby.dto.ChooseNameToServerDTO
@@ -57,6 +59,11 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
                         it.playerId = session.id
                     }
                 }
+                MessageType.BACK_TO_LOBBY_TO_SERVER.value -> {
+                    Gson().fromJson(message, BackToLobbyToServerDTO::class.java).also {
+                        it.playerId = session.id
+                    }
+                }
                 else -> {
                     throw Exception(String()
                             .plus("Invalid message received: ")
@@ -75,13 +82,25 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
 
     override fun notifyGameStateNews(dto: DTO) {
         when(dto){
-            is SendGameStateToClientsDTO -> sendToAllSessions(convertDTOtoJSON(dto))
+            is SendGameStateToClientsDTO -> {
+                mutableSetOf<WsSession>().also { set ->
+                    dto.gameState.players.forEach {player ->
+                        sessions.find { sesh -> sesh.id == player.sessionId }.also {
+                            if (it != null) {
+                                set.add(it)
+                            }
+                        }
+                    }
+                    sendToSessionSet(set, convertDTOtoJSON(dto))
+                }
+            }
         }
     }
 
     override fun notifyLobbyNews(dto: DTO) {
         when(dto){
             is SendLobbyStateToClientsDTO -> sendToAllSessions(convertDTOtoJSON(dto))
+            is BackToLobbyToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
         }
     }
 

@@ -26,6 +26,7 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
             is ConnectionDTO -> handleConnectToServerMessage(dto)
             is DisconnectDTO -> handleDisconnectFromServerMessage(dto)
             is SendInputStateToServerDTO -> handleSendInputStateToServerMessage(dto)
+            is BackToLobbyToServerDTO -> handleBackToLobbyToServerMessage(dto)
         }
     }
 
@@ -34,6 +35,18 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
             is StopGameLoopDTO -> gameState.stopLoop()
             is PauseGameLoopDTO -> gameState.pauseGame()
             is ContinueGameLoopDTO -> gameState.continueGame()
+        }
+    }
+
+    private fun handleBackToLobbyToServerMessage(dto: BackToLobbyToServerDTO) {
+        synchronized(gameState){
+            gameState.players.find { pl -> pl.sessionId == dto.playerId }.also {
+                it?: return
+                gameState.players.remove(it)
+            }
+            if(gameState.players.isEmpty()) {
+                gameState.stopLoop()
+            }
         }
     }
 

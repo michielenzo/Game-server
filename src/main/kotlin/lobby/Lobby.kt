@@ -1,6 +1,8 @@
 package main.kotlin.lobby
 
 import main.kotlin.game.GameState
+import main.kotlin.game.dto.BackToLobbyToClientDTO
+import main.kotlin.game.dto.BackToLobbyToServerDTO
 import main.kotlin.game.dto.SendInputStateToServerDTO
 import main.kotlin.lobby.dto.*
 import main.kotlin.network.dto.ConnectionDTO
@@ -26,7 +28,13 @@ class Lobby: INetworkNewsPaperSubscriber {
             is DisconnectDTO -> handleDisconnectToServerMessage(dto)
             is StartGameToServerDTO -> handleStartGameToServerDTO()
             is ChooseNameToServerDTO -> handleChooseNameToServerMessage(dto)
+            is BackToLobbyToServerDTO -> handleBackToLobbyToServerMessage(dto)
         }
+    }
+
+    private fun handleBackToLobbyToServerMessage(dto: BackToLobbyToServerDTO) {
+
+        LobbyNewsPaper.broadcast(BackToLobbyToClientDTO().also { it.playerId = dto.playerId })
     }
 
     private fun handleChooseNameToServerMessage(dto: ChooseNameToServerDTO) {

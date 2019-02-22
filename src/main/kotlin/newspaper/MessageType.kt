@@ -10,5 +10,7 @@ enum class MessageType(val value: String) {
     STOP_GAME_LOOP("stopGameLoop"),
     PAUSE_GAME_LOOP("pauseGameLoop"),
     CONTINUE_GAME_LOOP("continueGameLoop"),
-    CHOOSE_NAME_TO_SERVER("chooseNameToServer")
+    CHOOSE_NAME_TO_SERVER("chooseNameToServer"),
+    BACK_TO_LOBBY_TO_SERVER("backToLobbyToServer"),
+    BACK_TO_LOBBY_TO_CLIENT("backToLobbyToServer")
 }

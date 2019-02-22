@@ -30,6 +30,19 @@ abstract class Websocket(var endPointPath: String, var portNumber: Int) {
         }
     }
 
+    fun sendToSessionById(sessionId: String?, message: String){
+        sessions.find { sesh -> sesh.id == sessionId }.also { sesh ->
+            sesh?: return
+            sesh.send(message)
+        }
+    }
+
+    fun sendToSessionSet(sessionSet: Set<WsSession>, message: String){
+        sessionSet.forEach {
+            it.send(message)
+        }
+    }
+
     abstract fun onClose(session: WsSession, status: Int, message: String?)
     abstract fun onMessage(session: WsSession, message: String)
     abstract fun onConnect(session: WsSession)

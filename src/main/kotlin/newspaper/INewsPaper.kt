@@ -12,4 +12,8 @@ abstract class INewsPaper<ISubscriber> {
         subscribers.add(newSubscriber)
     }
 
+    fun unsubscribe(subscriber: ISubscriber){
+        subscribers.remove(subscriber)
+    }
+
 }
