@@ -23,7 +23,6 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
 
     override fun notifyNetworkNews(dto: DTO) {
         when(dto){
-            is ConnectionDTO -> handleConnectToServerMessage(dto)
             is DisconnectDTO -> handleDisconnectFromServerMessage(dto)
             is SendInputStateToServerDTO -> handleSendInputStateToServerMessage(dto)
             is BackToLobbyToServerDTO -> handleBackToLobbyToServerMessage(dto)
@@ -61,15 +60,6 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
             aKey = dto.aKey
             sKey = dto.sKey
             dKey = dto.dKey
-        }
-    }
-
-    private fun handleConnectToServerMessage(connectionDTO: ConnectionDTO) {
-        synchronized(gameState.gameStateLock){
-            Player(connectionDTO.id, connectionDTO.id,100 + gameState.players.size * 75, 100).also { player ->
-                gameState.players.add(player)
-                buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
-            }
         }
     }
 

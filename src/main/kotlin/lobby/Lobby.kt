@@ -33,8 +33,14 @@ class Lobby: INetworkNewsPaperSubscriber {
     }
 
     private fun handleBackToLobbyToServerMessage(dto: BackToLobbyToServerDTO) {
-
-        LobbyNewsPaper.broadcast(BackToLobbyToClientDTO().also { it.playerId = dto.playerId })
+        synchronized(lobbyStateLock){
+            players.find { pl -> pl.id == dto.playerId }.also {
+                it?: return
+                it.status = Player.Status.AVAILABLE.text
+            }
+            LobbyNewsPaper.broadcast(BackToLobbyToClientDTO().also { it.playerId = dto.playerId })
+            buildSendLobbyStateDTO().also { LobbyNewsPaper.broadcast(it) }
+        }
     }
 
     private fun handleChooseNameToServerMessage(dto: ChooseNameToServerDTO) {
@@ -48,9 +54,20 @@ class Lobby: INetworkNewsPaperSubscriber {
     }
 
     private fun handleStartGameToServerDTO() {
-       val game = GameState()
-       game.initializeGameState(players)
-       game.start()
+       synchronized(lobbyStateLock){
+           val game = GameState()
+           mutableSetOf<Player>().also { availablePlayers ->
+               players.forEach { player ->
+                   if(player.status == Player.Status.AVAILABLE.text){
+                       availablePlayers.add(player)
+                       player.status = Player.Status.IN_GAME.text
+                   }
+               }
+           }.also { availablePlayers ->
+               game.initializeGameState(availablePlayers)
+           }
+           game.start()
+       }
     }
 
     private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
@@ -62,7 +79,7 @@ class Lobby: INetworkNewsPaperSubscriber {
 
     private fun handleConnectToServerMessage(dto: ConnectionDTO) {
         synchronized(lobbyStateLock){
-            Player(dto.id, dto.id).also {
+            Player(dto.id, "available", dto.id).also {
                 players.add(it)
                 LobbyNewsPaper.broadcast(buildSendLobbyStateDTO())
             }
@@ -72,7 +89,7 @@ class Lobby: INetworkNewsPaperSubscriber {
     private fun buildSendLobbyStateDTO(): DTO {
         return SendLobbyStateToClientsDTO(LobbyStateDTO().also { lobbyStateDTO ->
             players.forEach { player ->
-                PlayerDTO(player.id, player.name).also { playerDTO ->
+                PlayerDTO(player.id, player.status, player.name).also { playerDTO ->
                     lobbyStateDTO.players.add(playerDTO)
                 }
             }

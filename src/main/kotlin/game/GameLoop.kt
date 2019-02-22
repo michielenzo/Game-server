@@ -22,6 +22,7 @@ abstract class GameLoop: Thread(){
     }
 
     fun stopLoop(){
+        println("game loop stopped")
         gameOver = true
     }
 
