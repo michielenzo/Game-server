@@ -20,11 +20,23 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     var health = 8
     var isAlive = true
 
+    var hasShield = false
+    var shieldStartTime: Long = 0
+
     override fun tick() {
         move()
         checkWallCollision()
         checkPowerUpCollision()
         checkHealth()
+        checkShield()
+    }
+
+    private fun checkShield() {
+        if(hasShield){
+            if(System.currentTimeMillis() - shieldStartTime >= Shield.AFFECTION_TIME){
+                hasShield = false
+            }
+        }
     }
 
     private fun checkPowerUpCollision() {
@@ -33,7 +45,7 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
             Rectangle(xPosition.toDouble(), yPosition.toDouble(),
                     WIDTH.toDouble(), HEIGHT.toDouble()).also { rectA ->
                 Rectangle(powerUp.xPosition.toDouble(), powerUp.yPosition.toDouble(),
-                        MedKit.WIDTH.toDouble(), MedKit.HEIGHT.toDouble()).also { rectB ->
+                        IPowerUp.WIDTH.toDouble(), IPowerUp.HEIGHT.toDouble()).also { rectB ->
                     if(Collision.rectangleWithRectangleCollision(rectA, rectB) == Collision.HitMarker.SOMEWHERE){
                         powerUp.onPickUp(this)
                         powerUpsCollidingWith.add(powerUp)

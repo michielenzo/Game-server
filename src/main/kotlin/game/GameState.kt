@@ -1,9 +1,6 @@
 package main.kotlin.game
 
-import main.kotlin.game.gameobject.FireBall
-import main.kotlin.game.gameobject.IPowerUp
-import main.kotlin.game.gameobject.MedKit
-import main.kotlin.game.gameobject.Player
+import main.kotlin.game.gameobject.*
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 
 class GameState: GameLoop(){
@@ -42,7 +39,7 @@ class GameState: GameLoop(){
             fireBalls.add(FireBall(800, 400, FireBall.MovementDirection.UP_LEFT, this))
             fireBalls.add(FireBall(500, 400, FireBall.MovementDirection.UP_LEFT, this))
 
-            powerUps.add(MedKit(700,200))
+            powerUps.add(Shield(700,200))
 
             proxy.buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
         }

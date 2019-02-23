@@ -1,5 +1,6 @@
 package main.kotlin.game
 
+import main.kotlin.game.gameobject.IPowerUp
 import main.kotlin.game.gameobject.MedKit
 import main.kotlin.utilities.RandomGenerator
 
@@ -21,9 +22,9 @@ class PowerUpSpawner(val gameState: GameState) {
 
     private fun spawnPowerUp() {
         RandomGenerator.randomInt(System.currentTimeMillis(),
-                0, GameState.DIMENSION_WIDTH - MedKit.WIDTH).also { randX ->
+                0, GameState.DIMENSION_WIDTH - IPowerUp.WIDTH).also { randX ->
             RandomGenerator.randomInt(System.currentTimeMillis(),
-                    0, GameState.DIMENSION_HEIGHT - MedKit.HEIGHT).also { randY ->
+                    0, GameState.DIMENSION_HEIGHT - IPowerUp.HEIGHT).also { randY ->
                 gameState.powerUps.add(MedKit(randX, randY))
             }
         }

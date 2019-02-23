@@ -12,7 +12,7 @@ class FireBall(var xPosition: Int, var yPosition: Int,
 
     val diameter = 50
     private val speed = 4
-    val playerCollision = mutableListOf<PlayerCollision>()
+    private val playerCollision = mutableListOf<PlayerCollision>()
 
     init {
         game.players.forEach {
@@ -70,15 +70,19 @@ class FireBall(var xPosition: Int, var yPosition: Int,
                     Collision.HitMarker.INSIDE -> {}
                     Collision.HitMarker.NONE -> {}
                 }
-                if(coll.hitMarker != Collision.HitMarker.NONE && coll.timeOutTicks <= 0){
-                    game.players.find { pl -> pl.sessionId == coll.player.sessionId }.also { player ->
-                        player?: return
-                        player.health--
-                        coll.timeOutTicks = PlayerCollision.MAX_TIMEOUT_TICKS
-                    }
-                }else coll.timeOutTicks--
+                damagePlayer(coll)
             }
         }
+    }
+
+    private fun damagePlayer(coll: PlayerCollision) {
+        if (coll.hitMarker != Collision.HitMarker.NONE && coll.timeOutTicks <= 0) {
+            game.players.find { pl -> pl.sessionId == coll.player.sessionId }.also { player ->
+                player ?: return
+                if (!player.hasShield) player.health--
+                coll.timeOutTicks = PlayerCollision.MAX_TIMEOUT_TICKS
+            }
+        } else coll.timeOutTicks--
     }
 
     private fun checkCollisionWithPlayers() {

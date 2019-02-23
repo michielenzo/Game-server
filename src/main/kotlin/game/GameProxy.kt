@@ -4,8 +4,9 @@ import main.kotlin.console.dto.ContinueGameLoopDTO
 import main.kotlin.console.dto.PauseGameLoopDTO
 import main.kotlin.console.dto.StopGameLoopDTO
 import main.kotlin.game.dto.*
+import main.kotlin.game.gameobject.IPowerUp
 import main.kotlin.game.gameobject.MedKit
-import main.kotlin.game.gameobject.PowerUpType
+import main.kotlin.game.gameobject.Shield
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.console.IConsoleNewsPaperSubscriber
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
@@ -74,7 +75,7 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
     @Synchronized fun buildSendGameStateDTO(): SendGameStateToClientsDTO {
         return SendGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
             gameState.players.forEach{ player ->
-                PlayerDTO(player.sessionId, player.name, player.xPosition, player.yPosition, player.health).also { playerDTO ->
+                PlayerDTO(player.sessionId, player.name, player.xPosition, player.yPosition, player.health, player.hasShield).also { playerDTO ->
                     gameStateDTO.players.add(playerDTO)
                 }
             }
@@ -84,16 +85,19 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
                 }
             }
             gameState.powerUps.forEach { powerUp ->
-                if (powerUp is MedKit){
-                    PowerUpDTO(PowerUpType.MED_KIT.text,
-                               powerUp.xPosition, powerUp.yPosition,
-                               MedKit.WIDTH, MedKit.HEIGHT
-                    ).also { medKitDTO ->
-                        gameStateDTO.powerUps.add(medKitDTO)
-                    }
+                if(powerUp is MedKit){
+                    gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.MED_KIT))
+                }else if(powerUp is Shield){
+                    gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.SHIELD))
                 }
             }
         })
+    }
+
+    private fun buildPowerUpDTO(powerUp: IPowerUp, powerUpType: IPowerUp.PowerUpType): PowerUpDTO {
+        return PowerUpDTO(powerUpType.text,
+                          powerUp.xPosition, powerUp.yPosition,
+                          IPowerUp.WIDTH, IPowerUp.HEIGHT)
     }
 
 }
