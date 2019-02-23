@@ -1,6 +1,7 @@
 package main.kotlin.game
 
 import main.kotlin.game.gameobject.IPowerUp
+import main.kotlin.game.gameobject.Inverter
 import main.kotlin.game.gameobject.MedKit
 import main.kotlin.game.gameobject.Shield
 import main.kotlin.utilities.RandomGenerator
@@ -14,7 +15,7 @@ class PowerUpSpawner(private val gameState: GameState) {
             IPowerUp.PowerUpType.MED_KIT,
             IPowerUp.PowerUpType.MED_KIT,
             IPowerUp.PowerUpType.MED_KIT,
-            IPowerUp.PowerUpType.MED_KIT,
+            IPowerUp.PowerUpType.INVERTER,
             IPowerUp.PowerUpType.SHIELD
     )
 
@@ -38,6 +39,7 @@ class PowerUpSpawner(private val gameState: GameState) {
                     when(dropTable[index]){
                         IPowerUp.PowerUpType.MED_KIT -> gameState.powerUps.add(MedKit(randX, randY))
                         IPowerUp.PowerUpType.SHIELD -> gameState.powerUps.add(Shield(randX, randY))
+                        IPowerUp.PowerUpType.INVERTER -> gameState.powerUps.add(Inverter(randX, randY))
                     }
                 }
             }

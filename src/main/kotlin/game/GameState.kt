@@ -43,7 +43,6 @@ class GameState: GameLoop(){
 
             proxy.buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
         }
-
     }
 
 }

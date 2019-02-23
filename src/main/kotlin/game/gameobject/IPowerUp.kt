@@ -14,7 +14,8 @@ interface IPowerUp{
 
     enum class PowerUpType(val text: String){
         MED_KIT("med_kit"),
-        SHIELD("shield")
+        SHIELD("shield"),
+        INVERTER("inverter")
     }
 }
 

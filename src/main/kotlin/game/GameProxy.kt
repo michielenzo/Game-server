@@ -5,6 +5,7 @@ import main.kotlin.console.dto.PauseGameLoopDTO
 import main.kotlin.console.dto.StopGameLoopDTO
 import main.kotlin.game.dto.*
 import main.kotlin.game.gameobject.IPowerUp
+import main.kotlin.game.gameobject.Inverter
 import main.kotlin.game.gameobject.MedKit
 import main.kotlin.game.gameobject.Shield
 import main.kotlin.network.dto.DisconnectDTO
@@ -85,10 +86,10 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
                 }
             }
             gameState.powerUps.forEach { powerUp ->
-                if(powerUp is MedKit){
-                    gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.MED_KIT))
-                }else if(powerUp is Shield){
-                    gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.SHIELD))
+                when (powerUp) {
+                    is MedKit -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.MED_KIT))
+                    is Shield -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.SHIELD))
+                    is Inverter -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.INVERTER))
                 }
             }
         })

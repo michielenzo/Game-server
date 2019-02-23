@@ -25,6 +25,15 @@ class FireBall(var xPosition: Int, var yPosition: Int,
         checkCollision()
     }
 
+    fun invert(){
+        direction = when(direction){
+            MovementDirection.UP_LEFT -> MovementDirection.DOWN_RIGHT
+            MovementDirection.UP_RIGHT -> MovementDirection.DOWN_LEFT
+            MovementDirection.DOWN_LEFT -> MovementDirection.UP_RIGHT
+            MovementDirection.DOWN_RIGHT -> MovementDirection.UP_LEFT
+        }
+    }
+
     private fun move(){
         when(direction){
             MovementDirection.UP_LEFT -> { xPosition -= speed; yPosition -= speed }
