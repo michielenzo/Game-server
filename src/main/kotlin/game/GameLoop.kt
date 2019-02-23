@@ -3,7 +3,7 @@ package main.kotlin.game
 abstract class GameLoop: Thread(){
 
     private val frameRate = 60
-    private val millisPerTick = 1000/frameRate
+    protected val millisPerTick = 1000/frameRate
 
     private var gameOver = false
     private var isPaused = false
@@ -22,7 +22,6 @@ abstract class GameLoop: Thread(){
     }
 
     fun stopLoop(){
-        println("game loop stopped")
         gameOver = true
     }
 

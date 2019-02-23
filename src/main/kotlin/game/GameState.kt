@@ -6,9 +6,10 @@ import main.kotlin.game.gameobject.MedKit
 import main.kotlin.game.gameobject.Player
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 
-open class GameState: GameLoop(){
+class GameState: GameLoop(){
 
     private val proxy = GameProxy(this)
+    private val powerUpSpawner = PowerUpSpawner(this)
 
     companion object {
         const val DIMENSION_WIDTH = 1100
@@ -23,6 +24,7 @@ open class GameState: GameLoop(){
     override fun tick() {
         players.forEach { it.tick() }
         fireBalls.forEach { it.tick() }
+        powerUpSpawner.tick()
         proxy.sendGameStateToClients()
     }
 
