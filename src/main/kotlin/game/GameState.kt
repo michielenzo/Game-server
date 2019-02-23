@@ -38,8 +38,8 @@ class GameState: GameLoop(){
             fireBalls.add(FireBall(800, 100, FireBall.MovementDirection.UP_LEFT, this))
             fireBalls.add(FireBall(800, 400, FireBall.MovementDirection.UP_LEFT, this))
             fireBalls.add(FireBall(500, 400, FireBall.MovementDirection.UP_LEFT, this))
-
-            powerUps.add(Shield(700,200))
+            fireBalls.add(FireBall(600, 400, FireBall.MovementDirection.DOWN_RIGHT, this))
+            fireBalls.add(FireBall(600, 600, FireBall.MovementDirection.DOWN_LEFT, this))
 
             proxy.buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
         }
