@@ -1,8 +1,10 @@
 package main.kotlin.game.gameobject
 
+import javafx.scene.shape.Rectangle
 import main.kotlin.game.GameState
+import main.kotlin.utilities.Collision
 
-class Player(val sessionId: String, val name: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int): GameObject{
+class Player(val sessionId: String, val name: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int, val gameState: GameState): GameObject{
 
     companion object {
         const val WIDTH = 50
@@ -21,7 +23,25 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     override fun tick() {
         move()
         checkWallCollision()
+        checkPowerUpCollision()
         checkHealth()
+    }
+
+    private fun checkPowerUpCollision() {
+        val powerUpsCollidingWith = mutableListOf<IPowerUp>()
+        gameState.powerUps.forEach { powerUp ->
+            Rectangle(xPosition.toDouble(), yPosition.toDouble(),
+                    WIDTH.toDouble(), HEIGHT.toDouble()).also { rectA ->
+                Rectangle(powerUp.xPosition.toDouble(), powerUp.yPosition.toDouble(),
+                        MedKit.WIDTH.toDouble(), MedKit.HEIGHT.toDouble()).also { rectB ->
+                    if(Collision.rectangleWithRectangleCollision(rectA, rectB) == Collision.HitMarker.SOMEWHERE){
+                        powerUp.onPickUp(this)
+                        powerUpsCollidingWith.add(powerUp)
+                    }
+                }
+            }
+        }
+        powerUpsCollidingWith.forEach { gameState.powerUps.remove(it) }
     }
 
     private fun checkWallCollision() {

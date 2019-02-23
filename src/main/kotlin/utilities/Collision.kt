@@ -53,6 +53,15 @@ object Collision {
         return HitMarker.NONE
     }
 
+    fun rectangleWithRectangleCollision(rectA: Rectangle, rectB: Rectangle): HitMarker{
+        if(rectA.x + rectA.width >= rectB.x && rectA.x <= rectB.x + rectB.width &&
+           rectA.y + rectA.height >= rectB.y && rectA.y <= rectB.y + rectB.height)
+        {
+            return HitMarker.SOMEWHERE
+        }
+        return HitMarker.NONE
+    }
+
     private fun distance(a: Point, b: Point): Double{
         var o = a.x - b.x
         var a = a.y - b.y
@@ -71,6 +80,7 @@ object Collision {
         LEFT_WALL,
         RIGHT_WALL,
         INSIDE,
+        SOMEWHERE,
         NONE
     }
 

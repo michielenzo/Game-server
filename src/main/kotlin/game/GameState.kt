@@ -29,7 +29,7 @@ open class GameState: GameLoop(){
     fun initializeGameState(lobbyPlayers: MutableSet<main.kotlin.lobby.Player>){
         synchronized(gameStateLock){
             lobbyPlayers.forEach {lobbyPlayer ->
-                Player(lobbyPlayer.id, lobbyPlayer.name,100 + players.size * 75, 500).also { player ->
+                Player(lobbyPlayer.id, lobbyPlayer.name,100 + players.size * 75, 500, this).also { player ->
                     players.add(player)
                 }
             }

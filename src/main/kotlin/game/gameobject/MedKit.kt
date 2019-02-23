@@ -1,6 +1,6 @@
 package main.kotlin.game.gameobject
 
-class MedKit(val xPosition: Int, val yPosition: Int): GameObject, IPowerUp {
+class MedKit(override val xPosition: Int, override val yPosition: Int): GameObject, IPowerUp {
 
     companion object {
         const val WIDTH = 40
@@ -12,7 +12,7 @@ class MedKit(val xPosition: Int, val yPosition: Int): GameObject, IPowerUp {
     }
 
     override fun onPickUp(player: Player) {
-        player.health++
+        if(player.isAlive) player.health++
     }
 
 }
