@@ -1,26 +1,20 @@
 package main.kotlin.game
 
-import main.kotlin.console.dto.ContinueGameLoopDTO
-import main.kotlin.console.dto.PauseGameLoopDTO
-import main.kotlin.console.dto.StopGameLoopDTO
 import main.kotlin.game.dto.*
 import main.kotlin.game.gameobject.IPowerUp
 import main.kotlin.game.gameobject.Inverter
 import main.kotlin.game.gameobject.MedKit
 import main.kotlin.game.gameobject.Shield
 import main.kotlin.network.dto.DisconnectDTO
-import main.kotlin.newspaper.console.IConsoleNewsPaperSubscriber
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
-import main.kotlin.newspaper.network.ConsoleNewsPaper
 import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
 import main.kotlin.newspaper.network.NetworkNewsPaper
 import main.kotlin.utilities.DTO
 
-class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, IConsoleNewsPaperSubscriber {
+class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber{
 
     init {
         NetworkNewsPaper.subscriberQueue.add(this)
-        ConsoleNewsPaper.subscribe(this)
     }
 
     override fun notifyNetworkNews(dto: DTO) {
@@ -28,14 +22,6 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber, 
             is DisconnectDTO -> handleDisconnectFromServerMessage(dto)
             is SendInputStateToServerDTO -> handleSendInputStateToServerMessage(dto)
             is BackToLobbyToServerDTO -> handleBackToLobbyToServerMessage(dto)
-        }
-    }
-
-    override fun notifyConsoleNews(dto: DTO) {
-        when(dto){
-            is StopGameLoopDTO -> gameState.stopLoop()
-            is PauseGameLoopDTO -> gameState.pauseGame()
-            is ContinueGameLoopDTO -> gameState.continueGame()
         }
     }
 
