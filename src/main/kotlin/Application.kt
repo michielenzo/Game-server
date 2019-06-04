@@ -1,7 +1,5 @@
 import console.ServerConsoleView
 import javafx.stage.Stage
-import main.kotlin.game.GameLoop
-import main.kotlin.game.GameState
 import main.kotlin.lobby.Lobby
 import network.PlayerWebsocket
 import tornadofx.*
