@@ -6,7 +6,7 @@ import main.kotlin.game.spaceBalls.gameobjects.powerups.MedKit
 import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 import main.kotlin.game.engine.RandomGenerator
 
-class PowerUpSpawner(private val gameState: GameState) {
+class PowerUpSpawner(private val spaceBalls: SpaceBalls) {
 
     private val spawnInterval = 5000
     private var millisSinceLastSpawn: Long = System.currentTimeMillis()
@@ -31,15 +31,15 @@ class PowerUpSpawner(private val gameState: GameState) {
 
     private fun spawnPowerUp() {
         RandomGenerator.randomInt(System.currentTimeMillis(),
-                0, GameState.DIMENSION_WIDTH - IPowerUp.WIDTH).also { randX ->
+                0, SpaceBalls.DIMENSION_WIDTH - IPowerUp.WIDTH).also { randX ->
             RandomGenerator.randomInt(System.currentTimeMillis(),
-                    0, GameState.DIMENSION_HEIGHT - IPowerUp.HEIGHT).also { randY ->
+                    0, SpaceBalls.DIMENSION_HEIGHT - IPowerUp.HEIGHT).also { randY ->
                 RandomGenerator.randomInt(System.currentTimeMillis(),0, dropTable.size).also { index ->
                     println(index)
                     when(dropTable[index]){
-                        IPowerUp.PowerUpType.MED_KIT -> gameState.powerUps.add(MedKit(randX, randY))
-                        IPowerUp.PowerUpType.SHIELD -> gameState.powerUps.add(Shield(randX, randY))
-                        IPowerUp.PowerUpType.INVERTER -> gameState.powerUps.add(Inverter(randX, randY))
+                        IPowerUp.PowerUpType.MED_KIT -> spaceBalls.powerUps.add(MedKit(randX, randY))
+                        IPowerUp.PowerUpType.SHIELD -> spaceBalls.powerUps.add(Shield(randX, randY))
+                        IPowerUp.PowerUpType.INVERTER -> spaceBalls.powerUps.add(Inverter(randX, randY))
                     }
                 }
             }

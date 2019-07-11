@@ -10,7 +10,7 @@ class Inverter(override val xPosition: Int, override val yPosition: Int) : GameO
     }
 
     override fun onPickUp(player: Player) {
-        player.gameState.fireBalls.forEach { it.invert() }
+        player.spaceBalls.fireBalls.forEach { it.invert() }
     }
 
 }

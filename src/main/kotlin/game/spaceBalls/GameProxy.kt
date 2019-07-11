@@ -11,7 +11,7 @@ import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
 import main.kotlin.newspaper.network.NetworkNewsPaper
 import main.kotlin.utilities.DTO
 
-class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber{
+class GameProxy(private val spaceBalls: SpaceBalls): INetworkNewsPaperSubscriber{
 
     init {
         NetworkNewsPaper.subscriberQueue.add(this)
@@ -26,13 +26,13 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber{
     }
 
     private fun handleBackToLobbyToServerMessage(dto: BackToLobbyToServerDTO) {
-        synchronized(gameState){
-            gameState.players.find { pl -> pl.sessionId == dto.playerId }.also {
+        synchronized(spaceBalls){
+            spaceBalls.players.find { pl -> pl.sessionId == dto.playerId }.also {
                 it?: return
-                gameState.players.remove(it)
+                spaceBalls.players.remove(it)
             }
-            if(gameState.players.isEmpty()) {
-                gameState.stopLoop()
+            if(spaceBalls.players.isEmpty()) {
+                spaceBalls.stopLoop()
             }
         }
     }
@@ -42,7 +42,7 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber{
     }
 
     private fun handleSendInputStateToServerMessage(dto: SendInputStateToServerDTO) {
-        gameState.players.find { it.sessionId == dto.sessionId }.apply {
+        spaceBalls.players.find { it.sessionId == dto.sessionId }.apply {
             this?: return
             wKey = dto.wKey
             aKey = dto.aKey
@@ -52,26 +52,26 @@ class GameProxy(private val gameState: GameState): INetworkNewsPaperSubscriber{
     }
 
     private fun handleDisconnectFromServerMessage(dto: DisconnectDTO) {
-        synchronized(gameState.gameStateLock){
-            gameState.players.find { pl -> pl.sessionId == dto.id }.also {
-                gameState.players.remove(it)
+        synchronized(spaceBalls.gameStateLock){
+            spaceBalls.players.find { pl -> pl.sessionId == dto.id }.also {
+                spaceBalls.players.remove(it)
             }
         }
     }
 
     @Synchronized fun buildSendGameStateDTO(): SendGameStateToClientsDTO {
         return SendGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
-            gameState.players.forEach{ player ->
+            spaceBalls.players.forEach{ player ->
                 PlayerDTO(player.sessionId, player.name, player.xPosition, player.yPosition, player.health, player.hasShield).also { playerDTO ->
                     gameStateDTO.players.add(playerDTO)
                 }
             }
-            gameState.fireBalls.forEach { fireBall ->
+            spaceBalls.fireBalls.forEach { fireBall ->
                 FireBallDTO(fireBall.xPosition, fireBall.yPosition, fireBall.diameter).also { fireBallDTO ->
                     gameStateDTO.fireBalls.add(fireBallDTO)
                 }
             }
-            gameState.powerUps.forEach { powerUp ->
+            spaceBalls.powerUps.forEach { powerUp ->
                 when (powerUp) {
                     is MedKit -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.MED_KIT))
                     is Shield -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.SHIELD))

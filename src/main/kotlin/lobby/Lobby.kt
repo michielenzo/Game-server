@@ -1,7 +1,7 @@
 package main.kotlin.lobby
 
 import main.kotlin.game.GameMode
-import main.kotlin.game.spaceBalls.GameState
+import main.kotlin.game.spaceBalls.SpaceBalls
 import main.kotlin.game.spaceBalls.dto.BackToLobbyToClientDTO
 import main.kotlin.game.spaceBalls.dto.BackToLobbyToServerDTO
 import main.kotlin.lobby.dto.*
@@ -64,20 +64,26 @@ class Lobby: INetworkNewsPaperSubscriber {
 
     private fun handleStartGameToServerDTO() {
        synchronized(lobbyStateLock){
-           val game = GameState()
-           mutableSetOf<Player>().also { availablePlayers ->
-               players.forEach { player ->
-                   if(player.status == Player.Status.AVAILABLE.text){
-                       availablePlayers.add(player)
-                       player.status = Player.Status.IN_GAME.text
+           val availablePlayers = mutableSetOf<Player>()
+           players.forEach { player ->
+               if(player.status == Player.Status.AVAILABLE.text){
+                   availablePlayers.add(player)
+               }
+           }
+           when(selectedGameMode){
+               GameMode.SPACE_BALLS.value -> {
+                   val game = SpaceBalls()
+                   game.initializeGameState(availablePlayers)
+                   game.start()
+                   availablePlayers.forEach {
+                       it.status = Player.Status.IN_GAME.text
                    }
                }
-           }.also { availablePlayers ->
-               game.initializeGameState(availablePlayers)
+               else -> print("Game is not yet implemented \n")
            }
-           game.start()
        }
     }
+
 
     private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
         synchronized(lobbyStateLock){

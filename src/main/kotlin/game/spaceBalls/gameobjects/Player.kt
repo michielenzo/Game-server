@@ -1,12 +1,12 @@
 package main.kotlin.game.spaceBalls.gameobjects
 
 import javafx.scene.shape.Rectangle
-import main.kotlin.game.spaceBalls.GameState
+import main.kotlin.game.spaceBalls.SpaceBalls
 import main.kotlin.game.engine.Collision
 import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
 import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 
-class Player(val sessionId: String, val name: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int, val gameState: GameState): GameObject{
+class Player(val sessionId: String, val name: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int, val spaceBalls: SpaceBalls): GameObject{
 
     companion object {
         const val WIDTH = 50
@@ -43,7 +43,7 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
 
     private fun checkPowerUpCollision() {
         val powerUpsCollidingWith = mutableListOf<IPowerUp>()
-        gameState.powerUps.forEach { powerUp ->
+        spaceBalls.powerUps.forEach { powerUp ->
             Rectangle(xPosition.toDouble(), yPosition.toDouble(),
                     WIDTH.toDouble(), HEIGHT.toDouble()).also { rectA ->
                 Rectangle(powerUp.xPosition.toDouble(), powerUp.yPosition.toDouble(),
@@ -55,16 +55,16 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
                 }
             }
         }
-        powerUpsCollidingWith.forEach { gameState.powerUps.remove(it) }
+        powerUpsCollidingWith.forEach { spaceBalls.powerUps.remove(it) }
     }
 
     private fun checkWallCollision() {
         if(xPosition < 0) xPosition = 0
-        if(xPosition > GameState.DIMENSION_WIDTH - WIDTH)
-            xPosition = GameState.DIMENSION_WIDTH - WIDTH
+        if(xPosition > SpaceBalls.DIMENSION_WIDTH - WIDTH)
+            xPosition = SpaceBalls.DIMENSION_WIDTH - WIDTH
         if(yPosition < 0) yPosition = 0
-        if(yPosition > GameState.DIMENSION_HEIGHT - HEIGHT)
-            yPosition = GameState.DIMENSION_HEIGHT - HEIGHT
+        if(yPosition > SpaceBalls.DIMENSION_HEIGHT - HEIGHT)
+            yPosition = SpaceBalls.DIMENSION_HEIGHT - HEIGHT
     }
 
     private fun move(){

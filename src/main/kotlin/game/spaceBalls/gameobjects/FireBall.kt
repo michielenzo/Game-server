@@ -2,12 +2,12 @@ package main.kotlin.game.spaceBalls.gameobjects
 
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Rectangle
-import main.kotlin.game.spaceBalls.GameState
+import main.kotlin.game.spaceBalls.SpaceBalls
 import main.kotlin.game.engine.Collision
 
 class FireBall(var xPosition: Int, var yPosition: Int,
                private var direction: MovementDirection,
-               private val game: GameState)
+               private val game: SpaceBalls)
 : GameObject {
 
     val diameter = 50
@@ -112,9 +112,9 @@ class FireBall(var xPosition: Int, var yPosition: Int,
     private fun checkCollisionWithTheWall(): WallCollision?{
         return when {
             xPosition <= 0 + diameter/2 -> WallCollision.LEFT_WALL
-            xPosition >= GameState.DIMENSION_WIDTH -> WallCollision.RIGHT_WALL
+            xPosition >= SpaceBalls.DIMENSION_WIDTH -> WallCollision.RIGHT_WALL
             yPosition <= 0 + diameter/2 -> WallCollision.ROOF
-            yPosition >= GameState.DIMENSION_HEIGHT - diameter/2 -> WallCollision.FLOOR
+            yPosition >= SpaceBalls.DIMENSION_HEIGHT - diameter/2 -> WallCollision.FLOOR
             else -> return null
         }
     }
@@ -127,7 +127,7 @@ class FireBall(var xPosition: Int, var yPosition: Int,
                             else                                       MovementDirection.DOWN_RIGHT
             }
             WallCollision.FLOOR -> {
-                yPosition = GameState.DIMENSION_HEIGHT - diameter/2
+                yPosition = SpaceBalls.DIMENSION_HEIGHT - diameter/2
                 direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.UP_LEFT
                             else                                         MovementDirection.UP_RIGHT
             }
@@ -137,7 +137,7 @@ class FireBall(var xPosition: Int, var yPosition: Int,
                             else                                         MovementDirection.UP_RIGHT
             }
             WallCollision.RIGHT_WALL -> {
-                xPosition = GameState.DIMENSION_WIDTH - diameter/2
+                xPosition = SpaceBalls.DIMENSION_WIDTH - diameter/2
                 direction = if(direction == MovementDirection.DOWN_RIGHT) MovementDirection.DOWN_LEFT
                 else                                                      MovementDirection.UP_LEFT
             }

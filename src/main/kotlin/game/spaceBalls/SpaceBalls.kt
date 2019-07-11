@@ -5,7 +5,7 @@ import main.kotlin.game.spaceBalls.gameobjects.*
 import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 
-class GameState: GameLoop(){
+class SpaceBalls: GameLoop(){
 
     private val proxy = GameProxy(this)
     private val powerUpSpawner = PowerUpSpawner(this)
