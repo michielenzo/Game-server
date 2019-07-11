@@ -1,6 +1,6 @@
-package main.kotlin.game.dto
+package main.kotlin.game.spaceBalls.dto
 
-import main.kotlin.game.gameobject.Player
+import main.kotlin.game.spaceBalls.gameobjects.Player
 import main.kotlin.newspaper.MessageType
 import main.kotlin.utilities.DTO
 

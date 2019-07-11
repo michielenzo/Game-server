@@ -3,10 +3,10 @@ package network
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import io.javalin.websocket.WsSession
-import main.kotlin.game.dto.BackToLobbyToClientDTO
-import main.kotlin.game.dto.BackToLobbyToServerDTO
-import main.kotlin.game.dto.SendGameStateToClientsDTO
-import main.kotlin.game.dto.SendInputStateToServerDTO
+import main.kotlin.game.spaceBalls.dto.BackToLobbyToClientDTO
+import main.kotlin.game.spaceBalls.dto.BackToLobbyToServerDTO
+import main.kotlin.game.spaceBalls.dto.SendGameStateToClientsDTO
+import main.kotlin.game.spaceBalls.dto.SendInputStateToServerDTO
 import main.kotlin.lobby.dto.ChooseGameModeToServerDTO
 import main.kotlin.lobby.dto.ChooseNameToServerDTO
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO

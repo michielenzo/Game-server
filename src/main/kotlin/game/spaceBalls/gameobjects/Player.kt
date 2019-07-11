@@ -1,8 +1,10 @@
-package main.kotlin.game.gameobject
+package main.kotlin.game.spaceBalls.gameobjects
 
 import javafx.scene.shape.Rectangle
-import main.kotlin.game.GameState
-import main.kotlin.utilities.Collision
+import main.kotlin.game.spaceBalls.GameState
+import main.kotlin.game.engine.Collision
+import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
+import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 
 class Player(val sessionId: String, val name: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int, val gameState: GameState): GameObject{
 

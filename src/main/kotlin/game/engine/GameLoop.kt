@@ -1,4 +1,4 @@
-package main.kotlin.game
+package main.kotlin.game.engine
 
 abstract class GameLoop: Thread(){
 

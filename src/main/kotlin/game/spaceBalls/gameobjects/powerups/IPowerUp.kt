@@ -1,4 +1,6 @@
-package main.kotlin.game.gameobject
+package main.kotlin.game.spaceBalls.gameobjects.powerups
+
+import main.kotlin.game.spaceBalls.gameobjects.Player
 
 interface IPowerUp{
 

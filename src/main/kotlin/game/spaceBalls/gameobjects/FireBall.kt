@@ -1,9 +1,9 @@
-package main.kotlin.game.gameobject
+package main.kotlin.game.spaceBalls.gameobjects
 
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Rectangle
-import main.kotlin.game.GameState
-import main.kotlin.utilities.Collision
+import main.kotlin.game.spaceBalls.GameState
+import main.kotlin.game.engine.Collision
 
 class FireBall(var xPosition: Int, var yPosition: Int,
                private var direction: MovementDirection,

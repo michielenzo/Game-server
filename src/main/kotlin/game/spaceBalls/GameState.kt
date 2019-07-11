@@ -1,6 +1,8 @@
-package main.kotlin.game
+package main.kotlin.game.spaceBalls
 
-import main.kotlin.game.gameobject.*
+import main.kotlin.game.engine.GameLoop
+import main.kotlin.game.spaceBalls.gameobjects.*
+import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 
 class GameState: GameLoop(){

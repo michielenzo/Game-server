@@ -1,10 +1,9 @@
 package main.kotlin.lobby
 
 import main.kotlin.game.GameMode
-import main.kotlin.game.GameState
-import main.kotlin.game.dto.BackToLobbyToClientDTO
-import main.kotlin.game.dto.BackToLobbyToServerDTO
-import main.kotlin.game.dto.SendInputStateToServerDTO
+import main.kotlin.game.spaceBalls.GameState
+import main.kotlin.game.spaceBalls.dto.BackToLobbyToClientDTO
+import main.kotlin.game.spaceBalls.dto.BackToLobbyToServerDTO
 import main.kotlin.lobby.dto.*
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO

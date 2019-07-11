@@ -1,10 +1,10 @@
-package main.kotlin.game
+package main.kotlin.game.spaceBalls
 
-import main.kotlin.game.gameobject.IPowerUp
-import main.kotlin.game.gameobject.Inverter
-import main.kotlin.game.gameobject.MedKit
-import main.kotlin.game.gameobject.Shield
-import main.kotlin.utilities.RandomGenerator
+import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
+import main.kotlin.game.spaceBalls.gameobjects.powerups.Inverter
+import main.kotlin.game.spaceBalls.gameobjects.powerups.MedKit
+import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
+import main.kotlin.game.engine.RandomGenerator
 
 class PowerUpSpawner(private val gameState: GameState) {
 

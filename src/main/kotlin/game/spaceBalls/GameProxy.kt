@@ -1,7 +1,10 @@
-package main.kotlin.game
+package main.kotlin.game.spaceBalls
 
-import main.kotlin.game.dto.*
-import main.kotlin.game.gameobject.*
+import main.kotlin.game.spaceBalls.dto.*
+import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
+import main.kotlin.game.spaceBalls.gameobjects.powerups.Inverter
+import main.kotlin.game.spaceBalls.gameobjects.powerups.MedKit
+import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber

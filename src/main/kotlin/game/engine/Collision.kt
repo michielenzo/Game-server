@@ -1,4 +1,4 @@
-package main.kotlin.utilities
+package main.kotlin.game.engine
 
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Rectangle
@@ -12,16 +12,16 @@ object Collision {
     * circle seen from its center and rectangle seen from its top-left corner
     * */
 
-    fun rectangleWithCircleCollision(rect: Rectangle, circle: Circle): HitMarker{
+    fun rectangleWithCircleCollision(rect: Rectangle, circle: Circle): HitMarker {
         val rad = circle.radius
         val distanceTopLeft = distance(Point(rect.x.toInt(), rect.y.toInt()),
-                                       Point(circle.centerX.toInt(), circle.centerY.toInt()))
+                Point(circle.centerX.toInt(), circle.centerY.toInt()))
         val distanceTopRight = distance(Point(rect.x.toInt() + rect.width.toInt(), rect.y.toInt()),
-                                        Point(circle.centerX.toInt(), circle.centerY.toInt()))
+                Point(circle.centerX.toInt(), circle.centerY.toInt()))
         val distanceBottomLeft = distance(Point(rect.x.toInt(), rect.y.toInt() + rect.height.toInt()),
-                                          Point(circle.centerX.toInt(), circle.centerY.toInt()))
+                Point(circle.centerX.toInt(), circle.centerY.toInt()))
         val distanceBottomRight = distance(Point(rect.x.toInt() + rect.width.toInt(), rect.y.toInt() + rect.height.toInt()),
-                                           Point(circle.centerX.toInt(), circle.centerY.toInt()))
+                Point(circle.centerX.toInt(), circle.centerY.toInt()))
 
         if(distanceTopLeft <= rad && circle.centerX <= rect.x && circle.centerY <= rect.y) {
             return HitMarker.TOP_LEFT_CORNER
@@ -53,7 +53,7 @@ object Collision {
         return HitMarker.NONE
     }
 
-    fun rectangleWithRectangleCollision(rectA: Rectangle, rectB: Rectangle): HitMarker{
+    fun rectangleWithRectangleCollision(rectA: Rectangle, rectB: Rectangle): HitMarker {
         if(rectA.x + rectA.width >= rectB.x && rectA.x <= rectB.x + rectB.width &&
            rectA.y + rectA.height >= rectB.y && rectA.y <= rectB.y + rectB.height)
         {

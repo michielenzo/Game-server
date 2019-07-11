@@ -1,4 +1,7 @@
-package main.kotlin.game.gameobject
+package main.kotlin.game.spaceBalls.gameobjects.powerups
+
+import main.kotlin.game.spaceBalls.gameobjects.GameObject
+import main.kotlin.game.spaceBalls.gameobjects.Player
 
 class MedKit(override val xPosition: Int, override val yPosition: Int): GameObject, IPowerUp {
 
