@@ -1,10 +1,7 @@
 package main.kotlin.game
 
 import main.kotlin.game.dto.*
-import main.kotlin.game.gameobject.IPowerUp
-import main.kotlin.game.gameobject.Inverter
-import main.kotlin.game.gameobject.MedKit
-import main.kotlin.game.gameobject.Shield
+import main.kotlin.game.gameobject.*
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber

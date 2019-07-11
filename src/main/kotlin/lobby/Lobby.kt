@@ -1,5 +1,6 @@
 package main.kotlin.lobby
 
+import main.kotlin.game.GameMode
 import main.kotlin.game.GameState
 import main.kotlin.game.dto.BackToLobbyToClientDTO
 import main.kotlin.game.dto.BackToLobbyToServerDTO
@@ -15,6 +16,7 @@ import main.kotlin.utilities.DTO
 class Lobby: INetworkNewsPaperSubscriber {
 
     private val players = mutableListOf<Player>()
+    private var selectedGameMode = GameMode.SPACE_BALLS.value
 
     private val lobbyStateLock = Object()
 
@@ -29,6 +31,14 @@ class Lobby: INetworkNewsPaperSubscriber {
             is StartGameToServerDTO -> handleStartGameToServerDTO()
             is ChooseNameToServerDTO -> handleChooseNameToServerMessage(dto)
             is BackToLobbyToServerDTO -> handleBackToLobbyToServerMessage(dto)
+            is ChooseGameModeToServerDTO -> handleChooseGameModeToServerMessage(dto)
+        }
+    }
+
+    private fun handleChooseGameModeToServerMessage(dto: ChooseGameModeToServerDTO) {
+        synchronized(lobbyStateLock){
+            selectedGameMode = dto.game
+            buildSendLobbyStateDTO().also { LobbyNewsPaper.broadcast(it) }
         }
     }
 
@@ -90,7 +100,7 @@ class Lobby: INetworkNewsPaperSubscriber {
     }
 
     private fun buildSendLobbyStateDTO(): DTO {
-        return SendLobbyStateToClientsDTO(LobbyStateDTO().also { lobbyStateDTO ->
+        return SendLobbyStateToClientsDTO(LobbyStateDTO(selectedGameMode).also { lobbyStateDTO ->
             players.forEach { player ->
                 PlayerDTO(player.id, player.status, player.name).also { playerDTO ->
                     lobbyStateDTO.players.add(playerDTO)

@@ -7,6 +7,7 @@ import main.kotlin.game.dto.BackToLobbyToClientDTO
 import main.kotlin.game.dto.BackToLobbyToServerDTO
 import main.kotlin.game.dto.SendGameStateToClientsDTO
 import main.kotlin.game.dto.SendInputStateToServerDTO
+import main.kotlin.lobby.dto.ChooseGameModeToServerDTO
 import main.kotlin.lobby.dto.ChooseNameToServerDTO
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
 import main.kotlin.lobby.dto.StartGameToServerDTO
@@ -64,6 +65,7 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
                         it.playerId = session.id
                     }
                 }
+                MessageType.CHOOSE_GAMEMODE_TO_SERVER.value -> Gson().fromJson(message, ChooseGameModeToServerDTO::class.java)
                 else -> {
                     throw Exception(String()
                             .plus("Invalid message received: ")
