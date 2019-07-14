@@ -4,6 +4,7 @@ import main.kotlin.game.GameMode
 import main.kotlin.game.spaceBalls.SpaceBalls
 import main.kotlin.game.spaceBalls.dto.BackToLobbyToClientDTO
 import main.kotlin.game.spaceBalls.dto.BackToLobbyToServerDTO
+import main.kotlin.game.zombies.Zombies
 import main.kotlin.lobby.dto.*
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
@@ -73,6 +74,14 @@ class Lobby: INetworkNewsPaperSubscriber {
            when(selectedGameMode){
                GameMode.SPACE_BALLS.value -> {
                    val game = SpaceBalls()
+                   game.initializeGameState(availablePlayers)
+                   game.start()
+                   availablePlayers.forEach {
+                       it.status = Player.Status.IN_GAME.text
+                   }
+               }
+               GameMode.ZOMBIES.value -> {
+                   val game = Zombies()
                    game.initializeGameState(availablePlayers)
                    game.start()
                    availablePlayers.forEach {

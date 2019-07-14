@@ -7,6 +7,7 @@ import main.kotlin.game.spaceBalls.dto.BackToLobbyToClientDTO
 import main.kotlin.game.spaceBalls.dto.BackToLobbyToServerDTO
 import main.kotlin.game.spaceBalls.dto.SendSpaceBallsGameStateToClientsDTO
 import main.kotlin.game.spaceBalls.dto.SendInputStateToServerDTO
+import main.kotlin.game.zombies.dto.SendZombiesGameStateToClientsDTO
 import main.kotlin.lobby.dto.ChooseGameModeToServerDTO
 import main.kotlin.lobby.dto.ChooseNameToServerDTO
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
@@ -84,6 +85,18 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
     override fun notifyGameStateNews(dto: DTO) {
         when(dto){
             is SendSpaceBallsGameStateToClientsDTO -> {
+                mutableSetOf<WsSession>().also { set ->
+                    dto.gameState.players.forEach {player ->
+                        sessions.find { sesh -> sesh.id == player.sessionId }.also {
+                            if (it != null) {
+                                set.add(it)
+                            }
+                        }
+                    }
+                    sendToSessionSet(set, convertDTOtoJSON(dto))
+                }
+            }
+            is SendZombiesGameStateToClientsDTO -> {
                 mutableSetOf<WsSession>().also { set ->
                     dto.gameState.players.forEach {player ->
                         sessions.find { sesh -> sesh.id == player.sessionId }.also {
