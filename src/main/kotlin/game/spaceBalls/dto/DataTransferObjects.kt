@@ -4,8 +4,8 @@ import main.kotlin.game.spaceBalls.gameobjects.Player
 import main.kotlin.newspaper.MessageType
 import main.kotlin.utilities.DTO
 
-data class SendGameStateToClientsDTO(val gameState: GameStateDTO,
-                                     val messageType: String = MessageType.SEND_GAME_STATE_TO_ClIENTS.value): DTO()
+data class SendSpaceBallsGameStateToClientsDTO(val gameState: GameStateDTO,
+                                               val messageType: String = MessageType.SEND_GAME_STATE_TO_ClIENTS.value): DTO()
 
 data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf(),
                         val fireBalls: MutableList<FireBallDTO> = mutableListOf(),

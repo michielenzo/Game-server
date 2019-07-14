@@ -5,7 +5,7 @@ import com.google.gson.JsonParser
 import io.javalin.websocket.WsSession
 import main.kotlin.game.spaceBalls.dto.BackToLobbyToClientDTO
 import main.kotlin.game.spaceBalls.dto.BackToLobbyToServerDTO
-import main.kotlin.game.spaceBalls.dto.SendGameStateToClientsDTO
+import main.kotlin.game.spaceBalls.dto.SendSpaceBallsGameStateToClientsDTO
 import main.kotlin.game.spaceBalls.dto.SendInputStateToServerDTO
 import main.kotlin.lobby.dto.ChooseGameModeToServerDTO
 import main.kotlin.lobby.dto.ChooseNameToServerDTO
@@ -83,7 +83,7 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
 
     override fun notifyGameStateNews(dto: DTO) {
         when(dto){
-            is SendGameStateToClientsDTO -> {
+            is SendSpaceBallsGameStateToClientsDTO -> {
                 mutableSetOf<WsSession>().also { set ->
                     dto.gameState.players.forEach {player ->
                         sessions.find { sesh -> sesh.id == player.sessionId }.also {

@@ -59,8 +59,8 @@ class GameProxy(private val spaceBalls: SpaceBalls): INetworkNewsPaperSubscriber
         }
     }
 
-    @Synchronized fun buildSendGameStateDTO(): SendGameStateToClientsDTO {
-        return SendGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
+    @Synchronized fun buildSendGameStateDTO(): SendSpaceBallsGameStateToClientsDTO {
+        return SendSpaceBallsGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
             spaceBalls.players.forEach{ player ->
                 PlayerDTO(player.sessionId, player.name, player.xPosition, player.yPosition, player.health, player.hasShield).also { playerDTO ->
                     gameStateDTO.players.add(playerDTO)
