@@ -20,7 +20,7 @@ class Proxy(val zombies: Zombies): INetworkNewsPaperSubscriber {
     private fun buildSendGameStateDTO(): SendZombiesGameStateToClientsDTO {
         return SendZombiesGameStateToClientsDTO(GameStateDTO(mutableListOf<PlayerDTO>().also { playersDTO ->
            zombies.players.forEach { player ->
-               playersDTO.add(PlayerDTO(player.sessionId, player.name))
+               playersDTO.add(PlayerDTO(player.sessionId, player.name, player.xPos, player.yPos))
            }
         }))
     }

@@ -15,7 +15,7 @@ class Zombies: GameLoop() {
 
     fun initializeGameState(lobbyPlayers: MutableSet<main.kotlin.lobby.Player>){
         lobbyPlayers.forEach {lobbyPlayer ->
-            Player(lobbyPlayer.id, lobbyPlayer.name).also { player ->
+            Player(lobbyPlayer.id, lobbyPlayer.name, 100 + 100*players.size, 500).also { player ->
                 players.add(player)
             }
         }
