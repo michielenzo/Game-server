@@ -10,6 +10,7 @@ class Zombies: GameLoop() {
     val players = mutableListOf<Player>()
 
     override fun tick() {
+        players.forEach { it.tick() }
         proxy.sendGameStateToClients()
     }
 
