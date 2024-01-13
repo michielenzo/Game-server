@@ -78,6 +78,7 @@ class FireBall(var xPosition: Int, var yPosition: Int,
                     Collision.HitMarker.TOP_LEFT_CORNER -> { direction = MovementDirection.UP_LEFT }
                     Collision.HitMarker.INSIDE -> {}
                     Collision.HitMarker.NONE -> {}
+                    Collision.HitMarker.SOMEWHERE -> {}
                 }
                 damagePlayer(coll)
             }
