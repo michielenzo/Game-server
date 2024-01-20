@@ -10,7 +10,6 @@ RUN apt-get update
 RUN apt-get install -y curl unzip
 RUN rm -rf /var/lib/apt/lists/*
 
-
 # Kotlin
 ENV KOTLIN_VERSION=1.9.22
 RUN curl -LO https://github.com/JetBrains/kotlin/releases/download/v${KOTLIN_VERSION}/kotlin-compiler-${KOTLIN_VERSION}.zip
