@@ -4,6 +4,7 @@ import main.kotlin.newspaper.MessageType
 import main.kotlin.utilities.DTO
 
 data class SendLobbyStateToClientsDTO(val lobbyState: LobbyStateDTO,
+                                      var yourId: String,
                                       val messageType: String = MessageType.SEND_LOBBY_STATE_TO_CLIENTS.value): DTO()
 
 data class LobbyStateDTO(val gameMode: String,

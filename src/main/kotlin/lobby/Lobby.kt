@@ -120,7 +120,7 @@ class Lobby: INetworkNewsPaperSubscriber {
                     lobbyStateDTO.players.add(playerDTO)
                 }
             }
-        })
+        }, "")
     }
 
 }

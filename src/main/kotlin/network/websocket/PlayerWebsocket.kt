@@ -113,13 +113,9 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
 
     override fun notifyLobbyNews(dto: DTO) {
         when(dto){
-            is SendLobbyStateToClientsDTO -> sendToAllSessions(convertDTOtoJSON(dto))
+            is SendLobbyStateToClientsDTO -> sendToAllSessionsAndSetClientId(dto)
             is BackToLobbyToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
         }
-    }
-
-    private fun convertDTOtoJSON(dto: DTO): String{
-        return Gson().toJson(dto)
     }
 
     private fun buildConnectToServerDTO(session: WsSession): DTO {
@@ -129,6 +125,5 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
     private fun buildDisconnectFromServerDTO(session: WsSession): DTO {
         return DisconnectDTO(session.id, LocalDateTime.now())
     }
-
 }
 

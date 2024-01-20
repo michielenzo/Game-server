@@ -1,7 +1,10 @@
 package network
 
+import com.google.gson.Gson
 import io.javalin.Javalin
 import io.javalin.websocket.WsSession
+import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
+import main.kotlin.utilities.DTO
 
 abstract class Websocket(var endPointPath: String, var portNumber: Int) {
 
@@ -30,6 +33,13 @@ abstract class Websocket(var endPointPath: String, var portNumber: Int) {
         }
     }
 
+    @Synchronized fun sendToAllSessionsAndSetClientId(dto: SendLobbyStateToClientsDTO) {
+        sessions.forEach { sesh ->
+            dto.yourId = sesh.id
+            sendToSessionById(sesh.id, convertDTOtoJSON(dto))
+        }
+    }
+
     @Synchronized fun sendToSessionById(sessionId: String?, message: String){
         sessions.find { sesh -> sesh.id == sessionId }.also { sesh ->
             sesh?: return
@@ -41,6 +51,10 @@ abstract class Websocket(var endPointPath: String, var portNumber: Int) {
         sessionSet.forEach { sesh ->
             if(sesh.isOpen) sesh.send(message)
         }
+    }
+
+    fun convertDTOtoJSON(dto: DTO): String{
+        return Gson().toJson(dto)
     }
 
     abstract fun onClose(session: WsSession, status: Int, message: String?)

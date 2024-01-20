@@ -32,11 +32,10 @@ Endpoint:
       }
     ]
   },
+  "yourId": "129e117e-95ff-4a65-9846-e307cf128740",
   "messageType": "sendLobbyStateToClients"
 }
 ```
-
-
 
 
 
