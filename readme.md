@@ -55,5 +55,86 @@ Endpoint:
 }
 ```
 
+### BackToLobbyToServer:
 
+```json
+{
+  "playerId": "129e117e-95ff-4a65-9846-e307cf128740",
+  "messageType": "backToLobbyToServer"
+}
+```
 
+### BackToLobbyToClient:  
+
+```json
+{
+  "playerId": "129e117e-95ff-4a65-9846-e307cf128740",
+  "messageType": "backToLobbyToServer"
+}
+```  
+"messageType": "backToLobbyToServer"!!!????? Dit staat nu in de server zo.
+
+### SendInputStateToServer:  
+
+```json
+{
+  "sessionId": "129e117e-95ff-4a65-9846-e307cf128740",
+  "messageType": "sendInputStateToServer",
+  "wKey": true,
+  "aKey": false,
+  "sKey": false,
+  "dKey": true
+}
+```  
+
+### SendSpaceBallsGameStateToClients:  
+
+```json
+{
+  "gameState": {
+    "players": [
+      {
+        "sessionId": "6a472a35-3862-45e9-8842-ce5366b41771",
+        "name": "6a472a35-3862-45e9-8842-ce5366b41771",
+        "xPosition": 100,
+        "yPosition": 500,
+        "health": 5,
+        "hasShield": false,
+        "width": 50,
+        "height": 50
+      }
+    ],
+    "fireBalls": [
+      {
+        "xPosition": 772,
+        "yPosition": 479,
+        "diameter": 50
+      }
+    ],
+    "powerUps": [
+      {
+        "type": "inverter",
+        "xPosition": 493,
+        "yPosition": 493,
+        "width": 40,
+        "height": 40
+      },
+      {
+        "type": "med_kit",
+        "xPosition": 262,
+        "yPosition": 522,
+        "width": 40,
+        "height": 40
+      },
+      {
+        "type": "shield",
+        "xPosition": 389,
+        "yPosition": 509,
+        "width": 40,
+        "height": 40
+      }
+    ]
+  },
+  "messageType": "sendSpaceBallsGameStateToClients"
+}
+```
