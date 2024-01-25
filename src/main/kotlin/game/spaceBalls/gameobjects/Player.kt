@@ -18,7 +18,7 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     @Volatile var sKey = false
     @Volatile var dKey = false
 
-    private val speed = 3
+    private val speed = 6
     var health = 5
     var isAlive = true
 

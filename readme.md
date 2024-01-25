@@ -13,6 +13,9 @@ You can run a command inside the container:
 `docker exec game-server-container ls`  
 ls here is our example command to run inside the container.
 
+You can also open a terminal inside the container:  
+`docker exec -it game-server-container /bin/bash`
+
 ## Websocket messaging
 
 Endpoint:  
