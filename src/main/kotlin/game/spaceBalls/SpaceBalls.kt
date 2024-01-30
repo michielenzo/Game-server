@@ -12,7 +12,7 @@ class SpaceBalls: GameLoop(){
 
     companion object {
         const val DIMENSION_WIDTH = 1100
-        const val DIMENSION_HEIGHT = 700
+        const val DIMENSION_HEIGHT = 650
     }
 
     val players = mutableListOf<Player>()

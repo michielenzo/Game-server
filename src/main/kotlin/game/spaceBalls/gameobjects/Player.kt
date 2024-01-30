@@ -26,7 +26,7 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     var shieldStartTime: Long = 0
 
     override fun tick() {
-        move()
+        if(isAlive) move()
         checkWallCollision()
         checkPowerUpCollision()
         checkHealth()
