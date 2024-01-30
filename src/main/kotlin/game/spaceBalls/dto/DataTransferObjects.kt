@@ -1,6 +1,5 @@
 package main.kotlin.game.spaceBalls.dto
 
-import main.kotlin.game.spaceBalls.gameobjects.Player
 import main.kotlin.newspaper.MessageType
 import main.kotlin.utilities.DTO
 
@@ -13,22 +12,17 @@ data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf(),
 
 data class PlayerDTO(val sessionId: String,
                      val name: String,
-                     @Volatile var xPosition: Int,
-                     @Volatile var yPosition: Int,
+                     @Volatile var x: Int,
+                     @Volatile var y: Int,
                      val health: Int,
-                     val hasShield: Boolean,
-                     val width: Int = Player.WIDTH,
-                     val height: Int = Player.HEIGHT): DTO()
+                     val shield: Boolean): DTO()
 
-data class FireBallDTO(val xPosition: Int,
-                       val yPosition: Int,
-                       val diameter: Int)
+data class FireBallDTO(val x: Int,
+                       val y: Int)
 
 data class PowerUpDTO(val type: String,
-                      val xPosition: Int,
-                      val yPosition: Int,
-                      val width: Int,
-                      val height: Int): DTO()
+                      val x: Int,
+                      val y: Int): DTO()
 
 data class SendInputStateToServerDTO(var sessionId: String,
                                      val wKey: Boolean,

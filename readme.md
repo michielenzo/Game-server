@@ -99,42 +99,33 @@ Endpoint:
       {
         "sessionId": "6a472a35-3862-45e9-8842-ce5366b41771",
         "name": "6a472a35-3862-45e9-8842-ce5366b41771",
-        "xPosition": 100,
-        "yPosition": 500,
+        "x": 100,
+        "y": 500,
         "health": 5,
-        "hasShield": false,
-        "width": 50,
-        "height": 50
+        "shield": false
       }
     ],
     "fireBalls": [
       {
-        "xPosition": 772,
-        "yPosition": 479,
-        "diameter": 50
+        "x": 772,
+        "y": 479
       }
     ],
     "powerUps": [
       {
         "type": "inverter",
-        "xPosition": 493,
-        "yPosition": 493,
-        "width": 40,
-        "height": 40
+        "x": 493,
+        "y": 493
       },
       {
         "type": "med_kit",
-        "xPosition": 262,
-        "yPosition": 522,
-        "width": 40,
-        "height": 40
+        "x": 262,
+        "y": 522
       },
       {
         "type": "shield",
-        "xPosition": 389,
-        "yPosition": 509,
-        "width": 40,
-        "height": 40
+        "x": 389,
+        "y": 509
       }
     ]
   },

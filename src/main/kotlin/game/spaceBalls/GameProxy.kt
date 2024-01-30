@@ -67,7 +67,7 @@ class GameProxy(private val spaceBalls: SpaceBalls): INetworkNewsPaperSubscriber
                 }
             }
             spaceBalls.fireBalls.forEach { fireBall ->
-                FireBallDTO(fireBall.xPosition, fireBall.yPosition, fireBall.diameter).also { fireBallDTO ->
+                FireBallDTO(fireBall.xPosition, fireBall.yPosition).also { fireBallDTO ->
                     gameStateDTO.fireBalls.add(fireBallDTO)
                 }
             }
@@ -82,9 +82,7 @@ class GameProxy(private val spaceBalls: SpaceBalls): INetworkNewsPaperSubscriber
     }
 
     private fun buildPowerUpDTO(powerUp: IPowerUp, powerUpType: IPowerUp.PowerUpType): PowerUpDTO {
-        return PowerUpDTO(powerUpType.text,
-                          powerUp.xPosition, powerUp.yPosition,
-                          IPowerUp.WIDTH, IPowerUp.HEIGHT)
+        return PowerUpDTO(powerUpType.text, powerUp.xPosition, powerUp.yPosition)
     }
 
 }
