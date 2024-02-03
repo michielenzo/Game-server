@@ -9,8 +9,8 @@ import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 class Player(val sessionId: String, val name: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int, val spaceBalls: SpaceBalls): GameObject{
 
     companion object {
-        const val WIDTH = 50
-        const val HEIGHT = 50
+        const val WIDTH = 60
+        const val HEIGHT = 42
     }
 
     @Volatile var wKey = false
