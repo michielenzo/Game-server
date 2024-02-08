@@ -16,6 +16,10 @@ ls here is our example command to run inside the container.
 You can also open a terminal inside the container:  
 `docker exec -it game-server-container /bin/bash`
 
+Or deploy it with docker compose:
+`docker compose up -d`
+The -d flag is used t run i as a deamon.
+
 ## Websocket messaging
 
 Endpoint:  
