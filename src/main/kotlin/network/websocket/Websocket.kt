@@ -19,7 +19,7 @@ abstract class Websocket(var endPointPath: String, var portNumber: Int) {
 
         val app = Javalin.create { config ->
             config.registerPlugin(sslPlugin)
-        }.start(portNumber)
+        }.start(8081)
 
         app.ws(endPointPath) { ws ->
             ws.onConnect { ctx ->
