@@ -12,12 +12,13 @@ abstract class Websocket(var endPointPath: String, var portNumber: Int) {
     protected val sessions = mutableListOf<WsContext>()
 
     fun initialize() {
-//        val sslPlugin = SslPlugin { conf ->
-//            conf.pemFromPath("/path/to/cert.pem", "/path/to/key.pem")
-//        }
+        val sslPlugin = SslPlugin { conf ->
+            conf.pemFromPath("ssl/certificate.pem", "ssl/private.key")
+            conf.securePort = 8081
+        }
 
         val app = Javalin.create { config ->
-            //config.registerPlugin(sslPlugin)
+            config.registerPlugin(sslPlugin)
         }.start(portNumber)
 
         app.ws(endPointPath) { ws ->
