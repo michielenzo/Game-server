@@ -31,6 +31,5 @@ WORKDIR /app
 COPY src /app/src
 COPY pom.xml /app/
 
-# This runs when the container is created with docker run. It also runs on rebooting.
 CMD mvn clean install && \
     java -jar target/Game-server-1.0-SNAPSHOT.jar

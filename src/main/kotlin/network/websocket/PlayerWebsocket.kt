@@ -2,7 +2,7 @@ package network
 
 import com.google.gson.Gson
 import com.google.gson.JsonParser
-import io.javalin.websocket.WsSession
+import io.javalin.websocket.WsContext
 import main.kotlin.game.spaceBalls.dto.BackToLobbyToClientDTO
 import main.kotlin.game.spaceBalls.dto.BackToLobbyToServerDTO
 import main.kotlin.game.spaceBalls.dto.SendSpaceBallsGameStateToClientsDTO
@@ -23,7 +23,6 @@ import main.kotlin.newspaper.network.NetworkNewsPaper
 import main.kotlin.utilities.DTO
 import java.time.LocalDateTime
 
-
 class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), IGameStateNewsPaperSubscriber, ILobbyNewsPaperSubscriber {
 
     init {
@@ -31,19 +30,19 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
         LobbyNewsPaper.subscribe(this)
     }
 
-    override fun onConnect(session: WsSession) {
-        sessions.add(session)
-        NetworkNewsPaper.broadcast(buildConnectToServerDTO(session))
+    override fun onConnect(wsCtx: WsContext) {
+        sessions.add(wsCtx)
+        NetworkNewsPaper.broadcast(buildConnectToServerDTO(wsCtx))
     }
 
-    override fun onMessage(session: WsSession, message: String) {
-        convertStringToDTObject(message, session).also {
+    override fun onMessage(wsCtx: WsContext, message: String) {
+        convertStringToDTObject(message, wsCtx).also {
             it?: return
             NetworkNewsPaper.broadcast(it)
         }
     }
 
-    private fun convertStringToDTObject(message: String, session: WsSession): DTO? {
+    private fun convertStringToDTObject(message: String, wsCtx: WsContext): DTO? {
         JsonParser()
                 .parse(message)
                 .asJsonObject
@@ -53,17 +52,17 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
                 MessageType.START_GAME_TO_SERVER.value -> Gson().fromJson(message, StartGameToServerDTO::class.java)
                 MessageType.SEND_INPUT_STATE_TO_SERVER.value -> {
                     Gson().fromJson(message, SendInputStateToServerDTO::class.java).also {
-                        it.sessionId = session.id
+                        it.sessionId = wsCtx.sessionId()
                     }
                 }
                 MessageType.CHOOSE_NAME_TO_SERVER.value -> {
                     Gson().fromJson(message, ChooseNameToServerDTO::class.java).also {
-                        it.playerId = session.id
+                        it.playerId = wsCtx.sessionId()
                     }
                 }
                 MessageType.BACK_TO_LOBBY_TO_SERVER.value -> {
                     Gson().fromJson(message, BackToLobbyToServerDTO::class.java).also {
-                        it.playerId = session.id
+                        it.playerId = wsCtx.sessionId()
                     }
                 }
                 MessageType.CHOOSE_GAMEMODE_TO_SERVER.value -> Gson().fromJson(message, ChooseGameModeToServerDTO::class.java)
@@ -75,19 +74,18 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
                 }
             }
         }
-       return null
     }
 
-    override fun onClose(session: WsSession, status: Int, message: String?) {
-        NetworkNewsPaper.broadcast(buildDisconnectFromServerDTO(session))
+    override fun onClose(wsCtx: WsContext, status: Int, message: String?) {
+        NetworkNewsPaper.broadcast(buildDisconnectFromServerDTO(wsCtx))
     }
 
     override fun notifyGameStateNews(dto: DTO) {
         when(dto){
             is SendSpaceBallsGameStateToClientsDTO -> {
-                mutableSetOf<WsSession>().also { set ->
+                mutableSetOf<WsContext>().also { set ->
                     dto.gameState.players.forEach {player ->
-                        sessions.find { sesh -> sesh.id == player.sessionId }.also {
+                        sessions.find { sesh -> sesh.sessionId() == player.sessionId }.also {
                             if (it != null) {
                                 set.add(it)
                             }
@@ -97,9 +95,9 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
                 }
             }
             is SendZombiesGameStateToClientsDTO -> {
-                mutableSetOf<WsSession>().also { set ->
+                mutableSetOf<WsContext>().also { set ->
                     dto.gameState.players.forEach {player ->
-                        sessions.find { sesh -> sesh.id == player.sessionId }.also {
+                        sessions.find { sesh -> sesh.sessionId() == player.sessionId }.also {
                             if (it != null) {
                                 set.add(it)
                             }
@@ -118,12 +116,12 @@ class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), I
         }
     }
 
-    private fun buildConnectToServerDTO(session: WsSession): DTO {
-        return ConnectionDTO(session.id, LocalDateTime.now())
+    private fun buildConnectToServerDTO(session: WsContext): DTO {
+        return ConnectionDTO(session.sessionId(), LocalDateTime.now())
     }
 
-    private fun buildDisconnectFromServerDTO(session: WsSession): DTO {
-        return DisconnectDTO(session.id, LocalDateTime.now())
+    private fun buildDisconnectFromServerDTO(session: WsContext): DTO {
+        return DisconnectDTO(session.sessionId(), LocalDateTime.now())
     }
 }
 
