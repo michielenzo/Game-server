@@ -4,3 +4,6 @@ target/
 /target
 out/
 dependency-reduced-pom.xml
+
+# SSl
+ssl
