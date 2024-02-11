@@ -30,6 +30,7 @@ WORKDIR /app
 
 COPY src /app/src
 COPY pom.xml /app/
+COPY ssl /app/ssl
 
 CMD mvn clean install && \
     java -jar target/Game-server-1.0-SNAPSHOT.jar
