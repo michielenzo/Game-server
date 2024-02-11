@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import io.javalin.Javalin
 import io.javalin.community.ssl.SslPlugin
 import io.javalin.websocket.WsContext
+import io.javalin.websocket.WsErrorHandler
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
 import main.kotlin.utilities.DTO
 
@@ -37,6 +38,7 @@ abstract class Websocket(var endPointPath: String, var portNumber: Int) {
                 }
                 onClose(ctx, ctx.status(), ctx.reason())
             }
+            ws.onError { ctx -> println(ctx.error()) }
         }
     }
 
