@@ -3,6 +3,7 @@ package network
 import com.google.gson.Gson
 import io.javalin.Javalin
 import io.javalin.community.ssl.SslPlugin
+import io.javalin.community.ssl.TlsConfig
 import io.javalin.websocket.WsContext
 import io.javalin.websocket.WsErrorHandler
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
@@ -16,6 +17,8 @@ abstract class Websocket(var endPointPath: String, var portNumber: Int) {
         val sslPlugin = SslPlugin { conf ->
             conf.pemFromPath("ssl/certificate.pem", "ssl/private.key")
             conf.securePort = 8081
+            conf.http2 = false
+            conf.tlsConfig = TlsConfig.MODERN
         }
 
         val app = Javalin.create { config ->
