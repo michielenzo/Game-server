@@ -20,7 +20,7 @@ abstract class Websocket() {
             ?: throw IllegalArgumentException("The WS_PORT environment variable should be an integer.")
 
         val app: Javalin
-        if(deploymentMode == "production"){
+        if(deploymentMode == "ssl-server"){
             val sslPlugin = SslPlugin { conf ->
                 conf.pemFromPath("ssl/certificate.pem", "ssl/private.key")
                 conf.securePort = port
