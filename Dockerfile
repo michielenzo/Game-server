@@ -31,7 +31,6 @@ WORKDIR /app
 COPY src /app/src
 COPY pom.xml /app/
 COPY ssl /app/ssl
-COPY .env /app/
 
 RUN mvn clean install
 
