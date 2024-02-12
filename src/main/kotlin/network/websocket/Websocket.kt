@@ -9,21 +9,31 @@ import io.javalin.websocket.WsErrorHandler
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
 import main.kotlin.utilities.DTO
 
-abstract class Websocket(var endPointPath: String, var portNumber: Int) {
+abstract class Websocket() {
 
     protected val sessions = mutableListOf<WsContext>()
 
     fun initialize() {
-        val sslPlugin = SslPlugin { conf ->
-            conf.pemFromPath("ssl/certificate.pem", "ssl/private.key")
-            conf.securePort = 8081
-            conf.http2 = false
-            conf.tlsConfig = TlsConfig.MODERN
-        }
+        val deploymentMode = System.getenv("DEPLOYMENT")
+        val endPointPath = System.getenv("WS_ENDPOINT_PATH")
+        val port = System.getenv("WS_PORT").toIntOrNull()
+            ?: throw IllegalArgumentException("The WS_PORT environment variable should be an integer.")
 
-        val app = Javalin.create { config ->
-            config.registerPlugin(sslPlugin)
-        }.start(8081)
+        val app: Javalin
+        if(deploymentMode == "production"){
+            val sslPlugin = SslPlugin { conf ->
+                conf.pemFromPath("ssl/certificate.pem", "ssl/private.key")
+                conf.securePort = port
+                conf.http2 = false
+                conf.tlsConfig = TlsConfig.MODERN
+            }
+
+            app = Javalin.create { config ->
+                config.registerPlugin(sslPlugin)
+            }.start(port)
+        } else{
+            app = Javalin.create().start(port)
+        }
 
         app.ws(endPointPath) { ws ->
             ws.onConnect { ctx ->

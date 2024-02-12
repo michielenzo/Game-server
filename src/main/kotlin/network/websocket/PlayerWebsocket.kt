@@ -23,7 +23,7 @@ import main.kotlin.newspaper.network.NetworkNewsPaper
 import main.kotlin.utilities.DTO
 import java.time.LocalDateTime
 
-class PlayerWebsocket: Websocket(endPointPath = "/player", portNumber = 8080), IGameStateNewsPaperSubscriber, ILobbyNewsPaperSubscriber {
+class PlayerWebsocket: Websocket(), IGameStateNewsPaperSubscriber, ILobbyNewsPaperSubscriber {
 
     init {
         GameStateNewsPaper.subscribe(this)
