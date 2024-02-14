@@ -15,6 +15,8 @@ import main.kotlin.lobby.dto.StartGameToServerDTO
 import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
+import main.kotlin.network.dto.HeartbeatAcknowledgeDTO
+import main.kotlin.network.dto.HeartbeatCheckDTO
 import main.kotlin.newspaper.MessageType
 import main.kotlin.newspaper.gamestate.GameStateNewsPaper
 import main.kotlin.newspaper.lobby.ILobbyNewsPaperSubscriber
@@ -38,6 +40,14 @@ class PlayerWebsocket: Websocket(), IGameStateNewsPaperSubscriber, ILobbyNewsPap
     override fun onMessage(wsCtx: WsContext, message: String) {
         convertStringToDTObject(message, wsCtx).also {
             it?: return
+
+            if(it is HeartbeatCheckDTO) {
+                HeartbeatAcknowledgeDTO().also { dto ->
+                    sendToSessionById(wsCtx.sessionId(), convertDTOtoJSON(dto))
+                }
+                return
+            }
+
             NetworkNewsPaper.broadcast(it)
         }
     }
@@ -66,6 +76,7 @@ class PlayerWebsocket: Websocket(), IGameStateNewsPaperSubscriber, ILobbyNewsPap
                     }
                 }
                 MessageType.CHOOSE_GAMEMODE_TO_SERVER.value -> Gson().fromJson(message, ChooseGameModeToServerDTO::class.java)
+                MessageType.HEARTBEAT_CHECK.value -> Gson().fromJson(message, HeartbeatCheckDTO::class.java)
                 else -> {
                     throw Exception(String()
                             .plus("Invalid message received: ")

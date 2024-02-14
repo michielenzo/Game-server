@@ -5,11 +5,10 @@ import io.javalin.Javalin
 import io.javalin.community.ssl.SslPlugin
 import io.javalin.community.ssl.TlsConfig
 import io.javalin.websocket.WsContext
-import io.javalin.websocket.WsErrorHandler
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
 import main.kotlin.utilities.DTO
 
-abstract class Websocket() {
+abstract class Websocket {
 
     protected val sessions = mutableListOf<WsContext>()
 
@@ -72,8 +71,8 @@ abstract class Websocket() {
 
     @Synchronized
     fun sendToSessionById(sessionId: String?, message: String) {
-        sessions.find { ctx -> ctx.sessionId() == sessionId }?.let { ctx ->
-            if (ctx.session.isOpen) ctx.send(message)
+        sessions.find { ctx -> ctx.sessionId() == sessionId }?.let { wsCtx ->
+            if (wsCtx.session.isOpen) wsCtx.send(message)
         }
     }
 

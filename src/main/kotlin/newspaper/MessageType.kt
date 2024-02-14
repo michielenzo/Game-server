@@ -14,6 +14,7 @@ enum class MessageType(val value: String) {
     CHOOSE_NAME_TO_SERVER("chooseNameToServer"),
     BACK_TO_LOBBY_TO_SERVER("backToLobbyToServer"),
     BACK_TO_LOBBY_TO_CLIENT("backToLobbyToServer"),
-    CHOOSE_GAMEMODE_TO_SERVER("chooseGameModeToServer");
-
+    CHOOSE_GAMEMODE_TO_SERVER("chooseGameModeToServer"),
+    HEARTBEAT_ACKNOWLEDGE("heartbeatAcknowledge"),
+    HEARTBEAT_CHECK("heartbeatCheck");
 }
