@@ -1,8 +1,8 @@
-package main.kotlin.newspaper
+package main.kotlin.publisher
 
 import main.kotlin.utilities.DTO
 
-abstract class INewsPaper<ISubscriber> {
+abstract class IPublisher<ISubscriber> {
 
     protected val subscribers: MutableList<ISubscriber> = mutableListOf()
 
@@ -15,5 +15,4 @@ abstract class INewsPaper<ISubscriber> {
     fun unsubscribe(subscriber: ISubscriber){
         subscribers.remove(subscriber)
     }
-
 }

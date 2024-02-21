@@ -1,10 +1,7 @@
 package main.kotlin.game.spaceBalls
 
-import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
-import main.kotlin.game.spaceBalls.gameobjects.powerups.Inverter
-import main.kotlin.game.spaceBalls.gameobjects.powerups.MedKit
-import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 import main.kotlin.game.engine.RandomGenerator
+import main.kotlin.game.spaceBalls.gameobjects.powerups.*
 
 class PowerUpSpawner(private val spaceBalls: SpaceBalls) {
 
@@ -16,7 +13,8 @@ class PowerUpSpawner(private val spaceBalls: SpaceBalls) {
             IPowerUp.PowerUpType.MED_KIT,
             IPowerUp.PowerUpType.MED_KIT,
             IPowerUp.PowerUpType.INVERTER,
-            IPowerUp.PowerUpType.SHIELD
+            IPowerUp.PowerUpType.SHIELD,
+            IPowerUp.PowerUpType.CONTROL_INVERTER
     )
 
     fun tick(){
@@ -40,10 +38,11 @@ class PowerUpSpawner(private val spaceBalls: SpaceBalls) {
                         IPowerUp.PowerUpType.MED_KIT -> spaceBalls.powerUps.add(MedKit(randX, randY))
                         IPowerUp.PowerUpType.SHIELD -> spaceBalls.powerUps.add(Shield(randX, randY))
                         IPowerUp.PowerUpType.INVERTER -> spaceBalls.powerUps.add(Inverter(randX, randY))
+                        IPowerUp.PowerUpType.CONTROL_INVERTER ->
+                            spaceBalls.powerUps.add(ControlInverter(randX, randY, spaceBalls))
                     }
                 }
             }
         }
     }
-
 }

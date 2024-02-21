@@ -7,34 +7,33 @@ import main.kotlin.game.spaceBalls.dto.BackToLobbyToClientDTO
 import main.kotlin.game.spaceBalls.dto.BackToLobbyToServerDTO
 import main.kotlin.game.spaceBalls.dto.SendSpaceBallsGameStateToClientsDTO
 import main.kotlin.game.spaceBalls.dto.SendInputStateToServerDTO
-import main.kotlin.game.zombies.dto.SendZombiesGameStateToClientsDTO
 import main.kotlin.lobby.dto.ChooseGameModeToServerDTO
 import main.kotlin.lobby.dto.ChooseNameToServerDTO
 import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
 import main.kotlin.lobby.dto.StartGameToServerDTO
-import main.kotlin.newspaper.gamestate.IGameStateNewsPaperSubscriber
+import main.kotlin.publisher.gamestate.IGameStateSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.network.dto.HeartbeatAcknowledgeDTO
 import main.kotlin.network.dto.HeartbeatCheckDTO
-import main.kotlin.newspaper.MessageType
-import main.kotlin.newspaper.gamestate.GameStateNewsPaper
-import main.kotlin.newspaper.lobby.ILobbyNewsPaperSubscriber
-import main.kotlin.newspaper.lobby.LobbyNewsPaper
-import main.kotlin.newspaper.network.NetworkNewsPaper
+import main.kotlin.publisher.MessageType
+import main.kotlin.publisher.gamestate.GameStatePublisher
+import main.kotlin.publisher.lobby.ILobbySubscriber
+import main.kotlin.publisher.lobby.LobbyPublisher
+import main.kotlin.publisher.network.NetworkPublisher
 import main.kotlin.utilities.DTO
 import java.time.LocalDateTime
 
-class PlayerWebsocket: Websocket(), IGameStateNewsPaperSubscriber, ILobbyNewsPaperSubscriber {
+class PlayerWebsocket: Websocket(), IGameStateSubscriber, ILobbySubscriber {
 
     init {
-        GameStateNewsPaper.subscribe(this)
-        LobbyNewsPaper.subscribe(this)
+        GameStatePublisher.subscribe(this)
+        LobbyPublisher.subscribe(this)
     }
 
     override fun onConnect(wsCtx: WsContext) {
         sessions.add(wsCtx)
-        NetworkNewsPaper.broadcast(buildConnectToServerDTO(wsCtx))
+        NetworkPublisher.broadcast(buildConnectToServerDTO(wsCtx))
     }
 
     override fun onMessage(wsCtx: WsContext, message: String) {
@@ -48,7 +47,7 @@ class PlayerWebsocket: Websocket(), IGameStateNewsPaperSubscriber, ILobbyNewsPap
                 return
             }
 
-            NetworkNewsPaper.broadcast(it)
+            NetworkPublisher.broadcast(it)
         }
     }
 
@@ -88,26 +87,14 @@ class PlayerWebsocket: Websocket(), IGameStateNewsPaperSubscriber, ILobbyNewsPap
     }
 
     override fun onClose(wsCtx: WsContext, status: Int, message: String?) {
-        NetworkNewsPaper.broadcast(buildDisconnectFromServerDTO(wsCtx))
+        NetworkPublisher.broadcast(buildDisconnectFromServerDTO(wsCtx))
     }
 
     override fun notifyGameStateNews(dto: DTO) {
         when(dto){
             is SendSpaceBallsGameStateToClientsDTO -> {
                 mutableSetOf<WsContext>().also { set ->
-                    dto.gameState.players.forEach {player ->
-                        sessions.find { sesh -> sesh.sessionId() == player.sessionId }.also {
-                            if (it != null) {
-                                set.add(it)
-                            }
-                        }
-                    }
-                    sendToSessionSet(set, convertDTOtoJSON(dto))
-                }
-            }
-            is SendZombiesGameStateToClientsDTO -> {
-                mutableSetOf<WsContext>().also { set ->
-                    dto.gameState.players.forEach {player ->
+                    dto.gameState.players.forEach { player ->
                         sessions.find { sesh -> sesh.sessionId() == player.sessionId }.also {
                             if (it != null) {
                                 set.add(it)

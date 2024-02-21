@@ -1,10 +1,7 @@
 package main.kotlin.game.engine
 
-import javafx.scene.shape.Circle
-import javafx.scene.shape.Rectangle
 import java.awt.Point
 import kotlin.math.sqrt
-
 
 object Collision {
 

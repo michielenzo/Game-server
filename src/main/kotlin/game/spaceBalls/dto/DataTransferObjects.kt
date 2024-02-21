@@ -1,21 +1,24 @@
 package main.kotlin.game.spaceBalls.dto
 
-import main.kotlin.newspaper.MessageType
+import main.kotlin.publisher.MessageType
 import main.kotlin.utilities.DTO
 
-data class SendSpaceBallsGameStateToClientsDTO(val gameState: GameStateDTO,
-                                               val messageType: String = MessageType.SEND_SPACE_BALLS_GAME_STATE_TO_CLIENTS.value): DTO()
+data class SendSpaceBallsGameStateToClientsDTO(
+    val gameState: GameStateDTO,
+    val messageType: String = MessageType.SEND_SPACE_BALLS_GAME_STATE_TO_CLIENTS.value): DTO()
 
 data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf(),
                         val fireBalls: MutableList<FireBallDTO> = mutableListOf(),
-                        val powerUps: MutableList<PowerUpDTO> = mutableListOf()): DTO()
+                        val powerUps: MutableList<PowerUpDTO> = mutableListOf(),
+                        val homingBalls: MutableList<HomingBallDTO> = mutableListOf()): DTO()
 
 data class PlayerDTO(val sessionId: String,
                      val name: String,
                      @Volatile var x: Int,
                      @Volatile var y: Int,
                      val health: Int,
-                     val shield: Boolean): DTO()
+                     val shield: Boolean,
+                     val inverted: Boolean): DTO()
 
 data class FireBallDTO(val x: Int,
                        val y: Int)
@@ -23,6 +26,9 @@ data class FireBallDTO(val x: Int,
 data class PowerUpDTO(val type: String,
                       val x: Int,
                       val y: Int): DTO()
+
+data class HomingBallDTO(val x: Int,
+                         val y: Int)
 
 data class SendInputStateToServerDTO(var sessionId: String,
                                      val wKey: Boolean,

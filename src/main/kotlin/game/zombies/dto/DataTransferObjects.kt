@@ -1,6 +1,6 @@
 package main.kotlin.game.zombies.dto
 
-import main.kotlin.newspaper.MessageType
+import main.kotlin.publisher.MessageType
 import main.kotlin.utilities.DTO
 
 data class SendZombiesGameStateToClientsDTO(val gameState: GameStateDTO,

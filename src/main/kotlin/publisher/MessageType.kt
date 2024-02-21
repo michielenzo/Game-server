@@ -1,4 +1,4 @@
-package main.kotlin.newspaper
+package main.kotlin.publisher
 
 enum class MessageType(val value: String) {
     MESSAGE_TYPE("messageType"),

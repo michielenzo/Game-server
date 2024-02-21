@@ -8,12 +8,12 @@ import main.kotlin.game.zombies.Zombies
 import main.kotlin.lobby.dto.*
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
-import main.kotlin.newspaper.lobby.LobbyNewsPaper
-import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
-import main.kotlin.newspaper.network.NetworkNewsPaper
+import main.kotlin.publisher.lobby.LobbyPublisher
+import main.kotlin.publisher.network.INetworkSubscriber
+import main.kotlin.publisher.network.NetworkPublisher
 import main.kotlin.utilities.DTO
 
-class Lobby: INetworkNewsPaperSubscriber {
+class Lobby: INetworkSubscriber {
 
     private val players = mutableListOf<Player>()
     private var selectedGameMode = GameMode.SPACE_BALLS.value
@@ -21,7 +21,7 @@ class Lobby: INetworkNewsPaperSubscriber {
     private val lobbyStateLock = Object()
 
     init {
-        NetworkNewsPaper.subscribe(this)
+        NetworkPublisher.subscribe(this)
     }
 
     override fun notifyNetworkNews(dto: DTO) {
@@ -38,7 +38,7 @@ class Lobby: INetworkNewsPaperSubscriber {
     private fun handleChooseGameModeToServerMessage(dto: ChooseGameModeToServerDTO) {
         synchronized(lobbyStateLock){
             selectedGameMode = dto.game
-            buildSendLobbyStateDTO().also { LobbyNewsPaper.broadcast(it) }
+            buildSendLobbyStateDTO().also { LobbyPublisher.broadcast(it) }
         }
     }
 
@@ -48,8 +48,8 @@ class Lobby: INetworkNewsPaperSubscriber {
                 it?: return
                 it.status = Player.Status.AVAILABLE.text
             }
-            LobbyNewsPaper.broadcast(BackToLobbyToClientDTO().also { it.playerId = dto.playerId })
-            buildSendLobbyStateDTO().also { LobbyNewsPaper.broadcast(it) }
+            LobbyPublisher.broadcast(BackToLobbyToClientDTO().also { it.playerId = dto.playerId })
+            buildSendLobbyStateDTO().also { LobbyPublisher.broadcast(it) }
         }
     }
 
@@ -59,7 +59,7 @@ class Lobby: INetworkNewsPaperSubscriber {
                 player?: return
                 player.name = dto.chosenName
             }
-            buildSendLobbyStateDTO().also { LobbyNewsPaper.broadcast(it) }
+            buildSendLobbyStateDTO().also { LobbyPublisher.broadcast(it) }
         }
     }
 
@@ -100,7 +100,7 @@ class Lobby: INetworkNewsPaperSubscriber {
                 it?: return
                 players.remove(it)
             }
-            buildSendLobbyStateDTO().also { LobbyNewsPaper.broadcast(it) }
+            buildSendLobbyStateDTO().also { LobbyPublisher.broadcast(it) }
         }
     }
 
@@ -108,7 +108,7 @@ class Lobby: INetworkNewsPaperSubscriber {
         synchronized(lobbyStateLock){
             Player(dto.id, "available", dto.id).also {
                 players.add(it)
-                LobbyNewsPaper.broadcast(buildSendLobbyStateDTO())
+                LobbyPublisher.broadcast(buildSendLobbyStateDTO())
             }
         }
     }

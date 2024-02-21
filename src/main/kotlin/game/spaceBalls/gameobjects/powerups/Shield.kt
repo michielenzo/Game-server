@@ -19,5 +19,4 @@ class Shield(override val xPosition: Int, override val yPosition: Int) : GameObj
             player.shieldStartTime = System.currentTimeMillis()
         }
     }
-
 }

@@ -6,5 +6,4 @@ data class Player (val id: String, var status: String, var name: String = id){
         AVAILABLE("available"),
         IN_GAME("in game")
     }
-
 }

@@ -4,15 +4,15 @@ import main.kotlin.game.spaceBalls.dto.SendInputStateToServerDTO
 import main.kotlin.game.zombies.dto.GameStateDTO
 import main.kotlin.game.zombies.dto.PlayerDTO
 import main.kotlin.game.zombies.dto.SendZombiesGameStateToClientsDTO
-import main.kotlin.newspaper.gamestate.GameStateNewsPaper
-import main.kotlin.newspaper.network.INetworkNewsPaperSubscriber
-import main.kotlin.newspaper.network.NetworkNewsPaper
+import main.kotlin.publisher.gamestate.GameStatePublisher
+import main.kotlin.publisher.network.INetworkSubscriber
+import main.kotlin.publisher.network.NetworkPublisher
 import main.kotlin.utilities.DTO
 
-class Proxy(val zombies: Zombies): INetworkNewsPaperSubscriber {
+class Proxy(val zombies: Zombies): INetworkSubscriber {
 
     init {
-        NetworkNewsPaper.subscriberQueue.add(this)
+        NetworkPublisher.subscriberQueue.add(this)
     }
 
     override fun notifyNetworkNews(dto: DTO) {
@@ -32,7 +32,7 @@ class Proxy(val zombies: Zombies): INetworkNewsPaperSubscriber {
     }
 
     fun sendGameStateToClients() {
-        buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
+        buildSendGameStateDTO().also { GameStatePublisher.broadcast(it) }
     }
 
     private fun buildSendGameStateDTO(): SendZombiesGameStateToClientsDTO {

@@ -12,5 +12,4 @@ class MedKit(override val xPosition: Int, override val yPosition: Int): GameObje
     override fun onPickUp(player: Player) {
         if(player.isAlive) player.health++
     }
-
 }

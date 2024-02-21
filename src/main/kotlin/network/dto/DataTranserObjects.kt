@@ -1,6 +1,6 @@
 package main.kotlin.network.dto
 
-import main.kotlin.newspaper.MessageType
+import main.kotlin.publisher.MessageType
 import main.kotlin.utilities.DTO
 import java.time.LocalDateTime
 

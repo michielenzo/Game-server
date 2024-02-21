@@ -1,16 +1,16 @@
 package main.kotlin.game.spaceBalls.gameobjects
 
-import javafx.scene.shape.Circle
-import javafx.scene.shape.Rectangle
+import main.kotlin.game.engine.Circle
 import main.kotlin.game.spaceBalls.SpaceBalls
 import main.kotlin.game.engine.Collision
+import main.kotlin.game.engine.Rectangle
 
 class FireBall(var xPosition: Int, var yPosition: Int,
                private var direction: MovementDirection,
                private val game: SpaceBalls)
 : GameObject {
 
-    val diameter = 50
+    private val diameter = 50
     private val speed = 8
     private val playerCollision = mutableListOf<PlayerCollision>()
 
@@ -98,7 +98,7 @@ class FireBall(var xPosition: Int, var yPosition: Int,
     private fun checkCollisionWithPlayers() {
         game.players.forEach { player ->
             Rectangle(player.xPosition.toDouble(), player.yPosition.toDouble(), Player.WIDTH.toDouble(), Player.HEIGHT.toDouble()).also { rect ->
-                Circle().apply { this.radius = (diameter/2).toDouble(); centerX = xPosition.toDouble(); centerY = yPosition.toDouble() }.also { circle ->
+                Circle(xPosition.toDouble(), yPosition.toDouble(), (diameter/2).toDouble()).also { circle ->
                     Collision.rectangleWithCircleCollision(rect, circle).also { hitMarker ->
                         playerCollision.find { pl -> pl.player.sessionId == player.sessionId }.also { collision ->
                             collision?: return
@@ -159,6 +159,4 @@ class FireBall(var xPosition: Int, var yPosition: Int,
             const val MAX_TIMEOUT_TICKS = 20
         }
     }
-
-
 }

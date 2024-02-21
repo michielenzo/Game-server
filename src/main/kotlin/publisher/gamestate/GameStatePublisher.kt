@@ -1,9 +1,9 @@
-package main.kotlin.newspaper.gamestate
+package main.kotlin.publisher.gamestate
 
-import main.kotlin.newspaper.INewsPaper
+import main.kotlin.publisher.IPublisher
 import main.kotlin.utilities.DTO
 
-object GameStateNewsPaper: INewsPaper<IGameStateNewsPaperSubscriber>() {
+object GameStatePublisher: IPublisher<IGameStateSubscriber>() {
 
     override fun broadcast(dto: DTO) {
         subscribers.forEach {

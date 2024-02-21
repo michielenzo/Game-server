@@ -3,7 +3,7 @@ package main.kotlin.game.spaceBalls
 import main.kotlin.game.engine.GameLoop
 import main.kotlin.game.spaceBalls.gameobjects.*
 import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
-import main.kotlin.newspaper.gamestate.GameStateNewsPaper
+import main.kotlin.publisher.gamestate.GameStatePublisher
 
 class SpaceBalls: GameLoop(){
 
@@ -18,11 +18,13 @@ class SpaceBalls: GameLoop(){
     val players = mutableListOf<Player>()
     val fireBalls = mutableListOf<FireBall>()
     val powerUps = mutableListOf<IPowerUp>()
+    val homingBalls = mutableListOf<HomingBall>()
     val gameStateLock = Object()
 
     override fun tick() {
         players.forEach { it.tick() }
         fireBalls.forEach { it.tick() }
+        homingBalls.forEach { it.tick() }
         powerUpSpawner.tick()
         proxy.sendGameStateToClients()
     }
@@ -43,7 +45,7 @@ class SpaceBalls: GameLoop(){
             fireBalls.add(FireBall(600, 400, FireBall.MovementDirection.DOWN_RIGHT, this))
             fireBalls.add(FireBall(600, 600, FireBall.MovementDirection.DOWN_LEFT, this))
 
-            proxy.buildSendGameStateDTO().also { GameStateNewsPaper.broadcast(it) }
+            proxy.buildSendGameStateDTO().also { GameStatePublisher.broadcast(it) }
         }
     }
 

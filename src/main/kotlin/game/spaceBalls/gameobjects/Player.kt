@@ -1,8 +1,9 @@
 package main.kotlin.game.spaceBalls.gameobjects
 
-import javafx.scene.shape.Rectangle
+import main.kotlin.game.engine.Circle
 import main.kotlin.game.spaceBalls.SpaceBalls
 import main.kotlin.game.engine.Collision
+import main.kotlin.game.engine.Rectangle
 import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
 import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 
@@ -18,25 +19,38 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     @Volatile var sKey = false
     @Volatile var dKey = false
 
-    private val speed = 6
-    var health = 5
-    var isAlive = true
+    private val speed: Int = 6
+    var health: Int = 5
+    var isAlive: Boolean = true
 
-    var hasShield = false
+    var hasShield: Boolean = false
     var shieldStartTime: Long = 0
+
+    var controlsInverted: Boolean = false
+    private var controlsInvertedStartTime: Long = 0
 
     override fun tick() {
         if(isAlive) move()
         checkWallCollision()
         checkPowerUpCollision()
+        if(isAlive) checkHomingBallCollision()
         checkHealth()
         checkShield()
+        checkControlsInverted()
     }
 
     private fun checkShield() {
         if(hasShield){
             if(System.currentTimeMillis() - shieldStartTime >= Shield.AFFECTION_TIME){
                 hasShield = false
+            }
+        }
+    }
+
+    private fun checkControlsInverted() {
+        if(controlsInverted){
+            if(System.currentTimeMillis() - controlsInvertedStartTime >= HomingBall.CONTROLS_INVERTED_AFFECTION_TIME){
+                controlsInverted = false
             }
         }
     }
@@ -58,6 +72,32 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
         powerUpsCollidingWith.forEach { spaceBalls.powerUps.remove(it) }
     }
 
+    private fun checkHomingBallCollision() {
+        val homingBallsCollidingWith = mutableListOf<HomingBall>()
+        spaceBalls.homingBalls.forEach { ball ->
+            Rectangle(xPosition.toDouble(), yPosition.toDouble(), WIDTH.toDouble(), HEIGHT.toDouble()).also { rect ->
+                Circle(ball.xPosition.toDouble(), ball.yPosition.toDouble(), HomingBall.RADIUS.toDouble()).also{
+                    circle ->
+                    if(Collision.rectangleWithCircleCollision(rect, circle) != Collision.HitMarker.NONE){
+                        homingBallsCollidingWith.add(ball)
+                    }
+                }
+            }
+        }
+
+        homingBallsCollidingWith.forEach {
+            if((it.owner != this || !it.ownerInvisible) && isAlive){
+                applyControlInverterEffect()
+                spaceBalls.homingBalls.remove(it)
+            }
+        }
+    }
+
+    private fun applyControlInverterEffect(){
+        controlsInverted = true
+        controlsInvertedStartTime = System.currentTimeMillis()
+    }
+
     private fun checkWallCollision() {
         if(xPosition < 0) xPosition = 0
         if(xPosition > SpaceBalls.DIMENSION_WIDTH - WIDTH)
@@ -68,10 +108,17 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     }
 
     private fun move(){
-        if(wKey) {yPosition -= speed}
-        if(aKey) {xPosition -= speed}
-        if(sKey) {yPosition += speed}
-        if(dKey) {xPosition += speed}
+        if(controlsInverted){
+            if(wKey) {yPosition += speed}
+            if(aKey) {xPosition += speed}
+            if(sKey) {yPosition -= speed}
+            if(dKey) {xPosition -= speed}
+        } else {
+            if(wKey) {yPosition -= speed}
+            if(aKey) {xPosition -= speed}
+            if(sKey) {yPosition += speed}
+            if(dKey) {xPosition += speed}
+        }
     }
 
     private fun checkHealth() {
@@ -80,6 +127,5 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
             isAlive = false
         }
     }
-
 }
 

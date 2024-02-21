@@ -1,11 +1,11 @@
-package main.kotlin.newspaper.network
+package main.kotlin.publisher.network
 
-import main.kotlin.newspaper.INewsPaper
+import main.kotlin.publisher.IPublisher
 import main.kotlin.utilities.DTO
 
-object NetworkNewsPaper: INewsPaper<INetworkNewsPaperSubscriber>() {
+object NetworkPublisher: IPublisher<INetworkSubscriber>() {
 
-    val subscriberQueue = mutableListOf<INetworkNewsPaperSubscriber>()
+    val subscriberQueue = mutableListOf<INetworkSubscriber>()
 
     override fun broadcast(dto: DTO) {
         subscribers.forEach {
