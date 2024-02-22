@@ -39,7 +39,7 @@ class HomingBall(val owner: Player, var xPosition: Int, var yPosition: Int, val 
         return if (ownerInvisible) {
             spaceBalls.players.filter { it != owner && it.isAlive }.toSet()
         } else {
-            spaceBalls.players.toSet()
+            spaceBalls.players.filter { it.isAlive }.toSet()
         }
     }
 
