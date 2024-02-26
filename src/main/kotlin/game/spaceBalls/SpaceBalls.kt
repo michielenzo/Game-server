@@ -8,7 +8,7 @@ import main.kotlin.publisher.gamestate.GameStatePublisher
 class SpaceBalls: GameLoop(){
 
     private val proxy = GameProxy(this)
-    private val powerUpSpawner = PowerUpSpawner(this)
+    //private val powerUpSpawner = PowerUpSpawner(this)
 
     companion object {
         const val DIMENSION_WIDTH = 1100
@@ -25,7 +25,7 @@ class SpaceBalls: GameLoop(){
         players.forEach { it.tick() }
         fireBalls.forEach { it.tick() }
         homingBalls.forEach { it.tick() }
-        powerUpSpawner.tick()
+        //powerUpSpawner.tick()
         proxy.sendGameStateToClients()
     }
 
@@ -36,18 +36,17 @@ class SpaceBalls: GameLoop(){
                     players.add(player)
                 }
             }
-            fireBalls.add(FireBall(200, 300, FireBall.MovementDirection.DOWN_RIGHT, this))
-            fireBalls.add(FireBall(400, 200, FireBall.MovementDirection.UP_RIGHT, this))
-            fireBalls.add(FireBall(700, 400, FireBall.MovementDirection.UP_LEFT, this))
-            fireBalls.add(FireBall(800, 100, FireBall.MovementDirection.UP_LEFT, this))
-            fireBalls.add(FireBall(800, 400, FireBall.MovementDirection.UP_LEFT, this))
-            fireBalls.add(FireBall(500, 400, FireBall.MovementDirection.UP_LEFT, this))
-            fireBalls.add(FireBall(600, 400, FireBall.MovementDirection.DOWN_RIGHT, this))
+//            fireBalls.add(FireBall(200, 300, FireBall.MovementDirection.DOWN_RIGHT, this))
+//            fireBalls.add(FireBall(400, 200, FireBall.MovementDirection.UP_RIGHT, this))
+//            fireBalls.add(FireBall(700, 400, FireBall.MovementDirection.UP_LEFT, this))
+//            fireBalls.add(FireBall(800, 100, FireBall.MovementDirection.UP_LEFT, this))
+//            fireBalls.add(FireBall(800, 400, FireBall.MovementDirection.UP_LEFT, this))
+//            fireBalls.add(FireBall(500, 400, FireBall.MovementDirection.UP_LEFT, this))
+//            fireBalls.add(FireBall(600, 400, FireBall.MovementDirection.DOWN_RIGHT, this))
             fireBalls.add(FireBall(600, 600, FireBall.MovementDirection.DOWN_LEFT, this))
 
             proxy.buildSendGameStateDTO().also { GameStatePublisher.broadcast(it) }
         }
     }
-
 }
 
