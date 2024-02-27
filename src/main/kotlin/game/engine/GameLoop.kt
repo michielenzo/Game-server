@@ -2,7 +2,7 @@ package main.kotlin.game.engine
 
 abstract class GameLoop: Thread(){
 
-    private val frameRate = 30
+    private val frameRate = 50
     protected val millisPerTick = 1000/frameRate
 
     private var gameOver = false
