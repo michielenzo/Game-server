@@ -99,7 +99,7 @@ class FireBall(var xPosition: Double, var yPosition: Double,
 
     private fun checkCollisionWithPlayers() {
         game.players.forEach { player ->
-            Rectangle(player.xPosition.toDouble(), player.yPosition.toDouble(), Player.WIDTH.toDouble(), Player.HEIGHT.toDouble()).also { rect ->
+            Rectangle(player.xPosition, player.yPosition, Player.WIDTH.toDouble(), Player.HEIGHT.toDouble()).also { rect ->
                 Circle(xPosition, yPosition, (diameter/2).toDouble()).also { circle ->
                     Collision.rectangleWithCircleCollision(rect, circle).also { hitMarker ->
                         playerCollision.find { pl -> pl.player.sessionId == player.sessionId }.also { collision ->

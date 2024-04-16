@@ -59,9 +59,11 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: D
     private fun checkPowerUpCollision() {
         val powerUpsCollidingWith = mutableListOf<IPowerUp>()
         spaceBalls.powerUps.forEach { powerUp ->
-            Rectangle(xPosition.toDouble(), yPosition.toDouble(),
+            Rectangle(
+                xPosition, yPosition,
                     WIDTH.toDouble(), HEIGHT.toDouble()).also { rectA ->
-                Rectangle(powerUp.xPosition.toDouble(), powerUp.yPosition.toDouble(),
+                Rectangle(
+                    powerUp.xPosition, powerUp.yPosition,
                         IPowerUp.WIDTH.toDouble(), IPowerUp.HEIGHT.toDouble()).also { rectB ->
                     if(Collision.rectangleWithRectangleCollision(rectA, rectB) == Collision.HitMarker.SOMEWHERE){
                         powerUp.onPickUp(this)
