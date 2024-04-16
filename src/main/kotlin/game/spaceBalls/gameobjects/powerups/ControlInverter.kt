@@ -5,7 +5,7 @@ import main.kotlin.game.spaceBalls.gameobjects.GameObject
 import main.kotlin.game.spaceBalls.gameobjects.HomingBall
 import main.kotlin.game.spaceBalls.gameobjects.Player
 
-class ControlInverter(override val xPosition: Int, override val yPosition: Int, val spaceBalls: SpaceBalls)
+class ControlInverter(override val xPosition: Double, override val yPosition: Double, val spaceBalls: SpaceBalls)
     : GameObject, IPowerUp
 {
     override fun tick() {}

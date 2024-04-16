@@ -3,11 +3,12 @@ package main.kotlin.game.spaceBalls.gameobjects
 import main.kotlin.game.engine.Circle
 import main.kotlin.game.spaceBalls.SpaceBalls
 import main.kotlin.game.engine.Collision
+import main.kotlin.game.engine.GameLoop
 import main.kotlin.game.engine.Rectangle
 import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
 import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 
-class Player(val sessionId: String, val name: String, @Volatile var xPosition: Int, @Volatile var yPosition: Int, val spaceBalls: SpaceBalls): GameObject{
+class Player(val sessionId: String, val name: String, @Volatile var xPosition: Double, @Volatile var yPosition: Double, val spaceBalls: SpaceBalls): GameObject{
 
     companion object {
         const val WIDTH = 60
@@ -19,7 +20,7 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     @Volatile var sKey = false
     @Volatile var dKey = false
 
-    private val speed: Int = 6
+    private val speed: Int = 165
     var health: Int = 5
     var isAlive: Boolean = true
 
@@ -75,7 +76,7 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     private fun checkHomingBallCollision() {
         val homingBallsCollidingWith = mutableListOf<HomingBall>()
         spaceBalls.homingBalls.forEach { ball ->
-            Rectangle(xPosition.toDouble(), yPosition.toDouble(), WIDTH.toDouble(), HEIGHT.toDouble()).also { rect ->
+            Rectangle(xPosition, yPosition, WIDTH.toDouble(), HEIGHT.toDouble()).also { rect ->
                 Circle(ball.xPosition.toDouble(), ball.yPosition.toDouble(), HomingBall.RADIUS.toDouble()).also{
                     circle ->
                     if(Collision.rectangleWithCircleCollision(rect, circle) != Collision.HitMarker.NONE){
@@ -99,25 +100,25 @@ class Player(val sessionId: String, val name: String, @Volatile var xPosition: I
     }
 
     private fun checkWallCollision() {
-        if(xPosition < 0) xPosition = 0
+        if(xPosition < 0) xPosition = 0.0
         if(xPosition > SpaceBalls.DIMENSION_WIDTH - WIDTH)
-            xPosition = SpaceBalls.DIMENSION_WIDTH - WIDTH
-        if(yPosition < 0) yPosition = 0
+            xPosition = (SpaceBalls.DIMENSION_WIDTH - WIDTH).toDouble()
+        if(yPosition < 0) yPosition = 0.0
         if(yPosition > SpaceBalls.DIMENSION_HEIGHT - HEIGHT)
-            yPosition = SpaceBalls.DIMENSION_HEIGHT - HEIGHT
+            yPosition = (SpaceBalls.DIMENSION_HEIGHT - HEIGHT).toDouble()
     }
 
     private fun move(){
         if(controlsInverted){
-            if(wKey) {yPosition += speed}
-            if(aKey) {xPosition += speed}
-            if(sKey) {yPosition -= speed}
-            if(dKey) {xPosition -= speed}
+            if(wKey) {yPosition += speed * GameLoop.SPEED_FACTOR}
+            if(aKey) {xPosition += speed * GameLoop.SPEED_FACTOR}
+            if(sKey) {yPosition -= speed * GameLoop.SPEED_FACTOR}
+            if(dKey) {xPosition -= speed * GameLoop.SPEED_FACTOR}
         } else {
-            if(wKey) {yPosition -= speed}
-            if(aKey) {xPosition -= speed}
-            if(sKey) {yPosition += speed}
-            if(dKey) {xPosition += speed}
+            if(wKey) {yPosition -= speed * GameLoop.SPEED_FACTOR}
+            if(aKey) {xPosition -= speed * GameLoop.SPEED_FACTOR}
+            if(sKey) {yPosition += speed * GameLoop.SPEED_FACTOR}
+            if(dKey) {xPosition += speed * GameLoop.SPEED_FACTOR}
         }
     }
 

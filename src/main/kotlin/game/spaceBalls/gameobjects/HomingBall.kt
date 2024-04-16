@@ -1,14 +1,15 @@
 package main.kotlin.game.spaceBalls.gameobjects
 
+import main.kotlin.game.engine.GameLoop
 import main.kotlin.game.engine.Vec2D
 import main.kotlin.game.spaceBalls.SpaceBalls
 import kotlin.math.sqrt
 
-class HomingBall(val owner: Player, var xPosition: Int, var yPosition: Int, val spaceBalls: SpaceBalls): GameObject {
+class HomingBall(val owner: Player, var xPosition: Double, var yPosition: Double, val spaceBalls: SpaceBalls): GameObject {
 
     companion object{
         const val OWNER_INVISIBLE_TIME: Long = 5000
-        const val MOVEMENT_SPEED: Long = 5
+        const val MOVEMENT_SPEED: Long = 138
         const val RADIUS: Int = 25
         const val CONTROLS_INVERTED_AFFECTION_TIME: Long = 6000
     }
@@ -25,8 +26,8 @@ class HomingBall(val owner: Player, var xPosition: Int, var yPosition: Int, val 
     }
 
     private fun move(direction: Vec2D){
-        xPosition += (direction.x * MOVEMENT_SPEED).toInt()
-        yPosition += (direction.y * MOVEMENT_SPEED).toInt()
+        xPosition += direction.x * (MOVEMENT_SPEED * GameLoop.SPEED_FACTOR)
+        yPosition += direction.y * (MOVEMENT_SPEED * GameLoop.SPEED_FACTOR)
     }
 
     private fun checkInvisibilityTimer(){
@@ -44,10 +45,10 @@ class HomingBall(val owner: Player, var xPosition: Int, var yPosition: Int, val 
     }
 
     private fun getDirectionTowardsPlayer(player: Player): Vec2D {
-        val xDiff: Int = player.xPosition - xPosition
-        val yDiff: Int = player.yPosition - yPosition
+        val xDiff: Double = player.xPosition - xPosition
+        val yDiff: Double = player.yPosition - yPosition
 
-        return Vec2D(xDiff.toDouble(), yDiff.toDouble()).also { vec ->
+        return Vec2D(xDiff, yDiff).also { vec ->
             sqrt(vec.x * vec.x + vec.y * vec.y).also { magnitude ->
                 vec.x /= magnitude
                 vec.y /= magnitude
@@ -56,8 +57,9 @@ class HomingBall(val owner: Player, var xPosition: Int, var yPosition: Int, val 
     }
 
     private fun calculateDistance(player: Player): Double {
-        return sqrt(((player.xPosition - xPosition) * (player.xPosition - xPosition) +
-                     (player.yPosition - yPosition) * (player.yPosition - yPosition))
-                      .toDouble())
+        return sqrt(
+            ((player.xPosition - xPosition) * (player.xPosition - xPosition) +
+                         (player.yPosition - yPosition) * (player.yPosition - yPosition))
+        )
     }
 }

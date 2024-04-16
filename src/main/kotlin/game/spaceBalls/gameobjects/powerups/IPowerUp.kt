@@ -4,8 +4,8 @@ import main.kotlin.game.spaceBalls.gameobjects.Player
 
 interface IPowerUp{
 
-    val xPosition: Int
-    val yPosition: Int
+    val xPosition: Double
+    val yPosition: Double
 
     companion object {
         const val WIDTH = 40

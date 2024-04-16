@@ -3,15 +3,16 @@ package main.kotlin.game.spaceBalls.gameobjects
 import main.kotlin.game.engine.Circle
 import main.kotlin.game.spaceBalls.SpaceBalls
 import main.kotlin.game.engine.Collision
+import main.kotlin.game.engine.GameLoop
 import main.kotlin.game.engine.Rectangle
 
-class FireBall(var xPosition: Int, var yPosition: Int,
+class FireBall(var xPosition: Double, var yPosition: Double,
                private var direction: MovementDirection,
                private val game: SpaceBalls)
 : GameObject {
 
     private val diameter = 50
-    private val speed = 8
+    private val speed = 220
     private val playerCollision = mutableListOf<PlayerCollision>()
 
     init {
@@ -35,11 +36,12 @@ class FireBall(var xPosition: Int, var yPosition: Int,
     }
 
     private fun move(){
+        val resolvedSpeed = speed * GameLoop.SPEED_FACTOR
         when(direction){
-            MovementDirection.UP_LEFT -> { xPosition -= speed; yPosition -= speed }
-            MovementDirection.UP_RIGHT -> { xPosition += speed; yPosition -= speed }
-            MovementDirection.DOWN_LEFT -> { xPosition -= speed; yPosition += speed }
-            MovementDirection.DOWN_RIGHT -> { xPosition += speed; yPosition += speed }
+            MovementDirection.UP_LEFT -> { xPosition -= resolvedSpeed; yPosition -= resolvedSpeed }
+            MovementDirection.UP_RIGHT -> { xPosition += resolvedSpeed; yPosition -= resolvedSpeed }
+            MovementDirection.DOWN_LEFT -> { xPosition -= resolvedSpeed; yPosition += resolvedSpeed }
+            MovementDirection.DOWN_RIGHT -> { xPosition += resolvedSpeed; yPosition += resolvedSpeed }
         }
     }
 
@@ -98,7 +100,7 @@ class FireBall(var xPosition: Int, var yPosition: Int,
     private fun checkCollisionWithPlayers() {
         game.players.forEach { player ->
             Rectangle(player.xPosition.toDouble(), player.yPosition.toDouble(), Player.WIDTH.toDouble(), Player.HEIGHT.toDouble()).also { rect ->
-                Circle(xPosition.toDouble(), yPosition.toDouble(), (diameter/2).toDouble()).also { circle ->
+                Circle(xPosition, yPosition, (diameter/2).toDouble()).also { circle ->
                     Collision.rectangleWithCircleCollision(rect, circle).also { hitMarker ->
                         playerCollision.find { pl -> pl.player.sessionId == player.sessionId }.also { collision ->
                             collision?: return
@@ -123,22 +125,22 @@ class FireBall(var xPosition: Int, var yPosition: Int,
     private fun handleWallCollision(wall: WallCollision){
         when(wall){
             WallCollision.ROOF -> {
-                yPosition = 0 + diameter/2
+                yPosition = (0 + diameter/2).toDouble()
                 direction = if(direction == MovementDirection.UP_LEFT) MovementDirection.DOWN_LEFT
                             else                                       MovementDirection.DOWN_RIGHT
             }
             WallCollision.FLOOR -> {
-                yPosition = SpaceBalls.DIMENSION_HEIGHT - diameter/2
+                yPosition = (SpaceBalls.DIMENSION_HEIGHT - diameter/2).toDouble()
                 direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.UP_LEFT
                             else                                         MovementDirection.UP_RIGHT
             }
             WallCollision.LEFT_WALL -> {
-                xPosition = 0 + diameter/2
+                xPosition = (0 + diameter/2).toDouble()
                 direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.DOWN_RIGHT
                             else                                         MovementDirection.UP_RIGHT
             }
             WallCollision.RIGHT_WALL -> {
-                xPosition = SpaceBalls.DIMENSION_WIDTH - diameter/2
+                xPosition = (SpaceBalls.DIMENSION_WIDTH - diameter/2).toDouble()
                 direction = if(direction == MovementDirection.DOWN_RIGHT) MovementDirection.DOWN_LEFT
                 else                                                      MovementDirection.UP_LEFT
             }
