@@ -12,7 +12,7 @@ class FireBall(var xPosition: Double, var yPosition: Double,
 : GameObject {
 
     private val diameter = 50
-    private val speed = 220
+    private val speed = 80
     private val playerCollision = mutableListOf<PlayerCollision>()
 
     init {

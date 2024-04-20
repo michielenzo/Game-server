@@ -2,7 +2,7 @@ package main.kotlin.game.engine
 
 abstract class GameLoop: Thread(){
     companion object {
-        private const val FRAMERATE = 30
+        private const val FRAMERATE = 0.5
         private const val MILLIS_PER_SECOND = 1000.0
         private const val MILLIS_PER_TICK = 1000.0 / FRAMERATE
 
