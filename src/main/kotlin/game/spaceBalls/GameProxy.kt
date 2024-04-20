@@ -8,10 +8,26 @@ import main.kotlin.publisher.network.INetworkSubscriber
 import main.kotlin.publisher.network.NetworkPublisher
 import main.kotlin.utilities.DTO
 
-class GameProxy(private val spaceBalls: SpaceBalls): INetworkSubscriber{
+class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscriber{
+
+    private val messageRate = 30
+    private val millisPerSecond = 1000.0
+    private val millisPerMessage = millisPerSecond / messageRate
 
     init {
         NetworkPublisher.subscriberQueue.add(this)
+    }
+
+    override fun run() {
+        val startTime = System.currentTimeMillis()
+        var loops = 0
+        while (!spaceBalls.gameOver){
+            val delta = (System.currentTimeMillis() - startTime) - (loops * millisPerMessage)
+            if(delta >= millisPerMessage){
+                buildSendGameStateDTO().also { GameStatePublisher.broadcast(it) }
+                loops++
+            }
+        }
     }
 
     override fun notifyNetworkNews(dto: DTO) {
@@ -32,10 +48,6 @@ class GameProxy(private val spaceBalls: SpaceBalls): INetworkSubscriber{
                 spaceBalls.stopLoop()
             }
         }
-    }
-
-    fun sendGameStateToClients(){
-        buildSendGameStateDTO().also { GameStatePublisher.broadcast(it) }
     }
 
     private fun handleSendInputStateToServerMessage(dto: SendInputStateToServerDTO) {

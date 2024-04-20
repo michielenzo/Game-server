@@ -2,14 +2,14 @@ package main.kotlin.game.engine
 
 abstract class GameLoop: Thread(){
     companion object {
-        private const val FRAMERATE = 30
+        private const val FRAMERATE = 60
         private const val MILLIS_PER_SECOND = 1000.0
-        private const val MILLIS_PER_TICK = 1000.0 / FRAMERATE
+        private const val MILLIS_PER_TICK = MILLIS_PER_SECOND / FRAMERATE
 
         const val SPEED_FACTOR = (MILLIS_PER_SECOND / FRAMERATE) / MILLIS_PER_SECOND
     }
 
-    private var gameOver = false
+    var gameOver = false
     private var isPaused = false
 
     override fun run() {
@@ -35,6 +35,10 @@ abstract class GameLoop: Thread(){
 
     fun continueGame(){
         isPaused = false
+    }
+
+    open fun startGame(){
+        start()
     }
 
     abstract fun tick()

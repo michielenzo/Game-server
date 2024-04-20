@@ -21,12 +21,18 @@ class SpaceBalls: GameLoop(){
     val homingBalls = mutableListOf<HomingBall>()
     val gameStateLock = Object()
 
+    override fun startGame() {
+        super.start()
+        proxy.start()
+    }
+
     override fun tick() {
         players.forEach { it.tick() }
         fireBalls.forEach { it.tick() }
         homingBalls.forEach { it.tick() }
         powerUpSpawner.tick()
-        proxy.sendGameStateToClients()
+
+        if(detectEndOfGame()){ stopLoop() }
     }
 
     fun initializeGameState(lobbyPlayers: MutableSet<main.kotlin.lobby.Player>){
@@ -49,5 +55,8 @@ class SpaceBalls: GameLoop(){
         }
     }
 
+    private fun detectEndOfGame(): Boolean {
+        return players.size == 0
+    }
 }
 

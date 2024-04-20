@@ -33,7 +33,6 @@ class PowerUpSpawner(private val spaceBalls: SpaceBalls) {
             RandomGenerator.randomInt(System.currentTimeMillis(),
                     0, SpaceBalls.DIMENSION_HEIGHT - IPowerUp.HEIGHT).also { randY ->
                 RandomGenerator.randomInt(System.currentTimeMillis(),0, dropTable.size).also { index ->
-                    println(index)
                     when(dropTable[index]){
                         IPowerUp.PowerUpType.MED_KIT -> spaceBalls.powerUps.add(MedKit(randX.toDouble(), randY.toDouble()))
                         IPowerUp.PowerUpType.SHIELD -> spaceBalls.powerUps.add(Shield(randX.toDouble(), randY.toDouble()))
