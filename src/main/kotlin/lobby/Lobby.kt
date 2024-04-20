@@ -75,7 +75,7 @@ class Lobby: INetworkSubscriber {
                GameMode.SPACE_BALLS.value -> {
                    val game = SpaceBalls()
                    game.initializeGameState(availablePlayers)
-                   game.start()
+                   game.startGame()
                    availablePlayers.forEach {
                        it.status = Player.Status.IN_GAME.text
                    }
