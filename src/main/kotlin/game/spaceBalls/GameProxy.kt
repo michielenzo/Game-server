@@ -72,6 +72,7 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
         return SendSpaceBallsGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
             spaceBalls.players.forEach{ player ->
                 PlayerDTO(
+                    player.id,
                     player.sessionId,
                     player.name,
                     player.xPosition,
@@ -83,7 +84,7 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
                 }
             }
             spaceBalls.fireBalls.forEach { fireBall ->
-                FireBallDTO(fireBall.xPosition, fireBall.yPosition).also { fireBallDTO ->
+                FireBallDTO(fireBall.id, fireBall.xPosition, fireBall.yPosition).also { fireBallDTO ->
                     gameStateDTO.fireBalls.add(fireBallDTO)
                 }
             }
@@ -97,7 +98,7 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
                 }
             }
             spaceBalls.homingBalls.forEach { homingBall ->
-                gameStateDTO.homingBalls.add(HomingBallDTO(homingBall.xPosition, homingBall.yPosition))
+                gameStateDTO.homingBalls.add(HomingBallDTO(homingBall.id, homingBall.xPosition, homingBall.yPosition))
             }
         })
     }

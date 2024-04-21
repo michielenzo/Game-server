@@ -6,10 +6,12 @@ import main.kotlin.game.engine.Collision
 import main.kotlin.game.engine.GameLoop
 import main.kotlin.game.engine.Rectangle
 
-class FireBall(var xPosition: Double, var yPosition: Double,
-               private var direction: MovementDirection,
-               private val game: SpaceBalls)
-: GameObject {
+class FireBall(
+    var xPosition: Double,
+    var yPosition: Double,
+    private var direction: MovementDirection,
+    private val game: SpaceBalls
+): GameObject() {
 
     private val diameter = 50
     private val speed = 220
