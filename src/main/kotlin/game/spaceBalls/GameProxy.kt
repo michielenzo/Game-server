@@ -10,7 +10,7 @@ import main.kotlin.utilities.DTO
 
 class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscriber{
 
-    private val messageRate = 15
+    private val messageRate = 1
     private val millisPerSecond = 1000.0
     private val millisPerMessage = millisPerSecond / messageRate
 

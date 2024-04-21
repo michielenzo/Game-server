@@ -9,11 +9,11 @@ class PowerUpSpawner(private val spaceBalls: SpaceBalls) {
     private var millisSinceLastSpawn: Long = System.currentTimeMillis()
 
     private val dropTable: List<IPowerUp.PowerUpType> = listOf(
-            IPowerUp.PowerUpType.MED_KIT,
-            IPowerUp.PowerUpType.MED_KIT,
-            IPowerUp.PowerUpType.MED_KIT,
-            IPowerUp.PowerUpType.INVERTER,
-            IPowerUp.PowerUpType.SHIELD,
+//            IPowerUp.PowerUpType.MED_KIT,
+//            IPowerUp.PowerUpType.MED_KIT,
+//            IPowerUp.PowerUpType.MED_KIT,
+//            IPowerUp.PowerUpType.INVERTER,
+//            IPowerUp.PowerUpType.SHIELD,
             IPowerUp.PowerUpType.CONTROL_INVERTER
     )
 
