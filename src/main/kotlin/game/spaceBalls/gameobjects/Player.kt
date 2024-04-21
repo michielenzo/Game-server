@@ -8,7 +8,13 @@ import main.kotlin.game.engine.Rectangle
 import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
 import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 
-class Player(val sessionId: String, val name: String, @Volatile var xPosition: Double, @Volatile var yPosition: Double, val spaceBalls: SpaceBalls): GameObject{
+class Player(
+    val sessionId: String,
+    val name: String,
+    @Volatile var xPosition: Double,
+    @Volatile var yPosition: Double,
+    val spaceBalls: SpaceBalls
+): GameObject() {
 
     companion object {
         const val WIDTH = 60

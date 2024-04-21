@@ -5,8 +5,12 @@ import main.kotlin.game.engine.Vec2D
 import main.kotlin.game.spaceBalls.SpaceBalls
 import kotlin.math.sqrt
 
-class HomingBall(val owner: Player, var xPosition: Double, var yPosition: Double, val spaceBalls: SpaceBalls): GameObject {
-
+class HomingBall(
+    val owner: Player,
+    var xPosition: Double,
+    var yPosition: Double,
+    val spaceBalls: SpaceBalls): GameObject()
+{
     companion object{
         const val OWNER_INVISIBLE_TIME: Long = 5000
         const val MOVEMENT_SPEED: Long = 138

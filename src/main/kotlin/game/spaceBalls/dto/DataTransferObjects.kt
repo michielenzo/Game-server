@@ -12,7 +12,8 @@ data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf(),
                         val powerUps: MutableList<PowerUpDTO> = mutableListOf(),
                         val homingBalls: MutableList<HomingBallDTO> = mutableListOf()): DTO()
 
-data class PlayerDTO(val sessionId: String,
+data class PlayerDTO(val id: Int,
+                     val sessionId: String,
                      val name: String,
                      @Volatile var x: Double,
                      @Volatile var y: Double,
@@ -20,14 +21,16 @@ data class PlayerDTO(val sessionId: String,
                      val shield: Boolean,
                      val inverted: Boolean): DTO()
 
-data class FireBallDTO(val x: Double,
+data class FireBallDTO(val id: Int,
+                       val x: Double,
                        val y: Double)
 
 data class PowerUpDTO(val type: String,
                       val x: Double,
                       val y: Double): DTO()
 
-data class HomingBallDTO(val x: Double,
+data class HomingBallDTO(val id: Int,
+                         val x: Double,
                          val y: Double)
 
 data class SendInputStateToServerDTO(var sessionId: String,
