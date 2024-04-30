@@ -106,7 +106,8 @@ class Lobby: INetworkSubscriber {
 
     private fun handleConnectToServerMessage(dto: ConnectionDTO) {
         synchronized(lobbyStateLock){
-            Player(dto.id, "available", dto.id).also {
+            val playerName = "Player " + (players.size + 1)
+            Player(dto.id, "available", playerName).also {
                 players.add(it)
                 LobbyPublisher.broadcast(buildSendLobbyStateDTO())
             }
