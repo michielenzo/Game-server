@@ -96,7 +96,7 @@ class Lobby: INetworkSubscriber {
 
     private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
         synchronized(lobbyStateLock){
-            players.find{ pl -> pl.id == dto.id}.also {
+            players.find{ pl -> pl.id == dto.id }.also {
                 it?: return
                 players.remove(it)
             }
@@ -106,12 +106,39 @@ class Lobby: INetworkSubscriber {
 
     private fun handleConnectToServerMessage(dto: ConnectionDTO) {
         synchronized(lobbyStateLock){
-            val playerName = "Player " + (players.size + 1)
-            Player(dto.id, "available", playerName).also {
+            Player(dto.id, "available", determinePlayerName()).also {
                 players.add(it)
                 LobbyPublisher.broadcast(buildSendLobbyStateDTO())
             }
         }
+    }
+
+    private fun determinePlayerName(): String {
+        val playerNamePrefix = "Player "
+        val playerNumbers = mutableSetOf<Int>()
+
+        // Collect all existing player numbers
+        players.forEach { player ->
+            if (player.name.startsWith(playerNamePrefix)) {
+                val numberPart = player.name.substring(playerNamePrefix.length)
+                numberPart.toIntOrNull()?.let {
+                    playerNumbers.add(it)
+                }
+            }
+        }
+
+        // Determine the smallest missing number
+        var newPlayerNumber = 1
+        while (newPlayerNumber in playerNumbers) {
+            newPlayerNumber++
+        }
+
+        // Check if the missing number is within the range of existing numbers
+        if (newPlayerNumber > (playerNumbers.maxOrNull() ?: 0)) {
+            newPlayerNumber = (playerNumbers.maxOrNull() ?: 0) + 1
+        }
+
+        return "Player $newPlayerNumber"
     }
 
     private fun buildSendLobbyStateDTO(): DTO {
@@ -123,5 +150,4 @@ class Lobby: INetworkSubscriber {
             }
         }, "")
     }
-
 }
