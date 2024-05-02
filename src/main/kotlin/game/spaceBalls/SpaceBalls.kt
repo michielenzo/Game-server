@@ -50,8 +50,6 @@ class SpaceBalls: GameLoop(){
             fireBalls.add(FireBall(500.0, 400.0, FireBall.MovementDirection.UP_LEFT, this))
             fireBalls.add(FireBall(600.0, 400.0, FireBall.MovementDirection.DOWN_RIGHT, this))
             fireBalls.add(FireBall(600.0, 600.0, FireBall.MovementDirection.DOWN_LEFT, this))
-
-            proxy.buildSendGameStateDTO().also { GameStatePublisher.broadcast(it) }
         }
     }
 
