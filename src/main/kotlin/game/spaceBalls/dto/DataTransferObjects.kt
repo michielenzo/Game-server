@@ -5,6 +5,7 @@ import main.kotlin.utilities.DTO
 
 data class SendSpaceBallsGameStateToClientsDTO(
     val gameState: GameStateDTO,
+    val tickNumber: Int,
     val messageType: String = MessageType.SEND_SPACE_BALLS_GAME_STATE_TO_CLIENTS.value): DTO()
 
 data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf(),

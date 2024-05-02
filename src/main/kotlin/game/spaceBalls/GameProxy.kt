@@ -24,7 +24,7 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
         while (!spaceBalls.gameOver){
             val delta = (System.currentTimeMillis() - startTime) - (loops * millisPerMessage)
             if(delta >= millisPerMessage){
-                buildSendGameStateDTO().also { GameStatePublisher.broadcast(it) }
+                buildSendGameStateDTO(loops+1).also { GameStatePublisher.broadcast(it) }
                 loops++
             }
         }
@@ -68,39 +68,41 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
         }
     }
 
-    @Synchronized fun buildSendGameStateDTO(): SendSpaceBallsGameStateToClientsDTO {
-        return SendSpaceBallsGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
-            spaceBalls.players.forEach{ player ->
-                PlayerDTO(
-                    player.id,
-                    player.sessionId,
-                    player.name,
-                    player.xPosition,
-                    player.yPosition,
-                    player.health,
-                    player.hasShield,
-                    player.controlsInverted).also{ playerDTO ->
-                        gameStateDTO.players.add(playerDTO)
+    @Synchronized fun buildSendGameStateDTO(tickNumber: Int): SendSpaceBallsGameStateToClientsDTO {
+        return SendSpaceBallsGameStateToClientsDTO(
+            GameStateDTO().also { gameStateDTO ->
+                spaceBalls.players.forEach{ player ->
+                    PlayerDTO(
+                        player.id,
+                        player.sessionId,
+                        player.name,
+                        player.xPosition,
+                        player.yPosition,
+                        player.health,
+                        player.hasShield,
+                        player.controlsInverted).also{ playerDTO ->
+                            gameStateDTO.players.add(playerDTO)
+                    }
+                }
+                spaceBalls.fireBalls.forEach { fireBall ->
+                    FireBallDTO(fireBall.id, fireBall.xPosition, fireBall.yPosition).also { fireBallDTO ->
+                        gameStateDTO.fireBalls.add(fireBallDTO)
+                    }
+                }
+                spaceBalls.powerUps.forEach { powerUp ->
+                    when (powerUp) {
+                        is MedKit -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.MED_KIT))
+                        is Shield -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.SHIELD))
+                        is Inverter -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.INVERTER))
+                        is ControlInverter ->
+                            gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.CONTROL_INVERTER))
+                    }
+                }
+                spaceBalls.homingBalls.forEach { homingBall ->
+                    gameStateDTO.homingBalls.add(HomingBallDTO(homingBall.id, homingBall.xPosition, homingBall.yPosition))
                 }
             }
-            spaceBalls.fireBalls.forEach { fireBall ->
-                FireBallDTO(fireBall.id, fireBall.xPosition, fireBall.yPosition).also { fireBallDTO ->
-                    gameStateDTO.fireBalls.add(fireBallDTO)
-                }
-            }
-            spaceBalls.powerUps.forEach { powerUp ->
-                when (powerUp) {
-                    is MedKit -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.MED_KIT))
-                    is Shield -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.SHIELD))
-                    is Inverter -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.INVERTER))
-                    is ControlInverter ->
-                        gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.CONTROL_INVERTER))
-                }
-            }
-            spaceBalls.homingBalls.forEach { homingBall ->
-                gameStateDTO.homingBalls.add(HomingBallDTO(homingBall.id, homingBall.xPosition, homingBall.yPosition))
-            }
-        })
+        , tickNumber)
     }
 
     private fun buildPowerUpDTO(powerUp: IPowerUp, powerUpType: IPowerUp.PowerUpType): PowerUpDTO {
