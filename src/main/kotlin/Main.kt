@@ -1,6 +1,6 @@
 package main.kotlin
 
-import main.kotlin.lobby.Lobby
+import main.kotlin.room.Room
 import network.PlayerWebsocket
 
 fun main(args: Array<String>){
@@ -9,5 +9,5 @@ fun main(args: Array<String>){
     PlayerWebsocket().also {
         it.initialize()
     }
-    val lobby = Lobby()
+    val room = Room()
 }

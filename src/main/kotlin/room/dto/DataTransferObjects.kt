@@ -1,13 +1,13 @@
-package main.kotlin.lobby.dto
+package main.kotlin.room.dto
 
 import main.kotlin.publisher.MessageType
 import main.kotlin.utilities.DTO
 
-data class SendLobbyStateToClientsDTO(val lobbyState: LobbyStateDTO,
+data class SendRoomStateToClientsDTO(val roomState: RoomStateDTO,
                                       var yourId: String,
-                                      val messageType: String = MessageType.SEND_LOBBY_STATE_TO_CLIENTS.value): DTO()
+                                      val messageType: String = MessageType.SEND_ROOM_STATE_TO_CLIENTS.value): DTO()
 
-data class LobbyStateDTO(val gameMode: String,
+data class RoomStateDTO(val gameMode: String,
                          val players: MutableList<PlayerDTO> = mutableListOf()): DTO()
 
 data class PlayerDTO(val id: String, val status: String, val name: String = id): DTO()

@@ -40,8 +40,8 @@ data class SendInputStateToServerDTO(var sessionId: String,
                                      val dKey: Boolean,
                                      val messageType: String = MessageType.SEND_INPUT_STATE_TO_SERVER.value): DTO()
 
-data class BackToLobbyToServerDTO(val messageType: String = MessageType.BACK_TO_LOBBY_TO_SERVER.value,
-                                  var playerId: String? = null): DTO()
+data class BackToRoomToServerDTO(val messageType: String = MessageType.BACK_TO_ROOM_TO_SERVER.value,
+                                 var playerId: String? = null): DTO()
 
-data class BackToLobbyToClientDTO(val messageType: String = MessageType.BACK_TO_LOBBY_TO_CLIENT.value,
-                                  var playerId: String? = null): DTO()
+data class BackToRoomToClientDTO(val messageType: String = MessageType.BACK_TO_ROOM_TO_CLIENT.value,
+                                 var playerId: String? = null): DTO()

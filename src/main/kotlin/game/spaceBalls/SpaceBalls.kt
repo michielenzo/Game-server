@@ -35,10 +35,10 @@ class SpaceBalls: GameLoop(){
         if(detectEndOfGame()){ stopLoop() }
     }
 
-    fun initializeGameState(lobbyPlayers: MutableSet<main.kotlin.lobby.Player>){
+    fun initializeGameState(roomPlayers: MutableSet<main.kotlin.room.Player>){
         synchronized(gameStateLock){
-            lobbyPlayers.forEach {lobbyPlayer ->
-                Player(lobbyPlayer.id, lobbyPlayer.name,100.0 + players.size * 75.0, 500.0, this).also { player ->
+            roomPlayers.forEach {roomPlayer ->
+                Player(roomPlayer.id, roomPlayer.name,100.0 + players.size * 75.0, 500.0, this).also { player ->
                     players.add(player)
                 }
             }

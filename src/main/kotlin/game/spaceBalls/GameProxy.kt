@@ -34,11 +34,11 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
         when(dto){
             is DisconnectDTO -> handleDisconnectFromServerMessage(dto)
             is SendInputStateToServerDTO -> handleSendInputStateToServerMessage(dto)
-            is BackToLobbyToServerDTO -> handleBackToLobbyToServerMessage(dto)
+            is BackToRoomToServerDTO -> handleBackToRoomToServerMessage(dto)
         }
     }
 
-    private fun handleBackToLobbyToServerMessage(dto: BackToLobbyToServerDTO) {
+    private fun handleBackToRoomToServerMessage(dto: BackToRoomToServerDTO) {
         synchronized(spaceBalls){
             spaceBalls.players.find { pl -> pl.sessionId == dto.playerId }.also {
                 it?: return

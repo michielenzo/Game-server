@@ -1,4 +1,4 @@
-package main.kotlin.lobby
+package main.kotlin.room
 
 data class Player (val id: String, var status: String, var name: String = id){
 

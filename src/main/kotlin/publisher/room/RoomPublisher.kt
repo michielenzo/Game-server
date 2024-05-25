@@ -1,13 +1,13 @@
-package main.kotlin.publisher.lobby
+package main.kotlin.publisher.room
 
 import main.kotlin.publisher.IPublisher
 import main.kotlin.utilities.DTO
 
-object LobbyPublisher: IPublisher<ILobbySubscriber>() {
+object RoomPublisher: IPublisher<IRoomSubscriber>() {
 
     override fun broadcast(dto: DTO) {
         subscribers.forEach {
-            it.notifyLobbyNews(dto)
+            it.notifyRoomNews(dto)
         }
     }
 

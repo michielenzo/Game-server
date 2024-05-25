@@ -25,11 +25,11 @@ The -d flag is used t run i as a deamon.
 Endpoint:  
 `ws://<ip-server>:8080/player`
 
-### sendLobbyStateToClients:
+### sendRoomStateToClients:
 
 ```json
 {
-  "lobbyState": {
+  "roomState": {
     "gameMode": "Space balls",
     "players": [
       {
@@ -40,7 +40,7 @@ Endpoint:
     ]
   },
   "yourId": "129e117e-95ff-4a65-9846-e307cf128740",
-  "messageType": "sendLobbyStateToClients"
+  "messageType": "sendRoomStateToClients"
 }
 ```
 
@@ -62,24 +62,24 @@ Endpoint:
 }
 ```
 
-### BackToLobbyToServer:
+### BackToRoomToServer:
 
 ```json
 {
   "playerId": "129e117e-95ff-4a65-9846-e307cf128740",
-  "messageType": "backToLobbyToServer"
+  "messageType": "backToRoomToServer"
 }
 ```
 
-### BackToLobbyToClient:  
+### BackToRoomToClient:  
 
 ```json
 {
   "playerId": "129e117e-95ff-4a65-9846-e307cf128740",
-  "messageType": "backToLobbyToServer"
+  "messageType": "backToRoomToServer"
 }
 ```  
-"messageType": "backToLobbyToServer"!!!????? Dit staat nu in de server zo.
+"messageType": "backToRoomToServer"!!!????? Dit staat nu in de server zo.
 
 ### SendInputStateToServer:  
 

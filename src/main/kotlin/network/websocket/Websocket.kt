@@ -5,7 +5,7 @@ import io.javalin.Javalin
 import io.javalin.community.ssl.SslPlugin
 import io.javalin.community.ssl.TlsConfig
 import io.javalin.websocket.WsContext
-import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
+import main.kotlin.room.dto.SendRoomStateToClientsDTO
 import main.kotlin.utilities.DTO
 
 abstract class Websocket {
@@ -62,7 +62,7 @@ abstract class Websocket {
     }
 
     @Synchronized
-    fun sendToAllSessionsAndSetClientId(dto: SendLobbyStateToClientsDTO) {
+    fun sendToAllSessionsAndSetClientId(dto: SendRoomStateToClientsDTO) {
         sessions.forEach { ctx ->
             dto.yourId = ctx.sessionId()
             sendToSessionById(ctx.sessionId(), convertDTOtoJSON(dto))

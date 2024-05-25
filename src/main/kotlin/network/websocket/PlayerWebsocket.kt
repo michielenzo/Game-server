@@ -3,14 +3,14 @@ package network
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import io.javalin.websocket.WsContext
-import main.kotlin.game.spaceBalls.dto.BackToLobbyToClientDTO
-import main.kotlin.game.spaceBalls.dto.BackToLobbyToServerDTO
+import main.kotlin.game.spaceBalls.dto.BackToRoomToClientDTO
+import main.kotlin.game.spaceBalls.dto.BackToRoomToServerDTO
 import main.kotlin.game.spaceBalls.dto.SendSpaceBallsGameStateToClientsDTO
 import main.kotlin.game.spaceBalls.dto.SendInputStateToServerDTO
-import main.kotlin.lobby.dto.ChooseGameModeToServerDTO
-import main.kotlin.lobby.dto.ChooseNameToServerDTO
-import main.kotlin.lobby.dto.SendLobbyStateToClientsDTO
-import main.kotlin.lobby.dto.StartGameToServerDTO
+import main.kotlin.room.dto.ChooseGameModeToServerDTO
+import main.kotlin.room.dto.ChooseNameToServerDTO
+import main.kotlin.room.dto.SendRoomStateToClientsDTO
+import main.kotlin.room.dto.StartGameToServerDTO
 import main.kotlin.publisher.gamestate.IGameStateSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
@@ -18,17 +18,17 @@ import main.kotlin.network.dto.HeartbeatAcknowledgeDTO
 import main.kotlin.network.dto.HeartbeatCheckDTO
 import main.kotlin.publisher.MessageType
 import main.kotlin.publisher.gamestate.GameStatePublisher
-import main.kotlin.publisher.lobby.ILobbySubscriber
-import main.kotlin.publisher.lobby.LobbyPublisher
+import main.kotlin.publisher.room.IRoomSubscriber
+import main.kotlin.publisher.room.RoomPublisher
 import main.kotlin.publisher.network.NetworkPublisher
 import main.kotlin.utilities.DTO
 import java.time.LocalDateTime
 
-class PlayerWebsocket: Websocket(), IGameStateSubscriber, ILobbySubscriber {
+class PlayerWebsocket: Websocket(), IGameStateSubscriber, IRoomSubscriber {
 
     init {
         GameStatePublisher.subscribe(this)
-        LobbyPublisher.subscribe(this)
+        RoomPublisher.subscribe(this)
     }
 
     override fun onConnect(wsCtx: WsContext) {
@@ -69,8 +69,8 @@ class PlayerWebsocket: Websocket(), IGameStateSubscriber, ILobbySubscriber {
                         it.playerId = wsCtx.sessionId()
                     }
                 }
-                MessageType.BACK_TO_LOBBY_TO_SERVER.value -> {
-                    Gson().fromJson(message, BackToLobbyToServerDTO::class.java).also {
+                MessageType.BACK_TO_ROOM_TO_SERVER.value -> {
+                    Gson().fromJson(message, BackToRoomToServerDTO::class.java).also {
                         it.playerId = wsCtx.sessionId()
                     }
                 }
@@ -107,10 +107,10 @@ class PlayerWebsocket: Websocket(), IGameStateSubscriber, ILobbySubscriber {
         }
     }
 
-    override fun notifyLobbyNews(dto: DTO) {
+    override fun notifyRoomNews(dto: DTO) {
         when(dto){
-            is SendLobbyStateToClientsDTO -> sendToAllSessionsAndSetClientId(dto)
-            is BackToLobbyToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
+            is SendRoomStateToClientsDTO -> sendToAllSessionsAndSetClientId(dto)
+            is BackToRoomToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
         }
     }
 
