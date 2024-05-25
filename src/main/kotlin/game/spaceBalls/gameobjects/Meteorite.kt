@@ -6,7 +6,7 @@ import main.kotlin.game.engine.Collision
 import main.kotlin.game.engine.GameLoop
 import main.kotlin.game.engine.Rectangle
 
-class FireBall(
+class Meteorite(
     var xPosition: Double,
     var yPosition: Double,
     private var direction: MovementDirection,

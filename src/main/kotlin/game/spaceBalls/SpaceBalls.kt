@@ -16,7 +16,7 @@ class SpaceBalls: GameLoop(){
     }
 
     val players = mutableListOf<Player>()
-    val fireBalls = mutableListOf<FireBall>()
+    val meteorites = mutableListOf<Meteorite>()
     val powerUps = mutableListOf<IPowerUp>()
     val homingBalls = mutableListOf<HomingBall>()
     val gameStateLock = Object()
@@ -28,7 +28,7 @@ class SpaceBalls: GameLoop(){
 
     override fun tick() {
         players.forEach { it.tick() }
-        fireBalls.forEach { it.tick() }
+        meteorites.forEach { it.tick() }
         homingBalls.forEach { it.tick() }
         powerUpSpawner.tick()
 
@@ -42,14 +42,14 @@ class SpaceBalls: GameLoop(){
                     players.add(player)
                 }
             }
-            fireBalls.add(FireBall(200.0, 300.0, FireBall.MovementDirection.DOWN_RIGHT, this))
-            fireBalls.add(FireBall(400.0, 200.0, FireBall.MovementDirection.UP_RIGHT, this))
-            fireBalls.add(FireBall(700.0, 400.0, FireBall.MovementDirection.UP_LEFT, this))
-            fireBalls.add(FireBall(800.0, 100.0, FireBall.MovementDirection.UP_LEFT, this))
-            fireBalls.add(FireBall(800.0, 400.0, FireBall.MovementDirection.UP_LEFT, this))
-            fireBalls.add(FireBall(500.0, 400.0, FireBall.MovementDirection.UP_LEFT, this))
-            fireBalls.add(FireBall(600.0, 400.0, FireBall.MovementDirection.DOWN_RIGHT, this))
-            fireBalls.add(FireBall(600.0, 600.0, FireBall.MovementDirection.DOWN_LEFT, this))
+            meteorites.add(Meteorite(200.0, 300.0, Meteorite.MovementDirection.DOWN_RIGHT, this))
+            meteorites.add(Meteorite(400.0, 200.0, Meteorite.MovementDirection.UP_RIGHT, this))
+            meteorites.add(Meteorite(700.0, 400.0, Meteorite.MovementDirection.UP_LEFT, this))
+            meteorites.add(Meteorite(800.0, 100.0, Meteorite.MovementDirection.UP_LEFT, this))
+            meteorites.add(Meteorite(800.0, 400.0, Meteorite.MovementDirection.UP_LEFT, this))
+            meteorites.add(Meteorite(500.0, 400.0, Meteorite.MovementDirection.UP_LEFT, this))
+            meteorites.add(Meteorite(600.0, 400.0, Meteorite.MovementDirection.DOWN_RIGHT, this))
+            meteorites.add(Meteorite(600.0, 600.0, Meteorite.MovementDirection.DOWN_LEFT, this))
         }
     }
 

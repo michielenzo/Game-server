@@ -10,6 +10,6 @@ class Inverter(override val xPosition: Double, override val yPosition: Double) :
     }
 
     override fun onPickUp(player: Player) {
-        player.spaceBalls.fireBalls.forEach { it.invert() }
+        player.spaceBalls.meteorites.forEach { it.invert() }
     }
 }

@@ -83,9 +83,9 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
                         gameStateDTO.players.add(playerDTO)
                 }
             }
-            spaceBalls.fireBalls.forEach { fireBall ->
-                FireBallDTO(fireBall.id, fireBall.xPosition, fireBall.yPosition).also { fireBallDTO ->
-                    gameStateDTO.fireBalls.add(fireBallDTO)
+            spaceBalls.meteorites.forEach { meteorite ->
+                MeteoriteDTO(meteorite.id, meteorite.xPosition, meteorite.yPosition).also { meteoriteDTO ->
+                    gameStateDTO.meteorites.add(meteoriteDTO)
                 }
             }
             spaceBalls.powerUps.forEach { powerUp ->

@@ -8,7 +8,7 @@ data class SendSpaceBallsGameStateToClientsDTO(
     val messageType: String = MessageType.SEND_SPACE_BALLS_GAME_STATE_TO_CLIENTS.value): DTO()
 
 data class GameStateDTO(val players: MutableList<PlayerDTO> = mutableListOf(),
-                        val fireBalls: MutableList<FireBallDTO> = mutableListOf(),
+                        val meteorites: MutableList<MeteoriteDTO> = mutableListOf(),
                         val powerUps: MutableList<PowerUpDTO> = mutableListOf(),
                         val homingBalls: MutableList<HomingBallDTO> = mutableListOf()): DTO()
 
@@ -21,7 +21,7 @@ data class PlayerDTO(val id: Int,
                      val shield: Boolean,
                      val inverted: Boolean): DTO()
 
-data class FireBallDTO(val id: Int,
+data class MeteoriteDTO(val id: Int,
                        val x: Double,
                        val y: Double)
 

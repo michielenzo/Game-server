@@ -109,7 +109,7 @@ Endpoint:
         "shield": false
       }
     ],
-    "fireBalls": [
+    "meteorites": [
       {
         "x": 772,
         "y": 479
