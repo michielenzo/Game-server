@@ -7,20 +7,17 @@ import main.kotlin.game.spaceBalls.dto.BackToRoomToClientDTO
 import main.kotlin.game.spaceBalls.dto.BackToRoomToServerDTO
 import main.kotlin.game.spaceBalls.dto.SendSpaceBallsGameStateToClientsDTO
 import main.kotlin.game.spaceBalls.dto.SendInputStateToServerDTO
-import main.kotlin.room.dto.ChooseGameModeToServerDTO
-import main.kotlin.room.dto.ChooseNameToServerDTO
-import main.kotlin.room.dto.SendRoomStateToClientsDTO
-import main.kotlin.room.dto.StartGameToServerDTO
 import main.kotlin.publisher.gamestate.IGameStateSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.network.dto.HeartbeatAcknowledgeDTO
 import main.kotlin.network.dto.HeartbeatCheckDTO
-import main.kotlin.publisher.MessageType
+import main.kotlin.publisher.MsgType
 import main.kotlin.publisher.gamestate.GameStatePublisher
 import main.kotlin.publisher.room.IRoomSubscriber
 import main.kotlin.publisher.room.RoomPublisher
 import main.kotlin.publisher.network.NetworkPublisher
+import main.kotlin.room.dto.*
 import main.kotlin.utilities.DTO
 import java.time.LocalDateTime
 
@@ -55,27 +52,33 @@ class PlayerWebsocket: Websocket(), IGameStateSubscriber, IRoomSubscriber {
         JsonParser()
                 .parse(message)
                 .asJsonObject
-                .get(MessageType.MESSAGE_TYPE.value)
+                .get(MsgType.MESSAGE_TYPE.value)
                 .asString.also {messageType ->
             return when(messageType){
-                MessageType.START_GAME_TO_SERVER.value -> Gson().fromJson(message, StartGameToServerDTO::class.java)
-                MessageType.SEND_INPUT_STATE_TO_SERVER.value -> {
+                MsgType.START_GAME_TO_SERVER.value -> Gson().fromJson(message, StartGameToServerDTO::class.java)
+                MsgType.SEND_INPUT_STATE_TO_SERVER.value -> {
                     Gson().fromJson(message, SendInputStateToServerDTO::class.java).also {
                         it.sessionId = wsCtx.sessionId()
                     }
                 }
-                MessageType.CHOOSE_NAME_TO_SERVER.value -> {
+                MsgType.CHOOSE_NAME_TO_SERVER.value -> {
                     Gson().fromJson(message, ChooseNameToServerDTO::class.java).also {
                         it.playerId = wsCtx.sessionId()
                     }
                 }
-                MessageType.BACK_TO_ROOM_TO_SERVER.value -> {
+                MsgType.BACK_TO_ROOM_TO_SERVER.value -> {
                     Gson().fromJson(message, BackToRoomToServerDTO::class.java).also {
                         it.playerId = wsCtx.sessionId()
                     }
                 }
-                MessageType.CHOOSE_GAMEMODE_TO_SERVER.value -> Gson().fromJson(message, ChooseGameModeToServerDTO::class.java)
-                MessageType.HEARTBEAT_CHECK.value -> Gson().fromJson(message, HeartbeatCheckDTO::class.java)
+                MsgType.JOIN_ROOM_TO_SERVER.value -> {
+                    Gson().fromJson(message, JoinRoomToServerDTO::class.java).also {
+                        it.playerId = wsCtx.sessionId()
+                    }
+                }
+                MsgType.CHOOSE_GAMEMODE_TO_SERVER.value ->
+                    Gson().fromJson(message, ChooseGameModeToServerDTO::class.java)
+                MsgType.HEARTBEAT_CHECK.value -> Gson().fromJson(message, HeartbeatCheckDTO::class.java)
                 else -> {
                     throw Exception(String()
                             .plus("Invalid message received: ")
@@ -109,8 +112,9 @@ class PlayerWebsocket: Websocket(), IGameStateSubscriber, IRoomSubscriber {
 
     override fun notifyRoomNews(dto: DTO) {
         when(dto){
-            is SendRoomStateToClientsDTO -> sendToAllSessionsAndSetClientId(dto)
+            is SendRoomStateToClientsDTO -> sendToAllRoomSessionsAndSetClientId(dto)
             is BackToRoomToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
+            is RoomNotFoundToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
         }
     }
 

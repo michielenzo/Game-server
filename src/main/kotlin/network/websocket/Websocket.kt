@@ -62,10 +62,12 @@ abstract class Websocket {
     }
 
     @Synchronized
-    fun sendToAllSessionsAndSetClientId(dto: SendRoomStateToClientsDTO) {
+    fun sendToAllRoomSessionsAndSetClientId(dto: SendRoomStateToClientsDTO) {
         sessions.forEach { ctx ->
-            dto.yourId = ctx.sessionId()
-            sendToSessionById(ctx.sessionId(), convertDTOtoJSON(dto))
+            if(dto.roomState.players.any { it.id == ctx.sessionId() }) {
+                dto.yourId = ctx.sessionId()
+                sendToSessionById(ctx.sessionId(), convertDTOtoJSON(dto))
+            }
         }
     }
 

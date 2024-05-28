@@ -6,43 +6,46 @@ import main.kotlin.game.spaceBalls.dto.BackToRoomToClientDTO
 import main.kotlin.game.spaceBalls.dto.BackToRoomToServerDTO
 import main.kotlin.game.zombies.Zombies
 import main.kotlin.room.dto.*
-import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.publisher.room.RoomPublisher
-import main.kotlin.publisher.network.INetworkSubscriber
-import main.kotlin.publisher.network.NetworkPublisher
 import main.kotlin.utilities.DTO
 
-class Room: INetworkSubscriber {
+class Room(var playerId: String, val roomCode: String){
 
-    private val players = mutableListOf<Player>()
+    val players = mutableListOf<Player>()
     private var selectedGameMode = GameMode.SPACE_BALLS.value
 
     private val roomStateLock = Object()
 
     init {
-        NetworkPublisher.subscribe(this)
+        setupInitialPlayer()
     }
 
-    override fun notifyNetworkNews(dto: DTO) {
-        when(dto){
-            is ConnectionDTO -> handleConnectToServerMessage(dto)
-            is DisconnectDTO -> handleDisconnectToServerMessage(dto)
-            is StartGameToServerDTO -> handleStartGameToServerDTO()
-            is ChooseNameToServerDTO -> handleChooseNameToServerMessage(dto)
-            is BackToRoomToServerDTO -> handleBackToRoomToServerMessage(dto)
-            is ChooseGameModeToServerDTO -> handleChooseGameModeToServerMessage(dto)
+    fun playerInRoom(id: String): Boolean = players.any { it.id == id }
+
+    fun removePlayer(id: String) {
+        players.first { it.id == id }.also {
+            players.remove(it)
         }
     }
 
-    private fun handleChooseGameModeToServerMessage(dto: ChooseGameModeToServerDTO) {
+    private fun setupInitialPlayer() {
+        synchronized(roomStateLock){
+            Player(playerId, "available", determinePlayerName()).also {
+                players.add(it)
+                RoomPublisher.broadcast(buildSendRoomStateDTO())
+            }
+        }
+    }
+
+    fun chooseGameMode(dto: ChooseGameModeToServerDTO) {
         synchronized(roomStateLock){
             selectedGameMode = dto.game
             buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
         }
     }
 
-    private fun handleBackToRoomToServerMessage(dto: BackToRoomToServerDTO) {
+    fun backToRoom(dto: BackToRoomToServerDTO) {
         synchronized(roomStateLock){
             players.find { pl -> pl.id == dto.playerId }.also {
                 it?: return
@@ -53,7 +56,7 @@ class Room: INetworkSubscriber {
         }
     }
 
-    private fun handleChooseNameToServerMessage(dto: ChooseNameToServerDTO) {
+    fun choosePlayerName(dto: ChooseNameToServerDTO) {
         synchronized(roomStateLock){
             players.find { pl -> pl.id == dto.playerId }.also { player ->
                 player?: return
@@ -63,7 +66,7 @@ class Room: INetworkSubscriber {
         }
     }
 
-    private fun handleStartGameToServerDTO() {
+    fun startGame() {
        synchronized(roomStateLock){
            val availablePlayers = mutableSetOf<Player>()
            players.forEach { player ->
@@ -93,23 +96,13 @@ class Room: INetworkSubscriber {
        }
     }
 
-
-    private fun handleDisconnectToServerMessage(dto: DisconnectDTO) {
+    fun removePlayer(dto: DisconnectDTO) {
         synchronized(roomStateLock){
             players.find{ pl -> pl.id == dto.id }.also {
                 it?: return
                 players.remove(it)
             }
             buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
-        }
-    }
-
-    private fun handleConnectToServerMessage(dto: ConnectionDTO) {
-        synchronized(roomStateLock){
-            Player(dto.id, "available", determinePlayerName()).also {
-                players.add(it)
-                RoomPublisher.broadcast(buildSendRoomStateDTO())
-            }
         }
     }
 
@@ -141,8 +134,8 @@ class Room: INetworkSubscriber {
         return "Player $newPlayerNumber"
     }
 
-    private fun buildSendRoomStateDTO(): DTO {
-        return SendRoomStateToClientsDTO(RoomStateDTO(selectedGameMode).also { roomStateDTO ->
+    fun buildSendRoomStateDTO(): DTO {
+        return SendRoomStateToClientsDTO(RoomStateDTO(selectedGameMode, roomCode).also { roomStateDTO ->
             players.forEach { player ->
                 PlayerDTO(player.id, player.status, player.name).also { playerDTO ->
                     roomStateDTO.players.add(playerDTO)

@@ -1,6 +1,6 @@
 package main.kotlin.publisher
 
-enum class MessageType(val value: String) {
+enum class MsgType(val value: String) {
     MESSAGE_TYPE("messageType"),
     CONNECT_TO_SERVER("connect"),
     SEND_SPACE_BALLS_GAME_STATE_TO_CLIENTS("sendSpaceBallsGameStateToClients"),
@@ -16,5 +16,7 @@ enum class MessageType(val value: String) {
     BACK_TO_ROOM_TO_CLIENT("backToRoomToClient"),
     CHOOSE_GAMEMODE_TO_SERVER("chooseGameModeToServer"),
     HEARTBEAT_ACKNOWLEDGE("heartbeatAcknowledge"),
-    HEARTBEAT_CHECK("heartbeatCheck");
+    HEARTBEAT_CHECK("heartbeatCheck"),
+    JOIN_ROOM_TO_SERVER("joinRoomToServer"),
+    ROOM_NOT_FOUND_TO_CLIENT("roomNotFoundToClient")
 }
