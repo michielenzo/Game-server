@@ -28,7 +28,7 @@ class Room(
     fun playerInRoom(id: String): Boolean = players.any { it.id == id }
 
     fun joinRoom(player: Player){
-        players.first { it.name == player.name }.also {
+        players.firstOrNull { it.name == player.name }?.also {
             player.name = determinePlayerName()
         }
         players.add(player)
