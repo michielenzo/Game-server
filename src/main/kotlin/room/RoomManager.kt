@@ -21,33 +21,59 @@ class RoomManager: INetworkSubscriber {
 
     override fun notifyNetworkNews(dto: DTO) {
         when(dto){
-            is ConnectionDTO -> handleConnectToServerMessage(dto)
-            is DisconnectDTO -> handleDisconnectToServerMessage(dto)
-            is StartGameToServerDTO -> handleStartGameToServerDTO(dto)
-            is ChooseNameToServerDTO -> handleChooseNameToServerMessage(dto)
-            is BackToRoomToServerDTO -> handleBackToRoomToServerMessage(dto)
-            is ChooseGameModeToServerDTO -> handleChooseGameModeToServerMessage(dto)
-            is JoinRoomToServerDTO -> handleJoinRoomToServerMessage(dto)
+            is ConnectionDTO -> handleConnectToServerMsg(dto)
+            is DisconnectDTO -> handleDisconnectToServerMsg(dto)
+            is StartGameToServerDTO -> handleStartGameToServerMsg(dto)
+            is ChooseNameToServerDTO -> handleChooseNameToServerMsg(dto)
+            is BackToRoomToServerDTO -> handleBackToRoomToServerMsg(dto)
+            is ChooseGameModeToServerDTO -> handleChooseGameModeToServerMsg(dto)
+            is JoinRoomToServerDTO -> handleJoinRoomToServerMsg(dto)
+            is KickPlayerToServerDTO -> handleKickPlayerToServerMsg(dto)
+            is PromotePlayerToServerDTO -> handlePromotePlayerToServerMsg(dto)
         }
     }
 
-    private fun handleJoinRoomToServerMessage(dto: JoinRoomToServerDTO){
+    private fun handlePromotePlayerToServerMsg(dto: PromotePlayerToServerDTO) {
+        if(dto.playerId == dto.playerToPromoteId) return
+
+        synchronized(roomsStateLock){
+            val roomLeader = findRoomByPlayerId(dto.playerId)
+            val roomPlayerToKick = findRoomByPlayerId(dto.playerId)
+
+            if(roomLeader != roomPlayerToKick) return
+
+            roomLeader.promoteNewLeader(dto.playerId, dto.playerToPromoteId)
+        }
+    }
+
+    private fun handleKickPlayerToServerMsg(dto: KickPlayerToServerDTO) {
+        if(dto.playerId == dto.playerToKickId) return
+
+        synchronized(roomsStateLock) {
+            val roomLeader = findRoomByPlayerId(dto.playerId)
+            val roomPlayerToKick = findRoomByPlayerId(dto.playerToKickId)
+
+            if(roomLeader != roomPlayerToKick) return
+
+            val kickedPlayer = roomLeader.kickPlayer(dto.playerToKickId)
+            Room(kickedPlayer, generateUniqueRoomCode()).also {
+                rooms.add(it)
+            }
+        }
+    }
+
+    private fun handleJoinRoomToServerMsg(dto: JoinRoomToServerDTO){
         val roomToLeave = findRoomByPlayerId(dto.playerId)
         val player = roomToLeave.players.first { it.id == dto.playerId }
 
         try {
             synchronized(roomsStateLock) {
-                // Join new Room
                 val roomToJoin = rooms.first { it.roomCode == dto.roomCode }
-                roomToJoin.players.add(player)
-                roomToJoin.buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
+                roomToJoin.joinRoom(player)
 
-                // Leave old Room
                 roomToLeave.removePlayer(dto.playerId)
                 if(roomToLeave.players.size < 1) {
                     rooms.remove(roomToLeave)
-                } else {
-                    roomToLeave.buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
                 }
             }
         } catch (e: NoSuchElementException) {
@@ -55,32 +81,34 @@ class RoomManager: INetworkSubscriber {
         }
     }
 
-    private fun handleConnectToServerMessage(dto: ConnectionDTO){
-        Room(dto.id, generateUniqueRoomCode()).also {
-            rooms.add(it)
+    private fun handleConnectToServerMsg(dto: ConnectionDTO){
+        Player(dto.id, "available", "Player 1").also{ player ->
+            Room(player, generateUniqueRoomCode()).also { room ->
+                rooms.add(room)
+            }
         }
     }
 
-    private fun handleDisconnectToServerMessage(dto: DisconnectDTO){
+    private fun handleDisconnectToServerMsg(dto: DisconnectDTO){
         findRoomByPlayerId(dto.id).also { room ->
             room.removePlayer(dto)
             if(room.players.size < 1) rooms.remove(room)
         }
     }
 
-    private fun handleChooseNameToServerMessage(dto: ChooseNameToServerDTO){
+    private fun handleChooseNameToServerMsg(dto: ChooseNameToServerDTO){
         findRoomByPlayerId(dto.playerId).also { it.choosePlayerName(dto) }
     }
 
-    private fun handleStartGameToServerDTO(dto: StartGameToServerDTO){
+    private fun handleStartGameToServerMsg(dto: StartGameToServerDTO){
         findRoomByPlayerId(dto.playerId).also { it.startGame() }
     }
 
-    private fun handleBackToRoomToServerMessage(dto: BackToRoomToServerDTO){
+    private fun handleBackToRoomToServerMsg(dto: BackToRoomToServerDTO){
         findRoomByPlayerId(dto.playerId).also { it.backToRoom(dto) }
     }
 
-    private fun handleChooseGameModeToServerMessage(dto: ChooseGameModeToServerDTO){
+    private fun handleChooseGameModeToServerMsg(dto: ChooseGameModeToServerDTO){
         findRoomByPlayerId(dto.playerId).also { it.chooseGameMode(dto) }
     }
 

@@ -10,31 +10,58 @@ import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.publisher.room.RoomPublisher
 import main.kotlin.utilities.DTO
 
-class Room(var playerId: String, val roomCode: String){
-
+class Room(
+    private var leader: Player,
+    val roomCode: String
+) {
     val players = mutableListOf<Player>()
+
     private var selectedGameMode = GameMode.SPACE_BALLS.value
 
     private val roomStateLock = Object()
 
     init {
-        setupInitialPlayer()
+        players.add(leader)
+        buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
     }
 
     fun playerInRoom(id: String): Boolean = players.any { it.id == id }
+
+    fun joinRoom(player: Player){
+        players.first { it.name == player.name }.also {
+            player.name = determinePlayerName()
+        }
+        players.add(player)
+
+        buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
+    }
 
     fun removePlayer(id: String) {
         players.first { it.id == id }.also {
             players.remove(it)
         }
+
+        if(leader.id == id && players.size > 0){
+            leader = players[0]
+        }
+
+        buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
     }
 
-    private fun setupInitialPlayer() {
-        synchronized(roomStateLock){
-            Player(playerId, "available", determinePlayerName()).also {
-                players.add(it)
-                RoomPublisher.broadcast(buildSendRoomStateDTO())
-            }
+    fun kickPlayer(id: String): Player {
+        players.first { it.id == id }.also {
+            players.remove(it)
+            buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
+            return it
+        }
+    }
+
+    fun promoteNewLeader(currentLeaderId: String, nextLeaderId: String) {
+        synchronized(roomStateLock) {
+            if (currentLeaderId != leader.id) return
+            players.first { it.id == nextLeaderId }.also { leader = it }
+
+            buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
         }
     }
 
@@ -135,7 +162,7 @@ class Room(var playerId: String, val roomCode: String){
     }
 
     fun buildSendRoomStateDTO(): DTO {
-        return SendRoomStateToClientsDTO(RoomStateDTO(selectedGameMode, roomCode).also { roomStateDTO ->
+        return SendRoomStateToClientsDTO(RoomStateDTO(selectedGameMode, roomCode, leader.id).also { roomStateDTO ->
             players.forEach { player ->
                 PlayerDTO(player.id, player.status, player.name).also { playerDTO ->
                     roomStateDTO.players.add(playerDTO)

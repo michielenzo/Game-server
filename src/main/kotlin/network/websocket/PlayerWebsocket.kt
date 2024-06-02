@@ -48,42 +48,53 @@ class PlayerWebsocket: Websocket(), IGameStateSubscriber, IRoomSubscriber {
         }
     }
 
-    private fun convertStringToDTObject(message: String, wsCtx: WsContext): DTO? {
+    private fun convertStringToDTObject(msg: String, wsCtx: WsContext): DTO? {
         JsonParser()
-                .parse(message)
+                .parse(msg)
                 .asJsonObject
                 .get(MsgType.MESSAGE_TYPE.value)
                 .asString.also {messageType ->
             return when(messageType){
-                MsgType.START_GAME_TO_SERVER.value -> Gson().fromJson(message, StartGameToServerDTO::class.java)
+                MsgType.START_GAME_TO_SERVER.value -> Gson().fromJson(msg, StartGameToServerDTO::class.java)
                 MsgType.SEND_INPUT_STATE_TO_SERVER.value -> {
-                    Gson().fromJson(message, SendInputStateToServerDTO::class.java).also {
+                    Gson().fromJson(msg, SendInputStateToServerDTO::class.java).also {
                         it.sessionId = wsCtx.sessionId()
                     }
                 }
                 MsgType.CHOOSE_NAME_TO_SERVER.value -> {
-                    Gson().fromJson(message, ChooseNameToServerDTO::class.java).also {
+                    Gson().fromJson(msg, ChooseNameToServerDTO::class.java).also {
                         it.playerId = wsCtx.sessionId()
                     }
                 }
                 MsgType.BACK_TO_ROOM_TO_SERVER.value -> {
-                    Gson().fromJson(message, BackToRoomToServerDTO::class.java).also {
+                    Gson().fromJson(msg, BackToRoomToServerDTO::class.java).also {
                         it.playerId = wsCtx.sessionId()
                     }
                 }
                 MsgType.JOIN_ROOM_TO_SERVER.value -> {
-                    Gson().fromJson(message, JoinRoomToServerDTO::class.java).also {
+                    Gson().fromJson(msg, JoinRoomToServerDTO::class.java).also {
+                        it.playerId = wsCtx.sessionId()
+                    }
+                }
+                MsgType.KICK_PLAYER_TO_SERVER.value -> {
+                    Gson().fromJson(msg, KickPlayerToServerDTO::class.java).also {
+                        it.playerId = wsCtx.sessionId()
+                    }
+                }
+                MsgType.PROMOTE_PLAYER_TO_SERVER.value -> {
+                    Gson().fromJson(msg, PromotePlayerToServerDTO::class.java).also {
                         it.playerId = wsCtx.sessionId()
                     }
                 }
                 MsgType.CHOOSE_GAMEMODE_TO_SERVER.value ->
-                    Gson().fromJson(message, ChooseGameModeToServerDTO::class.java)
-                MsgType.HEARTBEAT_CHECK.value -> Gson().fromJson(message, HeartbeatCheckDTO::class.java)
+                    Gson().fromJson(msg, ChooseGameModeToServerDTO::class.java)
+                MsgType.HEARTBEAT_CHECK.value -> Gson().fromJson(msg, HeartbeatCheckDTO::class.java)
                 else -> {
-                    throw Exception(String()
-                            .plus("Invalid message received: ")
-                            .plus(message)
-                            .plus("\n"))
+                    println(String()
+                        .plus("Invalid message received: ")
+                        .plus(msg)
+                        .plus("\n"))
+                    return null
                 }
             }
         }

@@ -12,6 +12,7 @@ data class SendRoomStateToClientsDTO(
 data class RoomStateDTO(
     val gameMode: String,
     val roomCode: String,
+    val leaderId: String,
     val players: MutableList<PlayerDTO> = mutableListOf()
 ): DTO()
 
@@ -19,6 +20,18 @@ data class PlayerDTO(
     val id: String,
     val status: String,
     val name: String = id
+): DTO()
+
+data class KickPlayerToServerDTO(
+    var playerId: String,
+    val playerToKickId: String,
+    val messageType: String = MsgType.KICK_PLAYER_TO_SERVER.value
+): DTO()
+
+data class PromotePlayerToServerDTO(
+    var playerId: String,
+    val playerToPromoteId: String,
+    val messageType: String = MsgType.PROMOTE_PLAYER_TO_SERVER.value
 ): DTO()
 
 data class StartGameToServerDTO(
