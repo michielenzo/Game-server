@@ -20,5 +20,6 @@ enum class MsgType(val value: String) {
     JOIN_ROOM_TO_SERVER("joinRoomToServer"),
     ROOM_NOT_FOUND_TO_CLIENT("roomNotFoundToClient"),
     KICK_PLAYER_TO_SERVER("kickPlayerToServer"),
-    PROMOTE_PLAYER_TO_SERVER("promotePlayerToServer");
+    PROMOTE_PLAYER_TO_SERVER("promotePlayerToServer"),
+    YOU_HAVE_BEEN_KICKED_TO_CLIENT("youHaveBeenKickedToClient");
 }

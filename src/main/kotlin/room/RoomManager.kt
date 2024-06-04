@@ -60,6 +60,8 @@ class RoomManager: INetworkSubscriber {
                 rooms.add(it)
             }
         }
+
+        YouHaveBeenKickedToClientDTO(dto.playerToKickId).also { RoomPublisher.broadcast(it) }
     }
 
     private fun handleJoinRoomToServerMsg(dto: JoinRoomToServerDTO){

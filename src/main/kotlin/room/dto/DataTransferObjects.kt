@@ -64,3 +64,8 @@ data class RoomNotFoundToClientDTO(
     val messageType: String = MsgType.ROOM_NOT_FOUND_TO_CLIENT.value
 ): DTO()
 
+data class YouHaveBeenKickedToClientDTO(
+    val playerId: String,
+    val messageType: String = MsgType.YOU_HAVE_BEEN_KICKED_TO_CLIENT.value
+): DTO()
+

@@ -126,6 +126,7 @@ class PlayerWebsocket: Websocket(), IGameStateSubscriber, IRoomSubscriber {
             is SendRoomStateToClientsDTO -> sendToAllRoomSessionsAndSetClientId(dto)
             is BackToRoomToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
             is RoomNotFoundToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
+            is YouHaveBeenKickedToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
         }
     }
 
