@@ -131,7 +131,8 @@ class PlayerWebsocket: Websocket(), IGameStateSubscriber, IRoomSubscriber {
     }
 
     private fun buildConnectToServerDTO(session: WsContext): DTO {
-        return ConnectionDTO(session.sessionId(), LocalDateTime.now())
+        val roomCode = session.queryParam("roomCode")
+        return ConnectionDTO(session.sessionId(), roomCode, LocalDateTime.now())
     }
 
     private fun buildDisconnectFromServerDTO(session: WsContext): DTO {

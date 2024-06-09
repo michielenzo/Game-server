@@ -85,11 +85,21 @@ class RoomManager: INetworkSubscriber {
 
     private fun handleConnectToServerMsg(dto: ConnectionDTO){
         Player(dto.id, "available", "Player 1").also{ player ->
-            Room(player, generateUniqueRoomCode()).also { room ->
-                rooms.add(room)
+            if(dto.roomCode != null){
+                rooms.firstOrNull{ it.roomCode == dto.roomCode }?.apply {
+                    joinRoom(player)
+                    return
+                }
+
+                Room(player, generateUniqueRoomCode()).also { room -> rooms.add(room) }
+                RoomNotFoundToClientDTO(dto.roomCode, dto.id).also { RoomPublisher.broadcast(it) }
+                return
             }
+
+            Room(player, generateUniqueRoomCode()).also { rooms.add(it) }
         }
     }
+
 
     private fun handleDisconnectToServerMsg(dto: DisconnectDTO){
         findRoomByPlayerId(dto.id).also { room ->
