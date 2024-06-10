@@ -56,6 +56,20 @@ class Room(
         }
     }
 
+    fun readyUpPlayer(id: String){
+        players.first { it.id == id }
+            .apply { if(status != Player.Status.IN_GAME) status = Player.Status.READY }
+
+        buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
+    }
+
+    fun unReadyPlayer(id: String){
+        players.first { it.id == id }
+            .apply { if(status != Player.Status.IN_GAME) status = Player.Status.AVAILABLE }
+
+        buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
+    }
+
     fun promoteNewLeader(currentLeaderId: String, nextLeaderId: String) {
         synchronized(roomStateLock) {
             if (currentLeaderId != leader.id) return
@@ -76,7 +90,7 @@ class Room(
         synchronized(roomStateLock){
             players.find { pl -> pl.id == dto.playerId }.also {
                 it?: return
-                it.status = Player.Status.AVAILABLE.text
+                it.status = Player.Status.AVAILABLE
             }
             RoomPublisher.broadcast(BackToRoomToClientDTO().also { it.playerId = dto.playerId })
             buildSendRoomStateDTO().also { RoomPublisher.broadcast(it) }
@@ -95,27 +109,27 @@ class Room(
 
     fun startGame() {
        synchronized(roomStateLock){
-           val availablePlayers = mutableSetOf<Player>()
+           val readyPlayers = mutableSetOf<Player>()
            players.forEach { player ->
-               if(player.status == Player.Status.AVAILABLE.text){
-                   availablePlayers.add(player)
+               if(player.status == Player.Status.READY){
+                   readyPlayers.add(player)
                }
            }
            when(selectedGameMode){
                GameMode.SPACE_BALLS.value -> {
                    val game = SpaceBalls()
-                   game.initializeGameState(availablePlayers)
+                   game.initializeGameState(readyPlayers)
                    game.startGame()
-                   availablePlayers.forEach {
-                       it.status = Player.Status.IN_GAME.text
+                   readyPlayers.forEach {
+                       it.status = Player.Status.IN_GAME
                    }
                }
                GameMode.ZOMBIES.value -> {
                    val game = Zombies()
-                   game.initializeGameState(availablePlayers)
+                   game.initializeGameState(readyPlayers)
                    game.start()
-                   availablePlayers.forEach {
-                       it.status = Player.Status.IN_GAME.text
+                   readyPlayers.forEach {
+                       it.status = Player.Status.IN_GAME
                    }
                }
                else -> print("Game is not yet implemented \n")
@@ -164,7 +178,7 @@ class Room(
     fun buildSendRoomStateDTO(): DTO {
         return SendRoomStateToClientsDTO(RoomStateDTO(selectedGameMode, roomCode, leader.id).also { roomStateDTO ->
             players.forEach { player ->
-                PlayerDTO(player.id, player.status, player.name).also { playerDTO ->
+                PlayerDTO(player.id, player.status.text, player.name).also { playerDTO ->
                     roomStateDTO.players.add(playerDTO)
                 }
             }

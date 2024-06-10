@@ -69,3 +69,12 @@ data class YouHaveBeenKickedToClientDTO(
     val messageType: String = MsgType.YOU_HAVE_BEEN_KICKED_TO_CLIENT.value
 ): DTO()
 
+data class ReadyUpToServer(
+    var playerId: String,
+    val messageType: String = MsgType.READY_UP_TO_SERVER.value
+): DTO()
+
+data class NotReadyToServer(
+    var playerId: String,
+    val messageType: String = MsgType.NOT_READY_TO_SERVER.value
+): DTO()

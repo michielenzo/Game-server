@@ -86,6 +86,16 @@ class PlayerWebsocket: Websocket(), IGameStateSubscriber, IRoomSubscriber {
                         it.playerId = wsCtx.sessionId()
                     }
                 }
+                MsgType.READY_UP_TO_SERVER.value -> {
+                    Gson().fromJson(msg, ReadyUpToServer::class.java).also {
+                        it.playerId = wsCtx.sessionId()
+                    }
+                }
+                MsgType.NOT_READY_TO_SERVER.value -> {
+                    Gson().fromJson(msg, NotReadyToServer::class.java).also {
+                        it.playerId = wsCtx.sessionId()
+                    }
+                }
                 MsgType.CHOOSE_GAMEMODE_TO_SERVER.value ->
                     Gson().fromJson(msg, ChooseGameModeToServerDTO::class.java)
                 MsgType.HEARTBEAT_CHECK.value -> Gson().fromJson(msg, HeartbeatCheckDTO::class.java)

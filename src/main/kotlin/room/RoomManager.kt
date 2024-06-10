@@ -30,7 +30,17 @@ class RoomManager: INetworkSubscriber {
             is JoinRoomToServerDTO -> handleJoinRoomToServerMsg(dto)
             is KickPlayerToServerDTO -> handleKickPlayerToServerMsg(dto)
             is PromotePlayerToServerDTO -> handlePromotePlayerToServerMsg(dto)
+            is ReadyUpToServer -> handleReadyUpToServerMsg(dto)
+            is NotReadyToServer -> handleNotReadyToServerMsg(dto)
         }
+    }
+
+    private fun handleReadyUpToServerMsg(dto: ReadyUpToServer) {
+        findRoomByPlayerId(dto.playerId).readyUpPlayer(dto.playerId)
+    }
+
+    private fun handleNotReadyToServerMsg(dto: NotReadyToServer) {
+        findRoomByPlayerId(dto.playerId).unReadyPlayer(dto.playerId)
     }
 
     private fun handlePromotePlayerToServerMsg(dto: PromotePlayerToServerDTO) {
@@ -84,7 +94,7 @@ class RoomManager: INetworkSubscriber {
     }
 
     private fun handleConnectToServerMsg(dto: ConnectionDTO){
-        Player(dto.id, "available", "Player 1").also{ player ->
+        Player(dto.id, Player.Status.AVAILABLE, "Player 1").also{ player ->
             if(dto.roomCode != null){
                 rooms.firstOrNull{ it.roomCode == dto.roomCode }?.apply {
                     joinRoom(player)
@@ -99,7 +109,6 @@ class RoomManager: INetworkSubscriber {
             Room(player, generateUniqueRoomCode()).also { rooms.add(it) }
         }
     }
-
 
     private fun handleDisconnectToServerMsg(dto: DisconnectDTO){
         findRoomByPlayerId(dto.id).also { room ->
