@@ -23,5 +23,6 @@ enum class MsgType(val value: String) {
     PROMOTE_PLAYER_TO_SERVER("promotePlayerToServer"),
     YOU_HAVE_BEEN_KICKED_TO_CLIENT("youHaveBeenKickedToClient"),
     READY_UP_TO_SERVER("readyUpToServer"),
-    NOT_READY_TO_SERVER("notReadyToServer");
+    NOT_READY_TO_SERVER("notReadyToServer"),
+    GAME_CONFIG_TO_CLIENTS("gameConfigToClients");
 }

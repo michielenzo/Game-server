@@ -1,9 +1,11 @@
 package main.kotlin.game.spaceBalls
 
 import main.kotlin.game.engine.GameLoop
+import main.kotlin.game.spaceBalls.dto.GameConfigToClientsDTO
 import main.kotlin.game.spaceBalls.gameobjects.*
 import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
-import main.kotlin.publisher.gamestate.GameStatePublisher
+import main.kotlin.publisher.MsgType
+import main.kotlin.publisher.gamestate.GamePublisher
 
 class SpaceBalls: GameLoop(){
 
@@ -50,6 +52,17 @@ class SpaceBalls: GameLoop(){
             meteorites.add(Meteorite(500.0, 400.0, Meteorite.MovementDirection.UP_LEFT, this))
             meteorites.add(Meteorite(600.0, 400.0, Meteorite.MovementDirection.DOWN_RIGHT, this))
             meteorites.add(Meteorite(600.0, 600.0, Meteorite.MovementDirection.DOWN_LEFT, this))
+
+            GameConfigToClientsDTO(
+                messageType = MsgType.GAME_CONFIG_TO_CLIENTS.value,
+                powerUpWidth = IPowerUp.WIDTH,
+                powerUpHeight = IPowerUp.HEIGHT,
+                playerWidth = Player.WIDTH,
+                playerHeight = Player.HEIGHT,
+                homingBallRadius = HomingBall.RADIUS,
+                meteoriteDiameter = Meteorite.DIAMETER,
+                playerSpeed = Player.SPEED
+            ).also { GamePublisher.broadcast(it, players) }
         }
     }
 
@@ -57,4 +70,3 @@ class SpaceBalls: GameLoop(){
         return players.size == 0
     }
 }
-

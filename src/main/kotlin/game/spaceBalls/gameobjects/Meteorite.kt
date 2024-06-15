@@ -13,9 +13,12 @@ class Meteorite(
     private val game: SpaceBalls
 ): GameObject() {
 
-    private val diameter = 50
     private val speed = 220
     private val playerCollision = mutableListOf<PlayerCollision>()
+
+    companion object{
+        const val DIAMETER = 50
+    }
 
     init {
         game.players.forEach {
@@ -102,7 +105,7 @@ class Meteorite(
     private fun checkCollisionWithPlayers() {
         game.players.forEach { player ->
             Rectangle(player.xPosition, player.yPosition, Player.WIDTH.toDouble(), Player.HEIGHT.toDouble()).also { rect ->
-                Circle(xPosition, yPosition, (diameter/2).toDouble()).also { circle ->
+                Circle(xPosition, yPosition, (DIAMETER/2).toDouble()).also { circle ->
                     Collision.rectangleWithCircleCollision(rect, circle).also { hitMarker ->
                         playerCollision.find { pl -> pl.player.sessionId == player.sessionId }.also { collision ->
                             collision?: return
@@ -116,10 +119,10 @@ class Meteorite(
 
     private fun checkCollisionWithTheWall(): WallCollision?{
         return when {
-            xPosition <= 0 + diameter/2 -> WallCollision.LEFT_WALL
+            xPosition <= 0 + DIAMETER/2 -> WallCollision.LEFT_WALL
             xPosition >= SpaceBalls.DIMENSION_WIDTH -> WallCollision.RIGHT_WALL
-            yPosition <= 0 + diameter/2 -> WallCollision.ROOF
-            yPosition >= SpaceBalls.DIMENSION_HEIGHT - diameter/2 -> WallCollision.FLOOR
+            yPosition <= 0 + DIAMETER/2 -> WallCollision.ROOF
+            yPosition >= SpaceBalls.DIMENSION_HEIGHT - DIAMETER/2 -> WallCollision.FLOOR
             else -> return null
         }
     }
@@ -127,22 +130,22 @@ class Meteorite(
     private fun handleWallCollision(wall: WallCollision){
         when(wall){
             WallCollision.ROOF -> {
-                yPosition = (0 + diameter/2).toDouble()
+                yPosition = (0 + DIAMETER/2).toDouble()
                 direction = if(direction == MovementDirection.UP_LEFT) MovementDirection.DOWN_LEFT
                             else                                       MovementDirection.DOWN_RIGHT
             }
             WallCollision.FLOOR -> {
-                yPosition = (SpaceBalls.DIMENSION_HEIGHT - diameter/2).toDouble()
+                yPosition = (SpaceBalls.DIMENSION_HEIGHT - DIAMETER/2).toDouble()
                 direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.UP_LEFT
                             else                                         MovementDirection.UP_RIGHT
             }
             WallCollision.LEFT_WALL -> {
-                xPosition = (0 + diameter/2).toDouble()
+                xPosition = (0 + DIAMETER/2).toDouble()
                 direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.DOWN_RIGHT
                             else                                         MovementDirection.UP_RIGHT
             }
             WallCollision.RIGHT_WALL -> {
-                xPosition = (SpaceBalls.DIMENSION_WIDTH - diameter/2).toDouble()
+                xPosition = (SpaceBalls.DIMENSION_WIDTH - DIAMETER/2).toDouble()
                 direction = if(direction == MovementDirection.DOWN_RIGHT) MovementDirection.DOWN_LEFT
                 else                                                      MovementDirection.UP_LEFT
             }

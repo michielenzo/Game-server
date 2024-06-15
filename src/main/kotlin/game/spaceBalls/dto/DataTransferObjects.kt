@@ -62,3 +62,15 @@ data class BackToRoomToClientDTO(
     val messageType: String = MsgType.BACK_TO_ROOM_TO_CLIENT.value,
     var playerId: String? = null
 ): DTO()
+
+data class GameConfigToClientsDTO(
+    val messageType: String = MsgType.GAME_CONFIG_TO_CLIENTS.value,
+    val powerUpWidth: Int,
+    val powerUpHeight: Int,
+    val playerWidth: Int,
+    val playerHeight: Int,
+    val homingBallRadius: Int,
+    val meteoriteDiameter: Int,
+    val playerSpeed: Int
+): DTO()
+

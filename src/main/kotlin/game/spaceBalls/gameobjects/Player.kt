@@ -19,6 +19,7 @@ class Player(
     companion object {
         const val WIDTH = 60
         const val HEIGHT = 42
+        const val SPEED: Int = 165
     }
 
     @Volatile var wKey = false
@@ -26,7 +27,6 @@ class Player(
     @Volatile var sKey = false
     @Volatile var dKey = false
 
-    private val speed: Int = 165
     var health: Int = 5
     var isAlive: Boolean = true
 
@@ -118,15 +118,15 @@ class Player(
 
     private fun move(){
         if(controlsInverted){
-            if(wKey) {yPosition += speed * GameLoop.SPEED_FACTOR}
-            if(aKey) {xPosition += speed * GameLoop.SPEED_FACTOR}
-            if(sKey) {yPosition -= speed * GameLoop.SPEED_FACTOR}
-            if(dKey) {xPosition -= speed * GameLoop.SPEED_FACTOR}
+            if(wKey) {yPosition += SPEED * GameLoop.SPEED_FACTOR}
+            if(aKey) {xPosition += SPEED * GameLoop.SPEED_FACTOR}
+            if(sKey) {yPosition -= SPEED * GameLoop.SPEED_FACTOR}
+            if(dKey) {xPosition -= SPEED * GameLoop.SPEED_FACTOR}
         } else {
-            if(wKey) {yPosition -= speed * GameLoop.SPEED_FACTOR}
-            if(aKey) {xPosition -= speed * GameLoop.SPEED_FACTOR}
-            if(sKey) {yPosition += speed * GameLoop.SPEED_FACTOR}
-            if(dKey) {xPosition += speed * GameLoop.SPEED_FACTOR}
+            if(wKey) {yPosition -= SPEED * GameLoop.SPEED_FACTOR}
+            if(aKey) {xPosition -= SPEED * GameLoop.SPEED_FACTOR}
+            if(sKey) {yPosition += SPEED * GameLoop.SPEED_FACTOR}
+            if(dKey) {xPosition += SPEED * GameLoop.SPEED_FACTOR}
         }
     }
 

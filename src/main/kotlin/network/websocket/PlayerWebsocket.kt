@@ -3,17 +3,15 @@ package network
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import io.javalin.websocket.WsContext
-import main.kotlin.game.spaceBalls.dto.BackToRoomToClientDTO
-import main.kotlin.game.spaceBalls.dto.BackToRoomToServerDTO
-import main.kotlin.game.spaceBalls.dto.SendSpaceBallsGameStateToClientsDTO
-import main.kotlin.game.spaceBalls.dto.SendInputStateToServerDTO
-import main.kotlin.publisher.gamestate.IGameStateSubscriber
+import main.kotlin.game.spaceBalls.dto.*
+import main.kotlin.game.spaceBalls.gameobjects.Player
+import main.kotlin.publisher.gamestate.IGameSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.network.dto.HeartbeatAcknowledgeDTO
 import main.kotlin.network.dto.HeartbeatCheckDTO
 import main.kotlin.publisher.MsgType
-import main.kotlin.publisher.gamestate.GameStatePublisher
+import main.kotlin.publisher.gamestate.GamePublisher
 import main.kotlin.publisher.room.IRoomSubscriber
 import main.kotlin.publisher.room.RoomPublisher
 import main.kotlin.publisher.network.NetworkPublisher
@@ -21,10 +19,10 @@ import main.kotlin.room.dto.*
 import main.kotlin.utilities.DTO
 import java.time.LocalDateTime
 
-class PlayerWebsocket: Websocket(), IGameStateSubscriber, IRoomSubscriber {
+class PlayerWebsocket: Websocket(), IGameSubscriber, IRoomSubscriber {
 
     init {
-        GameStatePublisher.subscribe(this)
+        GamePublisher.subscribe(this)
         RoomPublisher.subscribe(this)
     }
 
@@ -126,6 +124,23 @@ class PlayerWebsocket: Websocket(), IGameStateSubscriber, IRoomSubscriber {
                         }
                     }
                     sendToSessionSet(set, convertDTOtoJSON(dto))
+                }
+            }
+        }
+    }
+
+    override fun notifyGameStateNews(dto: DTO, players: List<Player>) {
+        when(dto){
+            is GameConfigToClientsDTO -> {
+                mutableSetOf<WsContext>().also { set ->
+                   players.forEach { player ->
+                        sessions.find { sesh -> sesh.sessionId() == player.sessionId }.also {
+                            if (it != null) {
+                                set.add(it)
+                            }
+                        }
+                    }
+                   sendToSessionSet(set, convertDTOtoJSON(dto))
                 }
             }
         }

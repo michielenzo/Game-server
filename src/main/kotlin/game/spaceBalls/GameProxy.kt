@@ -3,7 +3,7 @@ package main.kotlin.game.spaceBalls
 import main.kotlin.game.spaceBalls.dto.*
 import main.kotlin.game.spaceBalls.gameobjects.powerups.*
 import main.kotlin.network.dto.DisconnectDTO
-import main.kotlin.publisher.gamestate.GameStatePublisher
+import main.kotlin.publisher.gamestate.GamePublisher
 import main.kotlin.publisher.network.INetworkSubscriber
 import main.kotlin.publisher.network.NetworkPublisher
 import main.kotlin.utilities.DTO
@@ -24,7 +24,7 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
         while (!spaceBalls.gameOver){
             val delta = (System.currentTimeMillis() - startTime) - (loops * millisPerMessage)
             if(delta >= millisPerMessage){
-                buildSendGameStateDTO().also { GameStatePublisher.broadcast(it) }
+                buildSendGameStateDTO().also { GamePublisher.broadcast(it) }
                 loops++
             }
         }
