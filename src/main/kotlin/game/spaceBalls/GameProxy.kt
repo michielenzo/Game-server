@@ -100,6 +100,10 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
             spaceBalls.homingBalls.forEach { homingBall ->
                 gameStateDTO.homingBalls.add(HomingBallDTO(homingBall.id, homingBall.xPosition, homingBall.yPosition))
             }
+            spaceBalls.gameEvents.forEach { event ->
+                gameStateDTO.events.add(GameEventDTO(event.type, event.data))
+            }
+            spaceBalls.gameEvents.clear()
         })
     }
 

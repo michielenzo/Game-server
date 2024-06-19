@@ -1,6 +1,11 @@
 package main.kotlin.game.engine
 
+import java.util.concurrent.CopyOnWriteArrayList
+
 abstract class GameLoop: Thread(){
+
+    val gameEvents = CopyOnWriteArrayList<GameEvent>()
+
     companion object {
         private const val FRAMERATE = 60
         private const val MILLIS_PER_SECOND = 1000.0

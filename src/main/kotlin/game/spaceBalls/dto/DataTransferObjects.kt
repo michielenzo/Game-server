@@ -1,5 +1,6 @@
 package main.kotlin.game.spaceBalls.dto
 
+import main.kotlin.game.engine.GameEventType
 import main.kotlin.publisher.MsgType
 import main.kotlin.utilities.DTO
 
@@ -12,7 +13,13 @@ data class GameStateDTO(
     val players: MutableList<PlayerDTO> = mutableListOf(),
     val meteorites: MutableList<MeteoriteDTO> = mutableListOf(),
     val powerUps: MutableList<PowerUpDTO> = mutableListOf(),
-    val homingBalls: MutableList<HomingBallDTO> = mutableListOf()
+    val homingBalls: MutableList<HomingBallDTO> = mutableListOf(),
+    val events: MutableList<GameEventDTO> = mutableListOf()
+): DTO()
+
+data class GameEventDTO (
+    val type: GameEventType,
+    val data: HashMap<String, String> = HashMap()
 ): DTO()
 
 data class PlayerDTO(
@@ -71,6 +78,12 @@ data class GameConfigToClientsDTO(
     val playerHeight: Int,
     val homingBallRadius: Int,
     val meteoriteDiameter: Int,
-    val playerSpeed: Int
+    val playerSpeed: Int,
+    val countdownMillis: Long,
+    val meteoritesDirectionInit: List<MeteoriteDirectionDTO>
 ): DTO()
 
+data class MeteoriteDirectionDTO(
+    val id: Int,
+    val direction: String
+): DTO()

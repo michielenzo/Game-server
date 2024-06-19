@@ -1,15 +1,12 @@
 package main.kotlin.game.spaceBalls.gameobjects
 
-import main.kotlin.game.engine.Circle
+import main.kotlin.game.engine.*
 import main.kotlin.game.spaceBalls.SpaceBalls
-import main.kotlin.game.engine.Collision
-import main.kotlin.game.engine.GameLoop
-import main.kotlin.game.engine.Rectangle
 
 class Meteorite(
     var xPosition: Double,
     var yPosition: Double,
-    private var direction: MovementDirection,
+    var direction: MovementDirection,
     private val game: SpaceBalls
 ): GameObject() {
 
@@ -27,8 +24,10 @@ class Meteorite(
     }
 
     override fun tick() {
-        move()
-        checkCollision()
+        if(game.state == SpaceBalls.State.PLAYING){
+            move()
+            checkCollision()
+        }
     }
 
     fun invert(){
@@ -99,6 +98,7 @@ class Meteorite(
                 if (!player.hasShield) player.health--
                 coll.timeOutTicks = PlayerCollision.MAX_TIMEOUT_TICKS
             }
+            game.gameEvents.add(GameEvent(GameEventType.PLAYER_METEORITE_COLLISION))
         } else coll.timeOutTicks--
     }
 

@@ -1,31 +1,47 @@
 package main.kotlin.game.spaceBalls
 
+import main.kotlin.game.engine.GameEvent
+import main.kotlin.game.engine.GameEventType
 import main.kotlin.game.engine.GameLoop
+import main.kotlin.game.engine.Scheduler
 import main.kotlin.game.spaceBalls.dto.GameConfigToClientsDTO
+import main.kotlin.game.spaceBalls.dto.MeteoriteDirectionDTO
 import main.kotlin.game.spaceBalls.gameobjects.*
 import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
 import main.kotlin.publisher.MsgType
 import main.kotlin.publisher.gamestate.GamePublisher
+import java.util.concurrent.CopyOnWriteArrayList
 
 class SpaceBalls: GameLoop(){
 
     private val proxy = GameProxy(this)
     private val powerUpSpawner = PowerUpSpawner(this)
+    var state: State = State.COUNTDOWN
+
+    enum class State{
+        COUNTDOWN,
+        PLAYING
+    }
 
     companion object {
         const val DIMENSION_WIDTH = 1100
         const val DIMENSION_HEIGHT = 650
+        const val COUNTDOWN_MILLIS = 5000L
     }
 
-    val players = mutableListOf<Player>()
-    val meteorites = mutableListOf<Meteorite>()
-    val powerUps = mutableListOf<IPowerUp>()
-    val homingBalls = mutableListOf<HomingBall>()
+    val players = CopyOnWriteArrayList<Player>()
+    val meteorites = CopyOnWriteArrayList<Meteorite>()
+    val powerUps = CopyOnWriteArrayList<IPowerUp>()
+    val homingBalls = CopyOnWriteArrayList<HomingBall>()
     val gameStateLock = Object()
 
     override fun startGame() {
         super.start()
         proxy.start()
+        Scheduler.schedule(COUNTDOWN_MILLIS) {
+            state = State.PLAYING
+            gameEvents.add(GameEvent(GameEventType.METEORITES_UNFREEZE))
+        }
     }
 
     override fun tick() {
@@ -48,10 +64,14 @@ class SpaceBalls: GameLoop(){
             meteorites.add(Meteorite(400.0, 200.0, Meteorite.MovementDirection.UP_RIGHT, this))
             meteorites.add(Meteorite(700.0, 400.0, Meteorite.MovementDirection.UP_LEFT, this))
             meteorites.add(Meteorite(800.0, 100.0, Meteorite.MovementDirection.UP_LEFT, this))
-            meteorites.add(Meteorite(800.0, 400.0, Meteorite.MovementDirection.UP_LEFT, this))
-            meteorites.add(Meteorite(500.0, 400.0, Meteorite.MovementDirection.UP_LEFT, this))
+            meteorites.add(Meteorite(1000.0, 200.0, Meteorite.MovementDirection.UP_LEFT, this))
+            meteorites.add(Meteorite(500.0, 300.0, Meteorite.MovementDirection.UP_LEFT, this))
             meteorites.add(Meteorite(600.0, 400.0, Meteorite.MovementDirection.DOWN_RIGHT, this))
-            meteorites.add(Meteorite(600.0, 600.0, Meteorite.MovementDirection.DOWN_LEFT, this))
+            meteorites.add(Meteorite(850.0, 500.0, Meteorite.MovementDirection.DOWN_LEFT, this))
+
+            val meteoritesDirectionInitDTO = meteorites.map {
+                MeteoriteDirectionDTO(it.id, it.direction.toString())
+            }
 
             GameConfigToClientsDTO(
                 messageType = MsgType.GAME_CONFIG_TO_CLIENTS.value,
@@ -61,7 +81,9 @@ class SpaceBalls: GameLoop(){
                 playerHeight = Player.HEIGHT,
                 homingBallRadius = HomingBall.RADIUS,
                 meteoriteDiameter = Meteorite.DIAMETER,
-                playerSpeed = Player.SPEED
+                playerSpeed = Player.SPEED,
+                countdownMillis = COUNTDOWN_MILLIS,
+                meteoritesDirectionInit = meteoritesDirectionInitDTO
             ).also { GamePublisher.broadcast(it, players) }
         }
     }
