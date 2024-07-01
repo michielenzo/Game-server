@@ -1,10 +1,7 @@
 package main.kotlin.game.spaceBalls.gameobjects
 
-import main.kotlin.game.engine.Circle
+import main.kotlin.game.engine.*
 import main.kotlin.game.spaceBalls.SpaceBalls
-import main.kotlin.game.engine.Collision
-import main.kotlin.game.engine.GameLoop
-import main.kotlin.game.engine.Rectangle
 import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
 import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 
@@ -13,7 +10,7 @@ class Player(
     val name: String,
     @Volatile var xPosition: Double,
     @Volatile var yPosition: Double,
-    val spaceBalls: SpaceBalls
+    val game: SpaceBalls
 ): GameObject() {
 
     companion object {
@@ -64,7 +61,7 @@ class Player(
 
     private fun checkPowerUpCollision() {
         val powerUpsCollidingWith = mutableListOf<IPowerUp>()
-        spaceBalls.powerUps.forEach { powerUp ->
+        game.powerUps.forEach { powerUp ->
             Rectangle(
                 xPosition, yPosition,
                     WIDTH.toDouble(), HEIGHT.toDouble()).also { rectA ->
@@ -78,15 +75,14 @@ class Player(
                 }
             }
         }
-        powerUpsCollidingWith.forEach { spaceBalls.powerUps.remove(it) }
+        powerUpsCollidingWith.forEach { game.powerUps.remove(it) }
     }
 
     private fun checkHomingBallCollision() {
         val homingBallsCollidingWith = mutableListOf<HomingBall>()
-        spaceBalls.homingBalls.forEach { ball ->
+        game.homingBalls.forEach { ball ->
             Rectangle(xPosition, yPosition, WIDTH.toDouble(), HEIGHT.toDouble()).also { rect ->
-                Circle(ball.xPosition.toDouble(), ball.yPosition.toDouble(), HomingBall.RADIUS.toDouble()).also{
-                    circle ->
+                Circle(ball.xPosition, ball.yPosition, HomingBall.RADIUS.toDouble()).also{ circle ->
                     if(Collision.rectangleWithCircleCollision(rect, circle) != Collision.HitMarker.NONE){
                         homingBallsCollidingWith.add(ball)
                     }
@@ -97,7 +93,7 @@ class Player(
         homingBallsCollidingWith.forEach {
             if((it.owner != this || !it.ownerInvisible) && isAlive){
                 applyControlInverterEffect()
-                spaceBalls.homingBalls.remove(it)
+                game.homingBalls.remove(it)
             }
         }
     }
@@ -105,6 +101,7 @@ class Player(
     private fun applyControlInverterEffect(){
         controlsInverted = true
         controlsInvertedStartTime = System.currentTimeMillis()
+        game.fireEvent(GameEventType.START_CONTROLS_INVERTED)
     }
 
     private fun checkWallCollision() {
@@ -131,9 +128,10 @@ class Player(
     }
 
     private fun checkHealth() {
-        if(health <= 0){
+        if(health <= 0 && isAlive){
             health = 0
             isAlive = false
+            game.gameEvents.add(GameEvent(GameEventType.PLAYER_DIED))
         }
     }
 }

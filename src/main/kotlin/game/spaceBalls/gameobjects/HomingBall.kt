@@ -9,7 +9,7 @@ class HomingBall(
     val owner: Player,
     var xPosition: Double,
     var yPosition: Double,
-    val spaceBalls: SpaceBalls): GameObject()
+    val game: SpaceBalls): GameObject()
 {
     companion object{
         const val OWNER_INVISIBLE_TIME: Long = 5000
@@ -42,9 +42,9 @@ class HomingBall(
 
     private fun determineHomeablePlayers(): Set<Player> {
         return if (ownerInvisible) {
-            spaceBalls.players.filter { it != owner && it.isAlive }.toSet()
+            game.players.filter { it != owner && it.isAlive }.toSet()
         } else {
-            spaceBalls.players.filter { it.isAlive }.toSet()
+            game.players.filter { it.isAlive }.toSet()
         }
     }
 

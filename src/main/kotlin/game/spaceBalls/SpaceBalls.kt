@@ -38,9 +38,10 @@ class SpaceBalls: GameLoop(){
     override fun startGame() {
         super.start()
         proxy.start()
+
         Scheduler.schedule(COUNTDOWN_MILLIS) {
             state = State.PLAYING
-            gameEvents.add(GameEvent(GameEventType.METEORITES_UNFREEZE))
+            fireEvent(GameEventType.METEORITES_UNFREEZE)
         }
     }
 
@@ -86,6 +87,10 @@ class SpaceBalls: GameLoop(){
                 meteoritesDirectionInit = meteoritesDirectionInitDTO
             ).also { GamePublisher.broadcast(it, players) }
         }
+    }
+
+    fun fireEvent(type: GameEventType){
+        gameEvents.add(GameEvent(type))
     }
 
     private fun detectEndOfGame(): Boolean {
