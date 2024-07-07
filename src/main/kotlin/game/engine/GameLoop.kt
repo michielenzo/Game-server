@@ -47,4 +47,9 @@ abstract class GameLoop: Thread(){
     }
 
     abstract fun tick()
+
+    fun fireEvent(type: GameEventType) = gameEvents.add(GameEvent(type))
+
+    fun fireEvent(type: GameEventType, data: HashMap<String, String>) =
+        gameEvents.add(GameEvent(type).apply { this.data = data })
 }

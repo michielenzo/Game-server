@@ -9,8 +9,9 @@ enum class GameEventType {
     PICKUP_CONTROL_INVERTER,
     START_CONTROLS_INVERTED,
     INVERTER_PICKUP,
+    WINNER_DECIDED;
 }
 
 data class GameEvent(val type: GameEventType) {
-    val data: HashMap<String, String> = HashMap()
+    var data: HashMap<String, String> = HashMap()
 }

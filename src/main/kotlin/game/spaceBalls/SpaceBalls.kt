@@ -16,6 +16,10 @@ class SpaceBalls: GameLoop(){
 
     private val proxy = GameProxy(this)
     private val powerUpSpawner = PowerUpSpawner(this)
+
+    private var isMultiplayerGame: Boolean = false
+    private var winner: Player? = null
+
     var state: State = State.COUNTDOWN
 
     enum class State{
@@ -51,6 +55,8 @@ class SpaceBalls: GameLoop(){
         homingBalls.forEach { it.tick() }
         powerUpSpawner.tick()
 
+        if(isMultiplayerGame && winner == null && detectGameIsWon()) handleGameIsWon()
+
         if(detectEndOfGame()){ stopLoop() }
     }
 
@@ -61,6 +67,9 @@ class SpaceBalls: GameLoop(){
                     players.add(player)
                 }
             }
+
+            isMultiplayerGame = players.size > 1
+
             meteorites.add(Meteorite(200.0, 300.0, Meteorite.MovementDirection.DOWN_RIGHT, this))
             meteorites.add(Meteorite(400.0, 200.0, Meteorite.MovementDirection.UP_RIGHT, this))
             meteorites.add(Meteorite(700.0, 400.0, Meteorite.MovementDirection.UP_LEFT, this))
@@ -76,24 +85,25 @@ class SpaceBalls: GameLoop(){
 
             GameConfigToClientsDTO(
                 messageType = MsgType.GAME_CONFIG_TO_CLIENTS.value,
-                powerUpWidth = IPowerUp.WIDTH,
-                powerUpHeight = IPowerUp.HEIGHT,
-                playerWidth = Player.WIDTH,
-                playerHeight = Player.HEIGHT,
-                homingBallRadius = HomingBall.RADIUS,
-                meteoriteDiameter = Meteorite.DIAMETER,
-                playerSpeed = Player.SPEED,
+                powerUpWidth = IPowerUp.WIDTH, powerUpHeight = IPowerUp.HEIGHT,
+                playerWidth = Player.WIDTH, playerHeight = Player.HEIGHT, playerSpeed = Player.SPEED,
+                homingBallRadius = HomingBall.RADIUS, meteoriteDiameter = Meteorite.DIAMETER,
                 countdownMillis = COUNTDOWN_MILLIS,
                 meteoritesDirectionInit = meteoritesDirectionInitDTO
             ).also { GamePublisher.broadcast(it, players) }
         }
     }
 
-    fun fireEvent(type: GameEventType){
-        gameEvents.add(GameEvent(type))
+    private fun handleGameIsWon() {
+        winner = players.first { it.isAlive }
+
+        winner?.let {
+            fireEvent(GameEventType.WINNER_DECIDED, hashMapOf("playerName" to it.name))
+        }
     }
 
-    private fun detectEndOfGame(): Boolean {
-        return players.size == 0
-    }
+    private fun detectGameIsWon(): Boolean = players.filter { it.isAlive }.toList().size == 1
+
+    private fun detectEndOfGame(): Boolean = players.size == 0
+
 }
