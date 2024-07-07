@@ -68,7 +68,7 @@ class Player(
                 Rectangle(
                     powerUp.xPosition, powerUp.yPosition,
                         IPowerUp.WIDTH.toDouble(), IPowerUp.HEIGHT.toDouble()).also { rectB ->
-                    if(Collision.rectangleWithRectangleCollision(rectA, rectB) == Collision.HitMarker.SOMEWHERE){
+                    if(Collision.rectWithRect(rectA, rectB) == Collision.HitMarker.SOMEWHERE){
                         powerUp.onPickUp(this)
                         powerUpsCollidingWith.add(powerUp)
                     }
@@ -83,7 +83,7 @@ class Player(
         game.homingBalls.forEach { ball ->
             Rectangle(xPosition, yPosition, WIDTH.toDouble(), HEIGHT.toDouble()).also { rect ->
                 Circle(ball.xPosition, ball.yPosition, HomingBall.RADIUS.toDouble()).also{ circle ->
-                    if(Collision.rectangleWithCircleCollision(rect, circle) != Collision.HitMarker.NONE){
+                    if(Collision.rectWithCircle(rect, circle) != Collision.HitMarker.NONE){
                         homingBallsCollidingWith.add(ball)
                     }
                 }
@@ -134,5 +134,14 @@ class Player(
             game.gameEvents.add(GameEvent(GameEventType.PLAYER_DIED))
         }
     }
+}
+
+fun Player.spawnZone(): Rectangle {
+    val padding = 25
+    return Rectangle(
+        xPosition - padding, yPosition - padding,
+        (Player.WIDTH + padding * 2).toDouble(),
+        (Player.HEIGHT + padding * 2).toDouble()
+    )
 }
 

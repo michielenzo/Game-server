@@ -1,7 +1,7 @@
 package main.kotlin.game.spaceBalls
 
-import main.kotlin.game.engine.RandomGenerator
 import main.kotlin.game.spaceBalls.gameobjects.powerups.*
+import kotlin.random.Random
 
 class PowerUpSpawner(private val game: SpaceBalls) {
 
@@ -28,11 +28,9 @@ class PowerUpSpawner(private val game: SpaceBalls) {
     }
 
     private fun spawnPowerUp() {
-        RandomGenerator.randomInt(System.currentTimeMillis(),
-                0, SpaceBalls.DIMENSION_WIDTH - IPowerUp.WIDTH).also { randX ->
-            RandomGenerator.randomInt(System.currentTimeMillis(),
-                    0, SpaceBalls.DIMENSION_HEIGHT - IPowerUp.HEIGHT).also { randY ->
-                RandomGenerator.randomInt(System.currentTimeMillis(),0, dropTable.size).also { index ->
+        Random.nextInt(0, SpaceBalls.DIMENSION_WIDTH - IPowerUp.WIDTH).also { randX ->
+            Random.nextInt(0, SpaceBalls.DIMENSION_HEIGHT - IPowerUp.HEIGHT).also { randY ->
+                Random.nextInt(0, dropTable.size).also { index ->
                     when(dropTable[index]){
                         IPowerUp.PowerUpType.MED_KIT -> game.powerUps.add(MedKit(game, randX.toDouble(), randY.toDouble()))
                         IPowerUp.PowerUpType.SHIELD -> game.powerUps.add(Shield(game, randX.toDouble(), randY.toDouble()))

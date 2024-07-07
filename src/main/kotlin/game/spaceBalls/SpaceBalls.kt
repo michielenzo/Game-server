@@ -1,6 +1,5 @@
 package main.kotlin.game.spaceBalls
 
-import main.kotlin.game.engine.GameEvent
 import main.kotlin.game.engine.GameEventType
 import main.kotlin.game.engine.GameLoop
 import main.kotlin.game.engine.Scheduler
@@ -16,6 +15,7 @@ class SpaceBalls: GameLoop(){
 
     private val proxy = GameProxy(this)
     private val powerUpSpawner = PowerUpSpawner(this)
+    private val playerSpawner = PlayerSpawner(this)
 
     private var isMultiplayerGame: Boolean = false
     private var winner: Player? = null
@@ -62,11 +62,7 @@ class SpaceBalls: GameLoop(){
 
     fun initializeGameState(roomPlayers: MutableSet<main.kotlin.room.Player>){
         synchronized(gameStateLock){
-            roomPlayers.forEach {roomPlayer ->
-                Player(roomPlayer.id, roomPlayer.name,100.0 + players.size * 75.0, 500.0, this).also { player ->
-                    players.add(player)
-                }
-            }
+            playerSpawner.spawnPlayers(roomPlayers)
 
             isMultiplayerGame = players.size > 1
 
@@ -105,5 +101,4 @@ class SpaceBalls: GameLoop(){
     private fun detectGameIsWon(): Boolean = players.filter { it.isAlive }.toList().size == 1
 
     private fun detectEndOfGame(): Boolean = players.size == 0
-
 }

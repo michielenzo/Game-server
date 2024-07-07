@@ -9,7 +9,7 @@ object Collision {
     * circle seen from its center and rectangle seen from its top-left corner
     * */
 
-    fun rectangleWithCircleCollision(rect: Rectangle, circle: Circle): HitMarker {
+    fun rectWithCircle(rect: Rectangle, circle: Circle): HitMarker {
         val rad = circle.radius
         val distanceTopLeft = distance(Point(rect.x.toInt(), rect.y.toInt()),
                 Point(circle.centerX.toInt(), circle.centerY.toInt()))
@@ -50,7 +50,7 @@ object Collision {
         return HitMarker.NONE
     }
 
-    fun rectangleWithRectangleCollision(rectA: Rectangle, rectB: Rectangle): HitMarker {
+    fun rectWithRect(rectA: Rectangle, rectB: Rectangle): HitMarker {
         if(rectA.x + rectA.width >= rectB.x && rectA.x <= rectB.x + rectB.width &&
            rectA.y + rectA.height >= rectB.y && rectA.y <= rectB.y + rectB.height)
         {

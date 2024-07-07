@@ -106,7 +106,7 @@ class Meteorite(
         game.players.forEach { player ->
             Rectangle(player.xPosition, player.yPosition, Player.WIDTH.toDouble(), Player.HEIGHT.toDouble()).also { rect ->
                 Circle(xPosition, yPosition, (DIAMETER/2).toDouble()).also { circle ->
-                    Collision.rectangleWithCircleCollision(rect, circle).also { hitMarker ->
+                    Collision.rectWithCircle(rect, circle).also { hitMarker ->
                         playerCollision.find { pl -> pl.player.sessionId == player.sessionId }.also { collision ->
                             collision?: return
                             collision.hitMarker = hitMarker
