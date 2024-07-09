@@ -2,10 +2,11 @@ package main.kotlin.game.spaceBalls.gameobjects
 
 import main.kotlin.game.engine.*
 import main.kotlin.game.spaceBalls.SpaceBalls
+import kotlin.random.Random
 
 class Meteorite(
-    var xPosition: Double,
-    var yPosition: Double,
+    override var xPos: Double,
+    override var yPos: Double,
     var direction: MovementDirection,
     private val game: SpaceBalls
 ): GameObject() {
@@ -14,7 +15,7 @@ class Meteorite(
     private val playerCollision = mutableListOf<PlayerCollision>()
 
     companion object{
-        const val DIAMETER = 50
+        const val DIAMETER = 50.0
     }
 
     init {
@@ -30,6 +31,14 @@ class Meteorite(
         }
     }
 
+    override fun spawnZone(): Rectangle {
+        val padding = 40
+        return Rectangle(
+            xPos - padding, yPos - padding,
+            DIAMETER + padding * 2.0, DIAMETER + padding * 2.0
+        )
+    }
+
     fun invert(){
         direction = when(direction){
             MovementDirection.UP_LEFT -> MovementDirection.DOWN_RIGHT
@@ -42,10 +51,10 @@ class Meteorite(
     private fun move(){
         val resolvedSpeed = speed * GameLoop.SPEED_FACTOR
         when(direction){
-            MovementDirection.UP_LEFT -> { xPosition -= resolvedSpeed; yPosition -= resolvedSpeed }
-            MovementDirection.UP_RIGHT -> { xPosition += resolvedSpeed; yPosition -= resolvedSpeed }
-            MovementDirection.DOWN_LEFT -> { xPosition -= resolvedSpeed; yPosition += resolvedSpeed }
-            MovementDirection.DOWN_RIGHT -> { xPosition += resolvedSpeed; yPosition += resolvedSpeed }
+            MovementDirection.UP_LEFT -> { xPos -= resolvedSpeed; yPos -= resolvedSpeed }
+            MovementDirection.UP_RIGHT -> { xPos += resolvedSpeed; yPos -= resolvedSpeed }
+            MovementDirection.DOWN_LEFT -> { xPos -= resolvedSpeed; yPos += resolvedSpeed }
+            MovementDirection.DOWN_RIGHT -> { xPos += resolvedSpeed; yPos += resolvedSpeed }
         }
     }
 
@@ -104,8 +113,8 @@ class Meteorite(
 
     private fun checkCollisionWithPlayers() {
         game.players.forEach { player ->
-            Rectangle(player.xPosition, player.yPosition, Player.WIDTH.toDouble(), Player.HEIGHT.toDouble()).also { rect ->
-                Circle(xPosition, yPosition, (DIAMETER/2).toDouble()).also { circle ->
+            Rectangle(player.xPos, player.yPos, Player.WIDTH.toDouble(), Player.HEIGHT.toDouble()).also { rect ->
+                Circle(xPos, yPos, (DIAMETER/2)).also { circle ->
                     Collision.rectWithCircle(rect, circle).also { hitMarker ->
                         playerCollision.find { pl -> pl.player.sessionId == player.sessionId }.also { collision ->
                             collision?: return
@@ -119,10 +128,10 @@ class Meteorite(
 
     private fun checkCollisionWithTheWall(): WallCollision?{
         return when {
-            xPosition <= 0 + DIAMETER/2 -> WallCollision.LEFT_WALL
-            xPosition >= SpaceBalls.DIMENSION_WIDTH -> WallCollision.RIGHT_WALL
-            yPosition <= 0 + DIAMETER/2 -> WallCollision.ROOF
-            yPosition >= SpaceBalls.DIMENSION_HEIGHT - DIAMETER/2 -> WallCollision.FLOOR
+            xPos <= 0 + DIAMETER/2 -> WallCollision.LEFT_WALL
+            xPos >= SpaceBalls.DIMENSION_WIDTH -> WallCollision.RIGHT_WALL
+            yPos <= 0 + DIAMETER/2 -> WallCollision.ROOF
+            yPos >= SpaceBalls.DIMENSION_HEIGHT - DIAMETER/2 -> WallCollision.FLOOR
             else -> return null
         }
     }
@@ -130,22 +139,22 @@ class Meteorite(
     private fun handleWallCollision(wall: WallCollision){
         when(wall){
             WallCollision.ROOF -> {
-                yPosition = (0 + DIAMETER/2).toDouble()
+                yPos = (0 + DIAMETER/2)
                 direction = if(direction == MovementDirection.UP_LEFT) MovementDirection.DOWN_LEFT
                             else                                       MovementDirection.DOWN_RIGHT
             }
             WallCollision.FLOOR -> {
-                yPosition = (SpaceBalls.DIMENSION_HEIGHT - DIAMETER/2).toDouble()
+                yPos = (SpaceBalls.DIMENSION_HEIGHT - DIAMETER/2)
                 direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.UP_LEFT
                             else                                         MovementDirection.UP_RIGHT
             }
             WallCollision.LEFT_WALL -> {
-                xPosition = (0 + DIAMETER/2).toDouble()
+                xPos = (0 + DIAMETER/2)
                 direction = if(direction == MovementDirection.DOWN_LEFT) MovementDirection.DOWN_RIGHT
                             else                                         MovementDirection.UP_RIGHT
             }
             WallCollision.RIGHT_WALL -> {
-                xPosition = (SpaceBalls.DIMENSION_WIDTH - DIAMETER/2).toDouble()
+                xPos = (SpaceBalls.DIMENSION_WIDTH - DIAMETER/2)
                 direction = if(direction == MovementDirection.DOWN_RIGHT) MovementDirection.DOWN_LEFT
                 else                                                      MovementDirection.UP_LEFT
             }
@@ -158,7 +167,9 @@ class Meteorite(
 
     enum class MovementDirection{
         UP_LEFT, UP_RIGHT,
-        DOWN_LEFT, DOWN_RIGHT
+        DOWN_LEFT, DOWN_RIGHT;
+
+        companion object{ fun getRandom(): MovementDirection = entries[Random.nextInt(entries.size)] }
     }
 
     data class PlayerCollision(val player: Player, var hitMarker: Collision.HitMarker, var timeOutTicks: Int = 0){

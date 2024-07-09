@@ -2,14 +2,14 @@ package main.kotlin.game.spaceBalls.gameobjects
 
 import main.kotlin.game.engine.*
 import main.kotlin.game.spaceBalls.SpaceBalls
-import main.kotlin.game.spaceBalls.gameobjects.powerups.IPowerUp
+import main.kotlin.game.spaceBalls.gameobjects.powerups.PowerUp
 import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 
 class Player(
     val sessionId: String,
     val name: String,
-    @Volatile var xPosition: Double,
-    @Volatile var yPosition: Double,
+    @Volatile override var xPos: Double,
+    @Volatile override var yPos: Double,
     val game: SpaceBalls
 ): GameObject() {
 
@@ -43,6 +43,13 @@ class Player(
         checkControlsInverted()
     }
 
+    override fun spawnZone(): Rectangle {
+        val padding = 25
+        return Rectangle(
+            xPos - padding, yPos - padding, (WIDTH + padding * 2.0), (HEIGHT + padding * 2.0)
+        )
+    }
+
     private fun checkShield() {
         if(hasShield){
             if(System.currentTimeMillis() - shieldStartTime >= Shield.AFFECTION_TIME){
@@ -60,14 +67,15 @@ class Player(
     }
 
     private fun checkPowerUpCollision() {
-        val powerUpsCollidingWith = mutableListOf<IPowerUp>()
+        val powerUpsCollidingWith = mutableListOf<PowerUp>()
         game.powerUps.forEach { powerUp ->
             Rectangle(
-                xPosition, yPosition,
+                xPos, yPos,
                     WIDTH.toDouble(), HEIGHT.toDouble()).also { rectA ->
                 Rectangle(
-                    powerUp.xPosition, powerUp.yPosition,
-                        IPowerUp.WIDTH.toDouble(), IPowerUp.HEIGHT.toDouble()).also { rectB ->
+                    powerUp.xPos, powerUp.yPos,
+                    PowerUp.WIDTH, PowerUp.HEIGHT
+                ).also { rectB ->
                     if(Collision.rectWithRect(rectA, rectB) == Collision.HitMarker.SOMEWHERE){
                         powerUp.onPickUp(this)
                         powerUpsCollidingWith.add(powerUp)
@@ -81,8 +89,8 @@ class Player(
     private fun checkHomingBallCollision() {
         val homingBallsCollidingWith = mutableListOf<HomingBall>()
         game.homingBalls.forEach { ball ->
-            Rectangle(xPosition, yPosition, WIDTH.toDouble(), HEIGHT.toDouble()).also { rect ->
-                Circle(ball.xPosition, ball.yPosition, HomingBall.RADIUS.toDouble()).also{ circle ->
+            Rectangle(xPos, yPos, WIDTH.toDouble(), HEIGHT.toDouble()).also { rect ->
+                Circle(ball.xPos, ball.yPos, HomingBall.RADIUS.toDouble()).also{ circle ->
                     if(Collision.rectWithCircle(rect, circle) != Collision.HitMarker.NONE){
                         homingBallsCollidingWith.add(ball)
                     }
@@ -105,25 +113,25 @@ class Player(
     }
 
     private fun checkWallCollision() {
-        if(xPosition < 0) xPosition = 0.0
-        if(xPosition > SpaceBalls.DIMENSION_WIDTH - WIDTH)
-            xPosition = (SpaceBalls.DIMENSION_WIDTH - WIDTH).toDouble()
-        if(yPosition < 0) yPosition = 0.0
-        if(yPosition > SpaceBalls.DIMENSION_HEIGHT - HEIGHT)
-            yPosition = (SpaceBalls.DIMENSION_HEIGHT - HEIGHT).toDouble()
+        if(xPos < 0) xPos = 0.0
+        if(xPos > SpaceBalls.DIMENSION_WIDTH - WIDTH)
+            xPos = (SpaceBalls.DIMENSION_WIDTH - WIDTH).toDouble()
+        if(yPos < 0) yPos = 0.0
+        if(yPos > SpaceBalls.DIMENSION_HEIGHT - HEIGHT)
+            yPos = (SpaceBalls.DIMENSION_HEIGHT - HEIGHT).toDouble()
     }
 
     private fun move(){
         if(controlsInverted){
-            if(wKey) {yPosition += SPEED * GameLoop.SPEED_FACTOR}
-            if(aKey) {xPosition += SPEED * GameLoop.SPEED_FACTOR}
-            if(sKey) {yPosition -= SPEED * GameLoop.SPEED_FACTOR}
-            if(dKey) {xPosition -= SPEED * GameLoop.SPEED_FACTOR}
+            if(wKey) {yPos += SPEED * GameLoop.SPEED_FACTOR}
+            if(aKey) {xPos += SPEED * GameLoop.SPEED_FACTOR}
+            if(sKey) {yPos -= SPEED * GameLoop.SPEED_FACTOR}
+            if(dKey) {xPos -= SPEED * GameLoop.SPEED_FACTOR}
         } else {
-            if(wKey) {yPosition -= SPEED * GameLoop.SPEED_FACTOR}
-            if(aKey) {xPosition -= SPEED * GameLoop.SPEED_FACTOR}
-            if(sKey) {yPosition += SPEED * GameLoop.SPEED_FACTOR}
-            if(dKey) {xPosition += SPEED * GameLoop.SPEED_FACTOR}
+            if(wKey) {yPos -= SPEED * GameLoop.SPEED_FACTOR}
+            if(aKey) {xPos -= SPEED * GameLoop.SPEED_FACTOR}
+            if(sKey) {yPos += SPEED * GameLoop.SPEED_FACTOR}
+            if(dKey) {xPos += SPEED * GameLoop.SPEED_FACTOR}
         }
     }
 
@@ -134,14 +142,5 @@ class Player(
             game.gameEvents.add(GameEvent(GameEventType.PLAYER_DIED))
         }
     }
-}
-
-fun Player.spawnZone(): Rectangle {
-    val padding = 25
-    return Rectangle(
-        xPosition - padding, yPosition - padding,
-        (Player.WIDTH + padding * 2).toDouble(),
-        (Player.HEIGHT + padding * 2).toDouble()
-    )
 }
 

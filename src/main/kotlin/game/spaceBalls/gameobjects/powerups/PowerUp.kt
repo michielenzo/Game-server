@@ -1,18 +1,16 @@
 package main.kotlin.game.spaceBalls.gameobjects.powerups
 
+import main.kotlin.game.spaceBalls.gameobjects.GameObject
 import main.kotlin.game.spaceBalls.gameobjects.Player
 
-interface IPowerUp{
-
-    val xPosition: Double
-    val yPosition: Double
+abstract class PowerUp: GameObject() {
 
     companion object {
-        const val WIDTH = 40
-        const val HEIGHT = 40
+        const val WIDTH = 40.0
+        const val HEIGHT = 40.0
     }
 
-    fun onPickUp(player: Player)
+    abstract fun onPickUp(player: Player)
 
     enum class PowerUpType(val text: String){
         MED_KIT("med_kit"),

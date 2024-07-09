@@ -1,6 +1,7 @@
 package main.kotlin.game.spaceBalls
 
 import main.kotlin.game.spaceBalls.dto.*
+import main.kotlin.game.spaceBalls.gameobjects.GameObject
 import main.kotlin.game.spaceBalls.gameobjects.powerups.*
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.publisher.gamestate.GamePublisher
@@ -75,8 +76,8 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
                     player.id,
                     player.sessionId,
                     player.name,
-                    player.xPosition,
-                    player.yPosition,
+                    player.xPos,
+                    player.yPos,
                     player.health,
                     player.hasShield,
                     player.controlsInverted).also{ playerDTO ->
@@ -84,21 +85,21 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
                 }
             }
             spaceBalls.meteorites.forEach { meteorite ->
-                MeteoriteDTO(meteorite.id, meteorite.xPosition, meteorite.yPosition).also { meteoriteDTO ->
+                MeteoriteDTO(meteorite.id, meteorite.xPos, meteorite.yPos).also { meteoriteDTO ->
                     gameStateDTO.meteorites.add(meteoriteDTO)
                 }
             }
             spaceBalls.powerUps.forEach { powerUp ->
                 when (powerUp) {
-                    is MedKit -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.MED_KIT))
-                    is Shield -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.SHIELD))
-                    is Inverter -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.INVERTER))
+                    is MedKit -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.PowerUpType.MED_KIT))
+                    is Shield -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.PowerUpType.SHIELD))
+                    is Inverter -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.PowerUpType.INVERTER))
                     is ControlInverter ->
-                        gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, IPowerUp.PowerUpType.CONTROL_INVERTER))
+                        gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.PowerUpType.CONTROL_INVERTER))
                 }
             }
             spaceBalls.homingBalls.forEach { homingBall ->
-                gameStateDTO.homingBalls.add(HomingBallDTO(homingBall.id, homingBall.xPosition, homingBall.yPosition))
+                gameStateDTO.homingBalls.add(HomingBallDTO(homingBall.id, homingBall.xPos, homingBall.yPos))
             }
             spaceBalls.gameEvents.forEach { event ->
                 gameStateDTO.events.add(GameEventDTO(event.type, event.data))
@@ -107,7 +108,7 @@ class GameProxy(private val spaceBalls: SpaceBalls): Thread(), INetworkSubscribe
         })
     }
 
-    private fun buildPowerUpDTO(powerUp: IPowerUp, powerUpType: IPowerUp.PowerUpType): PowerUpDTO {
-        return PowerUpDTO(powerUpType.text, powerUp.xPosition, powerUp.yPosition)
+    private fun buildPowerUpDTO(powerUp: GameObject, powerUpType: PowerUp.PowerUpType): PowerUpDTO {
+        return PowerUpDTO(powerUpType.text, powerUp.xPos, powerUp.yPos)
     }
 }

@@ -1,11 +1,11 @@
 package main.kotlin.game.spaceBalls.gameobjects.powerups
 
 import main.kotlin.game.engine.GameEventType
+import main.kotlin.game.engine.Rectangle
 import main.kotlin.game.spaceBalls.SpaceBalls
-import main.kotlin.game.spaceBalls.gameobjects.GameObject
 import main.kotlin.game.spaceBalls.gameobjects.Player
 
-class Shield(val game: SpaceBalls, override val xPosition: Double, override val yPosition: Double) : GameObject(), IPowerUp {
+class Shield(val game: SpaceBalls, override var xPos: Double, override var yPos: Double): PowerUp() {
 
     companion object {
         const val AFFECTION_TIME = 10000
@@ -13,6 +13,10 @@ class Shield(val game: SpaceBalls, override val xPosition: Double, override val 
 
     override fun tick() {
 
+    }
+
+    override fun spawnZone(): Rectangle {
+        return Rectangle(xPos, yPos, PowerUp.WIDTH, PowerUp.HEIGHT)
     }
 
     override fun onPickUp(player: Player) {

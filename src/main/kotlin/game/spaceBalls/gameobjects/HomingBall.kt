@@ -1,16 +1,18 @@
 package main.kotlin.game.spaceBalls.gameobjects
 
 import main.kotlin.game.engine.GameLoop
+import main.kotlin.game.engine.Rectangle
 import main.kotlin.game.engine.Vec2D
 import main.kotlin.game.spaceBalls.SpaceBalls
 import kotlin.math.sqrt
 
 class HomingBall(
     val owner: Player,
-    var xPosition: Double,
-    var yPosition: Double,
+    override var xPos: Double,
+    override var yPos: Double,
     val game: SpaceBalls): GameObject()
 {
+
     companion object{
         const val OWNER_INVISIBLE_TIME: Long = 5000
         const val MOVEMENT_SPEED: Long = 138
@@ -29,9 +31,13 @@ class HomingBall(
        if (closestPlayer !== null) move(getDirectionTowardsPlayer(closestPlayer))
     }
 
+    override fun spawnZone(): Rectangle {
+        return Rectangle(xPos, yPos, RADIUS * 2.0, RADIUS * 2.0)
+    }
+
     private fun move(direction: Vec2D){
-        xPosition += direction.x * (MOVEMENT_SPEED * GameLoop.SPEED_FACTOR)
-        yPosition += direction.y * (MOVEMENT_SPEED * GameLoop.SPEED_FACTOR)
+        xPos += direction.x * (MOVEMENT_SPEED * GameLoop.SPEED_FACTOR)
+        yPos += direction.y * (MOVEMENT_SPEED * GameLoop.SPEED_FACTOR)
     }
 
     private fun checkInvisibilityTimer(){
@@ -49,8 +55,8 @@ class HomingBall(
     }
 
     private fun getDirectionTowardsPlayer(player: Player): Vec2D {
-        val xDiff: Double = player.xPosition - xPosition
-        val yDiff: Double = player.yPosition - yPosition
+        val xDiff: Double = player.xPos - xPos
+        val yDiff: Double = player.yPos - yPos
 
         return Vec2D(xDiff, yDiff).also { vec ->
             sqrt(vec.x * vec.x + vec.y * vec.y).also { magnitude ->
@@ -62,8 +68,8 @@ class HomingBall(
 
     private fun calculateDistance(player: Player): Double {
         return sqrt(
-            ((player.xPosition - xPosition) * (player.xPosition - xPosition) +
-                         (player.yPosition - yPosition) * (player.yPosition - yPosition))
+            ((player.xPos - xPos) * (player.xPos - xPos) +
+                         (player.yPos - yPos) * (player.yPos - yPos))
         )
     }
 }

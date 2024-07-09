@@ -1,10 +1,12 @@
 package main.kotlin.game.spaceBalls.gameobjects
 
-import main.kotlin.game.spaceBalls.GameProxy
+import main.kotlin.game.engine.Rectangle
 
 abstract class GameObject {
 
     var id: Int = 0
+    abstract var xPos: Double
+    abstract var yPos: Double
 
     companion object {
         private var HIGHEST_ID = 0
@@ -15,4 +17,6 @@ abstract class GameObject {
         HIGHEST_ID++
     }
     abstract fun tick()
+
+    abstract fun spawnZone(): Rectangle
 }
