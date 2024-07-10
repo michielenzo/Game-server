@@ -66,18 +66,7 @@ class SpaceBalls: GameLoop(){
 
             isMultiplayerGame = players.size > 1
 
-            val meteoritesDirectionInitDTO = meteorites.map {
-                MeteoriteDirectionDTO(it.id, it.direction.toString())
-            }
-
-            GameConfigToClientsDTO(
-                messageType = MsgType.GAME_CONFIG_TO_CLIENTS.value,
-                powerUpWidth = PowerUp.WIDTH, powerUpHeight = PowerUp.HEIGHT,
-                playerWidth = Player.WIDTH, playerHeight = Player.HEIGHT, playerSpeed = Player.SPEED,
-                homingBallRadius = HomingBall.RADIUS, meteoriteDiameter = Meteorite.DIAMETER,
-                countdownMillis = COUNTDOWN_MILLIS,
-                meteoritesDirectionInit = meteoritesDirectionInitDTO
-            ).also { GamePublisher.broadcast(it, players) }
+            proxy.sendConfigToClients()
         }
     }
 
