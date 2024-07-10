@@ -110,11 +110,11 @@ class GameProxy(private val game: SpaceBalls): Thread(), INetworkSubscriber{
             }
             game.powerUps.forEach { powerUp ->
                 when (powerUp) {
-                    is MedKit -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.PowerUpType.MED_KIT))
-                    is Shield -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.PowerUpType.SHIELD))
-                    is Inverter -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.PowerUpType.INVERTER))
+                    is MedKit -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.Type.MED_KIT))
+                    is Shield -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.Type.SHIELD))
+                    is Inverter -> gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.Type.INVERTER))
                     is ControlInverter ->
-                        gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.PowerUpType.CONTROL_INVERTER))
+                        gameStateDTO.powerUps.add(buildPowerUpDTO(powerUp, PowerUp.Type.CONTROL_INVERTER))
                 }
             }
             game.homingBalls.forEach { homingBall ->
@@ -127,7 +127,7 @@ class GameProxy(private val game: SpaceBalls): Thread(), INetworkSubscriber{
         })
     }
 
-    private fun buildPowerUpDTO(powerUp: GameObject, powerUpType: PowerUp.PowerUpType): PowerUpDTO {
+    private fun buildPowerUpDTO(powerUp: GameObject, powerUpType: PowerUp.Type): PowerUpDTO {
         return PowerUpDTO(powerUpType.text, powerUp.xPos, powerUp.yPos)
     }
 }

@@ -15,10 +15,6 @@ class Shield(val game: SpaceBalls, override var xPos: Double, override var yPos:
 
     }
 
-    override fun spawnZone(): Rectangle {
-        return Rectangle(xPos, yPos, PowerUp.WIDTH, PowerUp.HEIGHT)
-    }
-
     override fun onPickUp(player: Player) {
         if(player.isAlive) {
             player.hasShield = true
