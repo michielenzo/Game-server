@@ -9,7 +9,8 @@ enum class GameEventType {
     PICKUP_CONTROL_INVERTER,
     START_CONTROLS_INVERTED,
     INVERTER_PICKUP,
-    WINNER_DECIDED;
+    WINNER_DECIDED,
+    METEORITE_SPAWNED;
 }
 
 data class GameEvent(val type: GameEventType) {

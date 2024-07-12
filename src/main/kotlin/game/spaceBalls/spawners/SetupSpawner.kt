@@ -1,6 +1,7 @@
-package main.kotlin.game.spaceBalls
+package main.kotlin.game.spaceBalls.spawners
 
 import main.kotlin.game.engine.*
+import main.kotlin.game.spaceBalls.SpaceBalls
 import main.kotlin.game.spaceBalls.gameobjects.GameObject
 import main.kotlin.game.spaceBalls.gameobjects.Meteorite
 import main.kotlin.game.spaceBalls.gameobjects.Player

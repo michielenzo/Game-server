@@ -1,6 +1,7 @@
 package main.kotlin.game.spaceBalls.dto
 
 import main.kotlin.game.engine.GameEventType
+import main.kotlin.game.spaceBalls.gameobjects.Meteorite
 import main.kotlin.publisher.MsgType
 import main.kotlin.utilities.DTO
 
@@ -36,7 +37,8 @@ data class PlayerDTO(
 data class MeteoriteDTO(
     val id: Int,
     val x: Double,
-    val y: Double
+    val y: Double,
+    val state: Meteorite.State
 )
 
 data class PowerUpDTO(

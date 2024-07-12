@@ -104,7 +104,7 @@ class GameProxy(private val game: SpaceBalls): Thread(), INetworkSubscriber{
                 }
             }
             game.meteorites.forEach { meteorite ->
-                MeteoriteDTO(meteorite.id, meteorite.xPos, meteorite.yPos).also { meteoriteDTO ->
+                MeteoriteDTO(meteorite.id, meteorite.xPos, meteorite.yPos, meteorite.state).also { meteoriteDTO ->
                     gameStateDTO.meteorites.add(meteoriteDTO)
                 }
             }

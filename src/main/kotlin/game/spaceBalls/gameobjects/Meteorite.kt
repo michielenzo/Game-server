@@ -11,21 +11,29 @@ class Meteorite(
     private val game: SpaceBalls
 ): GameObject() {
 
-    private val speed = 220
-    private val playerCollision = mutableListOf<PlayerCollision>()
-
     companion object{
         const val DIAMETER = 50.0
     }
+
+    enum class State {
+        FROZEN,
+        LOOSE
+    }
+
+    private val speed = 220
+    private val playerCollision = mutableListOf<PlayerCollision>()
+    var state: State = State.FROZEN
 
     init {
         game.players.forEach {
             playerCollision.add(PlayerCollision(it, Collision.HitMarker.NONE))
         }
+
+        Scheduler.schedule(SpaceBalls.COUNTDOWN_MILLIS) { state = State.LOOSE }
     }
 
     override fun tick() {
-        if(game.state == SpaceBalls.State.PLAYING){
+        if(state == State.LOOSE){
             move()
             checkCollision()
         }
