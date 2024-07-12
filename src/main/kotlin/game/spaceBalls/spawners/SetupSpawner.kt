@@ -22,7 +22,7 @@ class SetupSpawner(val game: SpaceBalls) {
     fun spawnObjects(roomPlayers: Set<main.kotlin.room.Player>, numberOfMeteorites: Int){
         game.players.addAll(roomPlayers.map { Player(it.id, it.name, 0.0, 0.0, game) }.toList())
 
-        game.meteorites.addAll((0..numberOfMeteorites).map {
+        game.meteorites.addAll((1..numberOfMeteorites).map {
             Meteorite(0.0,0.0, Meteorite.MovementDirection.getRandom(), game)
         })
 
