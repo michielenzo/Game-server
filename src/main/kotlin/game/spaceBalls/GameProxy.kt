@@ -18,6 +18,7 @@ class GameProxy(private val game: SpaceBalls): Thread(), INetworkSubscriber{
     private val messageRate = 30
     private val millisPerSecond = 1000.0
     private val millisPerMessage = millisPerSecond / messageRate
+    private val standbyPhaseMillis = 100
 
     init {
         NetworkPublisher.subscriberQueue.add(this)
@@ -26,14 +27,19 @@ class GameProxy(private val game: SpaceBalls): Thread(), INetworkSubscriber{
     override fun run() {
         val startTime = System.currentTimeMillis()
         var loops = 0
+        var standbyPhase: Boolean = true
         while (!game.gameOver){
             val delta = (System.currentTimeMillis() - startTime) - (loops * millisPerMessage)
             if(delta >= millisPerMessage){
-                buildSendGameStateDTO().also { GamePublisher.broadcast(it) }
+                if(System.currentTimeMillis() > startTime + standbyPhaseMillis) { standbyPhase = false }
+
+                if(!standbyPhase){ buildSendGameStateDTO().also { GamePublisher.broadcast(it) } }
                 loops++
             }
         }
     }
+
+
 
     override fun notifyNetworkNews(dto: DTO) {
         when(dto){
