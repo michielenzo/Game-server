@@ -18,7 +18,7 @@ class GameProxy(private val game: SpaceBalls): Thread(), INetworkSubscriber{
     private val messageRate = 30
     private val millisPerSecond = 1000.0
     private val millisPerMessage = millisPerSecond / messageRate
-    private val standbyPhaseMillis = 100
+    private val standbyPhaseMillis = 5000
 
     init {
         NetworkPublisher.subscriberQueue.add(this)
