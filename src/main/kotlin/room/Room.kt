@@ -184,4 +184,9 @@ class Room(
             }
         }, "")
     }
+
+    fun toRoomStateDTO(): RoomStateDTO{
+        return RoomStateDTO(selectedGameMode,roomCode,leader.id, players.map { it.toPlayerDTO() }.toMutableList())
+    }
 }
+

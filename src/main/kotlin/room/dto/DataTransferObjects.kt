@@ -78,3 +78,21 @@ data class NotReadyToServer(
     var playerId: String,
     val messageType: String = MsgType.NOT_READY_TO_SERVER.value
 ): DTO()
+
+enum class ServerInfoType(val value: String) {
+    AVAILABLE_ROOMS("availableRooms")
+}
+
+data class RequestServerInfoToServer(
+    var playerId: String,
+    val messageType: String = MsgType.REQUEST_SERVER_INFO_TO_SERVER.value,
+    val infoType: String
+): DTO()
+
+data class RoomsServerInfoToClientDTO(
+    var playerId: String,
+    val messageType: String = MsgType.ROOMS_SERVER_INFO_TO_CLIENT.value,
+    val roomsData: List<RoomStateDTO>
+): DTO()
+
+

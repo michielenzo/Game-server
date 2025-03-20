@@ -1,5 +1,7 @@
 package main.kotlin.room
 
+import main.kotlin.room.dto.PlayerDTO
+
 data class Player (
     val id: String,
     var status: Status,
@@ -9,5 +11,9 @@ data class Player (
         AVAILABLE("available"),
         IN_GAME("in game"),
         READY("ready")
+    }
+
+    fun toPlayerDTO(): PlayerDTO{
+        return PlayerDTO(id, status.text, name)
     }
 }

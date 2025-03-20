@@ -24,5 +24,7 @@ enum class MsgType(val value: String) {
     YOU_HAVE_BEEN_KICKED_TO_CLIENT("youHaveBeenKickedToClient"),
     READY_UP_TO_SERVER("readyUpToServer"),
     NOT_READY_TO_SERVER("notReadyToServer"),
-    GAME_CONFIG_TO_CLIENTS("gameConfigToClients");
+    GAME_CONFIG_TO_CLIENTS("gameConfigToClients"),
+    REQUEST_SERVER_INFO_TO_SERVER("requestServerInfoToServer"),
+    ROOMS_SERVER_INFO_TO_CLIENT("roomsServerInfoToClient");
 }

@@ -94,6 +94,11 @@ class PlayerWebsocket: Websocket(), IGameSubscriber, IRoomSubscriber {
                         it.playerId = wsCtx.sessionId()
                     }
                 }
+                MsgType.REQUEST_SERVER_INFO_TO_SERVER.value -> {
+                    Gson().fromJson(msg, RequestServerInfoToServer::class.java).also {
+                        it.playerId = wsCtx.sessionId()
+                    }
+                }
                 MsgType.CHOOSE_GAMEMODE_TO_SERVER.value ->
                     Gson().fromJson(msg, ChooseGameModeToServerDTO::class.java)
                 MsgType.HEARTBEAT_CHECK.value -> Gson().fromJson(msg, HeartbeatCheckDTO::class.java)
@@ -152,6 +157,7 @@ class PlayerWebsocket: Websocket(), IGameSubscriber, IRoomSubscriber {
             is BackToRoomToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
             is RoomNotFoundToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
             is YouHaveBeenKickedToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
+            is RoomsServerInfoToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
         }
     }
 

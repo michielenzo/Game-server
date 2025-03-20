@@ -3,6 +3,7 @@ package main.kotlin.room
 import main.kotlin.game.spaceBalls.dto.BackToRoomToServerDTO
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
+import main.kotlin.publisher.MsgType
 import main.kotlin.publisher.network.INetworkSubscriber
 import main.kotlin.publisher.network.NetworkPublisher
 import main.kotlin.publisher.room.RoomPublisher
@@ -32,6 +33,13 @@ class RoomManager: INetworkSubscriber {
             is PromotePlayerToServerDTO -> handlePromotePlayerToServerMsg(dto)
             is ReadyUpToServer -> handleReadyUpToServerMsg(dto)
             is NotReadyToServer -> handleNotReadyToServerMsg(dto)
+            is RequestServerInfoToServer -> handleRequestServerInfoToServerMsg(dto)
+        }
+    }
+
+    private fun handleRequestServerInfoToServerMsg(dto: RequestServerInfoToServer) {
+        when(dto.infoType){
+            ServerInfoType.AVAILABLE_ROOMS.value -> { broadcastRoomsInfo(dto) }
         }
     }
 
@@ -156,5 +164,12 @@ class RoomManager: INetworkSubscriber {
         )
 
         return roomCode
+    }
+
+    private fun broadcastRoomsInfo(dto: RequestServerInfoToServer) {
+        val roomStates: List<RoomStateDTO> = rooms.map { it.toRoomStateDTO() }
+        RoomsServerInfoToClientDTO(dto.playerId, MsgType.ROOMS_SERVER_INFO_TO_CLIENT.value, roomStates).also {
+            RoomPublisher.broadcast(it)
+        }
     }
 }
