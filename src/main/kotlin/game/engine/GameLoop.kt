@@ -59,7 +59,9 @@ abstract class GameLoop: Thread(){
     abstract fun getPlayers(): List<Player>
 
     fun setTickRate(tickRate: Double) {
-        framerate = tickRate
+        // Prevent Access of denial attacks since this is set from the clients DevConsole.
+        framerate = if (tickRate >= 200.0) 200.0 else tickRate
+
         millisPerTick = calculateMillisPerTick()
         speedFactor = calculateSpeedFactor()
         ticks = 0
