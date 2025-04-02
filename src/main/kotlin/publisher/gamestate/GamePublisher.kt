@@ -1,6 +1,6 @@
 package main.kotlin.publisher.gamestate
 
-import main.kotlin.game.spaceBalls.gameobjects.Player
+import main.kotlin.game.spaceBalls.dto.PlayerDTO
 import main.kotlin.publisher.IPublisher
 import main.kotlin.utilities.DTO
 
@@ -12,7 +12,7 @@ object GamePublisher: IPublisher<IGameSubscriber>() {
         }
     }
 
-    fun broadcast(dto: DTO, players: List<Player>) {
+    fun broadcast(dto: DTO, players: List<PlayerDTO>) {
         subscribers.forEach {
             it.notifyGameStateNews(dto, players)
         }

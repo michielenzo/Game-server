@@ -1,6 +1,7 @@
 package main.kotlin.room
 
 import main.kotlin.game.spaceBalls.dto.BackToRoomToServerDTO
+import main.kotlin.game.spaceBalls.dto.SetServerTickRateToServer
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.publisher.MsgType
@@ -34,6 +35,7 @@ class RoomManager: INetworkSubscriber {
             is ReadyUpToServer -> handleReadyUpToServerMsg(dto)
             is NotReadyToServer -> handleNotReadyToServerMsg(dto)
             is RequestServerInfoToServer -> handleRequestServerInfoToServerMsg(dto)
+            is SetServerTickRateToServer -> handleSetServerTickRateToServerMsg(dto)
         }
     }
 
@@ -139,6 +141,10 @@ class RoomManager: INetworkSubscriber {
 
     private fun handleChooseGameModeToServerMsg(dto: ChooseGameModeToServerDTO){
         findRoomByPlayerId(dto.playerId).also { it.chooseGameMode(dto) }
+    }
+
+    private fun handleSetServerTickRateToServerMsg(dto: SetServerTickRateToServer) {
+        findRoomByPlayerId(dto.playerId).also { it.setGameTickrate(dto.tickRate) }
     }
 
     private fun findRoomByPlayerId(playerId: String): Room {

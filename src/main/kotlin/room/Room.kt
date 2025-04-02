@@ -4,7 +4,6 @@ import main.kotlin.game.GameMode
 import main.kotlin.game.spaceBalls.SpaceBalls
 import main.kotlin.game.spaceBalls.dto.BackToRoomToClientDTO
 import main.kotlin.game.spaceBalls.dto.BackToRoomToServerDTO
-import main.kotlin.game.zombies.Zombies
 import main.kotlin.room.dto.*
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.publisher.room.RoomPublisher
@@ -15,6 +14,8 @@ class Room(
     val roomCode: String
 ) {
     val players = mutableListOf<Player>()
+
+    var game: SpaceBalls? = null
 
     private var selectedGameMode = GameMode.SPACE_BALLS.value
 
@@ -117,17 +118,9 @@ class Room(
            }
            when(selectedGameMode){
                GameMode.SPACE_BALLS.value -> {
-                   val game = SpaceBalls()
-                   game.initializeGameState(readyPlayers)
-                   game.startGame()
-                   readyPlayers.forEach {
-                       it.status = Player.Status.IN_GAME
-                   }
-               }
-               GameMode.ZOMBIES.value -> {
-                   val game = Zombies()
-                   game.initializeGameState(readyPlayers)
-                   game.start()
+                   game = SpaceBalls()
+                   game!!.initializeGameState(readyPlayers)
+                   game!!.startGame()
                    readyPlayers.forEach {
                        it.status = Player.Status.IN_GAME
                    }
@@ -187,6 +180,10 @@ class Room(
 
     fun toRoomStateDTO(): RoomStateDTO{
         return RoomStateDTO(selectedGameMode,roomCode,leader.id, players.map { it.toPlayerDTO() }.toMutableList())
+    }
+
+    fun setGameTickrate(tickRate: Double) {
+        game?.setTickRate(tickRate)
     }
 }
 

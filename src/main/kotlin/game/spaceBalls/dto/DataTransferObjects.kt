@@ -89,3 +89,13 @@ data class MeteoriteDirectionDTO(
     val id: Int,
     val direction: String
 ): DTO()
+
+data class SetServerTickRateToServer(
+    val tickRate: Double,
+    var playerId: String,
+): DTO()
+
+data class ServerTickRateChangedToClientDTO(
+    val tickRate: Double,
+    val messageType: String = MsgType.SERVER_TICK_RATE_CHANGED_TO_CLIENT.value
+) : DTO ()

@@ -57,7 +57,7 @@ class Meteorite(
     }
 
     private fun move(){
-        val resolvedSpeed = speed * GameLoop.SPEED_FACTOR
+        val resolvedSpeed = speed * game.speedFactor
         when(direction){
             MovementDirection.UP_LEFT -> { xPos -= resolvedSpeed; yPos -= resolvedSpeed }
             MovementDirection.UP_RIGHT -> { xPos += resolvedSpeed; yPos -= resolvedSpeed }

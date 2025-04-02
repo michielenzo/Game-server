@@ -83,4 +83,6 @@ class SpaceBalls: GameLoop(){
     private fun detectGameIsWon(): Boolean = players.filter { it.isAlive }.toList().size == 1
 
     private fun detectEndOfGame(): Boolean = players.size == 0
+
+    override fun getPlayers(): List<Player> = players
 }

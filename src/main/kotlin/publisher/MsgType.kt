@@ -26,5 +26,7 @@ enum class MsgType(val value: String) {
     NOT_READY_TO_SERVER("notReadyToServer"),
     GAME_CONFIG_TO_CLIENTS("gameConfigToClients"),
     REQUEST_SERVER_INFO_TO_SERVER("requestServerInfoToServer"),
-    ROOMS_SERVER_INFO_TO_CLIENT("roomsServerInfoToClient");
+    ROOMS_SERVER_INFO_TO_CLIENT("roomsServerInfoToClient"),
+    SET_SERVER_TICK_RATE_TO_SERVER("setServerTickRateToServer"),
+    SERVER_TICK_RATE_CHANGED_TO_CLIENT("serverTickRateChangedToClient");
 }

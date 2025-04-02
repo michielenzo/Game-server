@@ -1,10 +1,7 @@
 package main.kotlin.game.spaceBalls
 
 import main.kotlin.game.spaceBalls.dto.*
-import main.kotlin.game.spaceBalls.gameobjects.GameObject
-import main.kotlin.game.spaceBalls.gameobjects.HomingBall
-import main.kotlin.game.spaceBalls.gameobjects.Meteorite
-import main.kotlin.game.spaceBalls.gameobjects.Player
+import main.kotlin.game.spaceBalls.gameobjects.*
 import main.kotlin.game.spaceBalls.gameobjects.powerups.*
 import main.kotlin.network.dto.DisconnectDTO
 import main.kotlin.publisher.MsgType
@@ -14,11 +11,16 @@ import main.kotlin.publisher.network.NetworkPublisher
 import main.kotlin.utilities.DTO
 
 class GameProxy(private val game: SpaceBalls): Thread(), INetworkSubscriber{
-
+    // We are able to set a messageRate for how many times per second we want to broadcast the gamestate to all clients.
+    // Setting this to a lower value can save bandwidth resources.
+    // The messageRate should not be higher than the framerate of the gameloop.
+    // If it is higher the proxy will only send the message to the clients if a change is detected in the gamestate.
     private val messageRate = 30
     private val millisPerSecond = 1000.0
     private val millisPerMessage = millisPerSecond / messageRate
     private val standbyPhaseMillis = 100
+
+    private var previousGameStateHash: Int = 0
 
     init {
         NetworkPublisher.subscriberQueue.add(this)
@@ -33,13 +35,11 @@ class GameProxy(private val game: SpaceBalls): Thread(), INetworkSubscriber{
             if(delta >= millisPerMessage){
                 if(System.currentTimeMillis() > startTime + standbyPhaseMillis) { standbyPhase = false }
 
-                if(!standbyPhase){ buildSendGameStateDTO().also { GamePublisher.broadcast(it) } }
+                if(!standbyPhase){ buildAndBroadcastGameState() }
                 loops++
             }
         }
     }
-
-
 
     override fun notifyNetworkNews(dto: DTO) {
         when(dto){
@@ -61,7 +61,7 @@ class GameProxy(private val game: SpaceBalls): Thread(), INetworkSubscriber{
             homingBallRadius = HomingBall.RADIUS, meteoriteDiameter = Meteorite.DIAMETER,
             countdownMillis = SpaceBalls.COUNTDOWN_MILLIS,
             meteoritesDirectionInit = meteoritesDirectionInitDTO
-        ).also { GamePublisher.broadcast(it, game.players) }
+        ).also { GamePublisher.broadcast(it, game.players.map { player -> player.toDTO() }) }
     }
 
     private fun handleBackToRoomToServerMessage(dto: BackToRoomToServerDTO) {
@@ -94,19 +94,25 @@ class GameProxy(private val game: SpaceBalls): Thread(), INetworkSubscriber{
         }
     }
 
+    private fun buildAndBroadcastGameState() {
+        buildSendGameStateDTO().also {
+            if (gameStateHasChanged(it)) {
+                previousGameStateHash = it.hashCode()
+                GamePublisher.broadcast(it)
+            }
+        }
+    }
+
+    private fun gameStateHasChanged(dto: SendSpaceBallsGameStateToClientsDTO): Boolean {
+        return dto.hashCode() != previousGameStateHash
+    }
+
+
     @Synchronized fun buildSendGameStateDTO(): SendSpaceBallsGameStateToClientsDTO {
         return SendSpaceBallsGameStateToClientsDTO(GameStateDTO().also { gameStateDTO ->
             game.players.forEach{ player ->
-                PlayerDTO(
-                    player.id,
-                    player.sessionId,
-                    player.name,
-                    player.xPos,
-                    player.yPos,
-                    player.health,
-                    player.hasShield,
-                    player.controlsInverted).also{ playerDTO ->
-                        gameStateDTO.players.add(playerDTO)
+                player.toDTO().also{ playerDTO ->
+                    gameStateDTO.players.add(playerDTO)
                 }
             }
             game.meteorites.forEach { meteorite ->

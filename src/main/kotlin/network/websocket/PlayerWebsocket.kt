@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonParser
 import io.javalin.websocket.WsContext
 import main.kotlin.game.spaceBalls.dto.*
-import main.kotlin.game.spaceBalls.gameobjects.Player
+import main.kotlin.game.spaceBalls.dto.PlayerDTO
 import main.kotlin.publisher.gamestate.IGameSubscriber
 import main.kotlin.network.dto.ConnectionDTO
 import main.kotlin.network.dto.DisconnectDTO
@@ -99,6 +99,11 @@ class PlayerWebsocket: Websocket(), IGameSubscriber, IRoomSubscriber {
                         it.playerId = wsCtx.sessionId()
                     }
                 }
+                MsgType.SET_SERVER_TICK_RATE_TO_SERVER.value -> {
+                    Gson().fromJson(msg, SetServerTickRateToServer::class.java).also {
+                        it.playerId = wsCtx.sessionId()
+                    }
+                }
                 MsgType.CHOOSE_GAMEMODE_TO_SERVER.value ->
                     Gson().fromJson(msg, ChooseGameModeToServerDTO::class.java)
                 MsgType.HEARTBEAT_CHECK.value -> Gson().fromJson(msg, HeartbeatCheckDTO::class.java)
@@ -119,35 +124,14 @@ class PlayerWebsocket: Websocket(), IGameSubscriber, IRoomSubscriber {
 
     override fun notifyGameStateNews(dto: DTO) {
         when(dto){
-            is SendSpaceBallsGameStateToClientsDTO -> {
-                mutableSetOf<WsContext>().also { set ->
-                    dto.gameState.players.forEach { player ->
-                        sessions.find { sesh -> sesh.sessionId() == player.sessionId }.also {
-                            if (it != null) {
-                                set.add(it)
-                            }
-                        }
-                    }
-                    sendToSessionSet(set, convertDTOtoJSON(dto))
-                }
-            }
+            is SendSpaceBallsGameStateToClientsDTO -> sendToAllPlayerSessions(dto, dto.gameState.players.toList())
         }
     }
 
-    override fun notifyGameStateNews(dto: DTO, players: List<Player>) {
+    override fun notifyGameStateNews(dto: DTO, players: List<PlayerDTO>) {
         when(dto){
-            is GameConfigToClientsDTO -> {
-                mutableSetOf<WsContext>().also { set ->
-                   players.forEach { player ->
-                        sessions.find { sesh -> sesh.sessionId() == player.sessionId }.also {
-                            if (it != null) {
-                                set.add(it)
-                            }
-                        }
-                    }
-                   sendToSessionSet(set, convertDTOtoJSON(dto))
-                }
-            }
+            is GameConfigToClientsDTO -> sendToAllPlayerSessions(dto, players)
+            is ServerTickRateChangedToClientDTO -> sendToAllPlayerSessions(dto, players)
         }
     }
 
@@ -158,6 +142,23 @@ class PlayerWebsocket: Websocket(), IGameSubscriber, IRoomSubscriber {
             is RoomNotFoundToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
             is YouHaveBeenKickedToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
             is RoomsServerInfoToClientDTO -> sendToSessionById(dto.playerId, convertDTOtoJSON(dto))
+        }
+    }
+
+    private fun sendToAllPlayerSessions(dto: DTO, players: List<PlayerDTO>){
+        val sessionSet = findWsSessionSetByPlayerList(players)
+        sendToSessionSet(sessionSet, convertDTOtoJSON(dto))
+    }
+
+    private fun findWsSessionSetByPlayerList(players: List<PlayerDTO>): MutableSet<WsContext> {
+        return mutableSetOf<WsContext>().also { set ->
+            players.forEach { player ->
+                sessions.find { sesh -> sesh.sessionId() == player.sessionId }.also {
+                    if (it != null) {
+                        set.add(it)
+                    }
+                }
+            }
         }
     }
 

@@ -1,28 +1,36 @@
 package main.kotlin.game.engine
 
+import main.kotlin.game.spaceBalls.dto.ServerTickRateChangedToClientDTO
+import main.kotlin.game.spaceBalls.gameobjects.Player
+import main.kotlin.game.spaceBalls.gameobjects.toDTO
+import main.kotlin.publisher.gamestate.GamePublisher
 import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class GameLoop: Thread(){
 
     val gameEvents = CopyOnWriteArrayList<GameEvent>()
 
-    companion object {
-        private const val FRAMERATE = 60
-        private const val MILLIS_PER_SECOND = 1000.0
-        private const val MILLIS_PER_TICK = MILLIS_PER_SECOND / FRAMERATE
+    private var framerate = INITIAL_FRAMERATE
+    private var millisPerTick = calculateMillisPerTick()
+    open var speedFactor = calculateSpeedFactor()
 
-        const val SPEED_FACTOR = (MILLIS_PER_SECOND / FRAMERATE) / MILLIS_PER_SECOND
+    companion object {
+        private const val INITIAL_FRAMERATE = 60.0
+        private const val MILLIS_PER_SECOND = 1000.0
     }
 
     var gameOver = false
     private var isPaused = false
 
+    private var referenceTime: Long? = null
+    private var ticks: Int = 0
+
     override fun run() {
-        val startTime = System.currentTimeMillis()
-        var ticks = 0
+        referenceTime = System.currentTimeMillis()
+
         while (!gameOver){
-            val delta = (System.currentTimeMillis() - startTime) - (ticks * MILLIS_PER_TICK)
-            if(delta >= MILLIS_PER_TICK){
+            val delta = (System.currentTimeMillis() - referenceTime!!) - (ticks * millisPerTick)
+            if(delta >= millisPerTick){
                 if(!isPaused)
                     tick()
                 ticks++
@@ -48,8 +56,25 @@ abstract class GameLoop: Thread(){
 
     abstract fun tick()
 
+    abstract fun getPlayers(): List<Player>
+
+    fun setTickRate(tickRate: Double) {
+        framerate = tickRate
+        millisPerTick = calculateMillisPerTick()
+        speedFactor = calculateSpeedFactor()
+        ticks = 0
+        referenceTime = System.currentTimeMillis()
+        ServerTickRateChangedToClientDTO(tickRate).also {
+            GamePublisher.broadcast(it, getPlayers().map { p -> p.toDTO() })
+        }
+    }
+
     fun fireEvent(type: GameEventType) = gameEvents.add(GameEvent(type))
 
     fun fireEvent(type: GameEventType, data: HashMap<String, String>) =
         gameEvents.add(GameEvent(type).apply { this.data = data })
+
+    private fun calculateMillisPerTick(): Double = MILLIS_PER_SECOND / framerate
+
+    private fun calculateSpeedFactor(): Double = (MILLIS_PER_SECOND / framerate) / MILLIS_PER_SECOND
 }

@@ -2,6 +2,7 @@ package main.kotlin.game.spaceBalls.gameobjects
 
 import main.kotlin.game.engine.*
 import main.kotlin.game.spaceBalls.SpaceBalls
+import main.kotlin.game.spaceBalls.dto.PlayerDTO
 import main.kotlin.game.spaceBalls.gameobjects.powerups.PowerUp
 import main.kotlin.game.spaceBalls.gameobjects.powerups.Shield
 
@@ -123,15 +124,15 @@ class Player(
 
     private fun move(){
         if(controlsInverted){
-            if(wKey) {yPos += SPEED * GameLoop.SPEED_FACTOR}
-            if(aKey) {xPos += SPEED * GameLoop.SPEED_FACTOR}
-            if(sKey) {yPos -= SPEED * GameLoop.SPEED_FACTOR}
-            if(dKey) {xPos -= SPEED * GameLoop.SPEED_FACTOR}
+            if(wKey) {yPos += SPEED * game.speedFactor}
+            if(aKey) {xPos += SPEED * game.speedFactor}
+            if(sKey) {yPos -= SPEED * game.speedFactor}
+            if(dKey) {xPos -= SPEED * game.speedFactor}
         } else {
-            if(wKey) {yPos -= SPEED * GameLoop.SPEED_FACTOR}
-            if(aKey) {xPos -= SPEED * GameLoop.SPEED_FACTOR}
-            if(sKey) {yPos += SPEED * GameLoop.SPEED_FACTOR}
-            if(dKey) {xPos += SPEED * GameLoop.SPEED_FACTOR}
+            if(wKey) {yPos -= SPEED * game.speedFactor}
+            if(aKey) {xPos -= SPEED * game.speedFactor}
+            if(sKey) {yPos += SPEED * game.speedFactor}
+            if(dKey) {xPos += SPEED * game.speedFactor}
         }
     }
 
@@ -144,3 +145,13 @@ class Player(
     }
 }
 
+fun Player.toDTO(): PlayerDTO = PlayerDTO(
+    id,
+    sessionId,
+    name,
+    xPos,
+    yPos,
+    health,
+    hasShield,
+    controlsInverted
+)

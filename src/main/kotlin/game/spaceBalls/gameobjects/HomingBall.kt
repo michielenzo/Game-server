@@ -36,8 +36,8 @@ class HomingBall(
     }
 
     private fun move(direction: Vec2D){
-        xPos += direction.x * (MOVEMENT_SPEED * GameLoop.SPEED_FACTOR)
-        yPos += direction.y * (MOVEMENT_SPEED * GameLoop.SPEED_FACTOR)
+        xPos += direction.x * (MOVEMENT_SPEED * game.speedFactor)
+        yPos += direction.y * (MOVEMENT_SPEED * game.speedFactor)
     }
 
     private fun checkInvisibilityTimer(){
